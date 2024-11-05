@@ -9,34 +9,29 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "usuario")
+@Table(name = "docente")
 @Setter
 @Getter
-public class Usuario extends AuditoriaConfig{
+public class Docente extends AuditoriaConfig {
     private static final long serialVersionUID = 2629195288020321924L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idUsuario;
-    private String nombre;
-    private String password;
+    private Long id_docente;
 
-    // Tabla Persona
-    @OneToOne(fetch = FetchType.LAZY)
+    private String grado_academico;
+    private String rd;
+    private String asignatura;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_carrera")
+    private Carrera carrera;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_persona")
     private Persona persona;
-
-    // Tabla Rol
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_rol")
-    private Rol rol;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_jurado")
-    private Jurado jurado;
 }
