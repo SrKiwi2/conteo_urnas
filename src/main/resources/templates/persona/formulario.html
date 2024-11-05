@@ -2,52 +2,67 @@
     <h4 class="modal-title" th:text="${edit}? 'Modificar Persona' : 'Registrar Persona'"></h4>
     <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
 </div>
-<form id="formularioPersona" method="post"
-    th:action="${edit}? @{/persona/modificar-persona} : @{/persona/registrar-persona}" novalidate>
-    <input type="hidden" th:if="${edit != null}" th:field="${persona.idPersona}">
+
+<form id="formularioPersonaApi" method="post" action="@{/}" novalidate>
     <div class="modal-body">
-        <div class="row">
+        <div class="row mb-3">
             <div class="col-12 col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserLastName">C.I.</label>
-                <input type="text" th:field="${persona.ci}" class="form-control" placeholder="Introduzca un C.I."
-                    required />
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Porfavor Introduzca una Contraseña.</div>
-            </div>
-            <div class="col-12 col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserFirstName">Nombre</label>
-                <input type="text" th:field="${persona.nombre}" class="form-control" placeholder="Introduzca un nombre"
-                    required />
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Porfavor Introduzca un Nombre.</div>
-            </div>
-            <div class="col-12 col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserLastName">Paterno</label>
-                <input type="text" th:field="${persona.paterno}" class="form-control"
-                    placeholder="Introduzca un apellido" />
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Porfavor Introduzca su primer apellido.</div>
-            </div>
-            <div class="col-12 col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserLastName">Materno</label>
-                <input type="text" th:field="${persona.materno}" class="form-control"
-                    placeholder="Introduzca un apellido" />
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Porfavor Introduzca su segundo apellido.</div>
+                <label class="form-label" for="tipoPersonaSelect">Tipo de Persona</label>
+                <select id="tipoPersonaSelect" class="form-select">
+                    <option value="" disabled selected>Seleccione tipo</option>
+                    <option value="estudiante">Estudiante</option>
+                    <option value="docente">Docente</option>
+                </select>
             </div>
         </div>
-    </div>
-    <div class="modal-footer">
-        <div class="row">
-            <div class="col-12">
-                <a type="submit" class="btn btn-secondary" style="color: white;" data-bs-dismiss="modal">Cancelar</a>
-                <input type="submit" class="btn btn-success" th:value="${edit}? 'Guardar Cambios': 'Guardar Registro'">
-
+    
+        <div id="estudianteFields" style="display: none;">
+            <div class="row mb-3">
+                <div class="col-12 col-md-4 mb-2">
+                    <label class="form-label" for="ruInput">RU</label>
+                    <input type="text" name="ru" class="form-control" placeholder="Introduzca RU del estudiante" />
+                </div>
+                <div class="col-12 col-md-4 mb-2 align-self-end">
+                    <button type="submit" class="btn btn-primary">Buscar Estudiante</button>
+                </div>
+            </div>
+        </div>
+    
+        <div id="docenteFields" style="display: none;">
+            <div class="row mb-3">
+                <div class="col-12 col-md-4 mb-2">
+                    <label class="form-label" for="rdInput">RD</label>
+                    <input type="text" name="rd" class="form-control" placeholder="Introduzca RD del docente" />
+                </div>
+                <div class="col-12 col-md-4 mb-2 align-self-end">
+                    <button type="submit" class="btn btn-primary">Buscar Docente</button>
+                </div>
             </div>
         </div>
     </div>
 </form>
 
+
 <script>
+    manejarEnvioFormulario('#formularioPersonaApi');
     manejarEnvioFormulario('#formularioPersona');
+</script>
+
+<script>
+    document.getElementById("tipoPersonaSelect").addEventListener("change", function() {
+        const tipoPersona = this.value;
+
+        document.getElementById("estudianteFields").style.display = "none";
+        document.getElementById("docenteFields").style.display = "none";
+
+        const formulario = document.getElementById("formularioPersonaApi");
+
+        if (tipoPersona === "estudiante") {
+            document.getElementById("estudianteFields").style.display = "block";
+            formulario.setAttribute("action", "/estudiante/api_estudiante");
+        } else if (tipoPersona === "docente") {
+            document.getElementById("docenteFields").style.display = "block";
+            formulario.setAttribute("action", "/docente/api_docente");
+        }
+    });
 </script>

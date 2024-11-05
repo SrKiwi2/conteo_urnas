@@ -26,11 +26,7 @@
                     <th th:text="${per.materno}"></th>
                     <th th:text="${per.ci}"></th>
                     <th>
-                        <button type="button" class="btn btn-sm btn-primary"
-                            th:onclick="cargarFormularioEdit([[${id_encryptado[__${index.index}__]}]])"
-                            data-bs-toggle="modal" data-bs-target="#modalFormularioPersona">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
-                        </button>
+                        
                         <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${per.nombreCompleto}]],[[${id_encryptado[__${index.index}__]}]])">
                             <i class="fa-solid fa-trash"></i> Eliminar
                         </button>

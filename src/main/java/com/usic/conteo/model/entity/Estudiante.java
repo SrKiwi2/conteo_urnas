@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "estudinate")
+@Table(name = "estudiante")
 @Setter
 @Getter
 public class Estudiante extends AuditoriaConfig{
