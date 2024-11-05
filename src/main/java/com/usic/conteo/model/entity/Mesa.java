@@ -1,4 +1,6 @@
 package com.usic.conteo.model.entity;
+import java.util.List;
+
 import com.usic.conteo.config.AuditoriaConfig;
 
 import jakarta.persistence.CascadeType;
@@ -8,7 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -26,6 +30,10 @@ public class Mesa extends AuditoriaConfig {
     private String nombre_mesa;
     private String estado_mesa;
     
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "mesa", fetch = FetchType.LAZY)
-    private Voto votos;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "mesa", fetch = FetchType.LAZY)
+	private List<Voto> votos;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_jurado")
+    private Jurado jurado;
 }

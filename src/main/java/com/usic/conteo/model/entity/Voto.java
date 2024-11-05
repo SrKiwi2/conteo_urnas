@@ -31,12 +31,14 @@ public class Voto extends AuditoriaConfig {
     private String tipo_voto;
     private String estado_voto;
     
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_mesa")
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_mesa")
     private Mesa mesa;
 
     @ManyToMany(mappedBy = "votos")
-    private Set<Voto> votos = new HashSet<>();
+    private Set<Frente> frentes = new HashSet<>();
+
+
 
 
     // @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

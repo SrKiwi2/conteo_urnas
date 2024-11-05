@@ -1,5 +1,7 @@
 package com.usic.conteo.model.entity;
 
+import java.util.List;
+
 import com.usic.conteo.config.AuditoriaConfig;
 
 import jakarta.persistence.CascadeType;
@@ -10,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -55,4 +58,7 @@ public class Persona extends AuditoriaConfig {
 
         return this.getNombre()+" "+this.getPaterno()+" "+this.getMaterno();
     }
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "persona", fetch = FetchType.LAZY)
+	private List<Jurado> jurados;
 }
