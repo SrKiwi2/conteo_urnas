@@ -16,6 +16,7 @@ import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.IRolService;
 import com.usic.conteo.model.IService.IVotoService;
+import com.usic.conteo.model.Repository.ConsultasVistaVotos;
 import com.usic.conteo.model.entity.Frente;
 import com.usic.conteo.model.entity.Rol;
 import com.usic.conteo.model.entity.Usuario;
@@ -30,6 +31,8 @@ import lombok.RequiredArgsConstructor;
 public class VotoController {
     
     private final IVotoService iVotoService;
+
+    private final ConsultasVistaVotos consultasVistaVotos;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -71,6 +74,10 @@ public class VotoController {
     @ValidarUsuarioAutenticado
     @PostMapping("/registrar-voto")
     public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto) {
+
+        System.out.println("================================================================");
+        System.out.println(consultasVistaVotos.ObtenerMesaXUsuario(1L));
+        System.out.println("================================================================");
 
         voto.setEstado("ACTIVO");
         iVotoService.save(voto);

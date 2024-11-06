@@ -17,6 +17,7 @@ import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.IFrenteService;
 import com.usic.conteo.model.IService.IJuradoService;
 import com.usic.conteo.model.IService.IMesaService;
+import com.usic.conteo.model.Repository.ConsultasVistaVotos;
 import com.usic.conteo.model.entity.Frente;
 import com.usic.conteo.model.entity.Mesa;
 import com.usic.conteo.model.entity.Usuario;
