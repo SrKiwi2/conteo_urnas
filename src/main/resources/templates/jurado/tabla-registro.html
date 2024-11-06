@@ -15,6 +15,7 @@
                     <th>PATERNO</th>
                     <th>MATERNO</th>
                     <th>C.I.</th>
+                    <th>MESA</th>
                     <th>OPCIONES</th>
                 </tr>
             </thead>
@@ -25,6 +26,7 @@
                     <th th:text="${jur.persona.paterno}"></th>
                     <th th:text="${jur.persona.materno}"></th>
                     <th th:text="${jur.persona.ci}"></th>
+                    <th>1</th>
                     <th>
                         <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${jur.persona.nombreCompleto}]],[[${id_encryptado[__${index.index}__]}]])">
                             <i class="fa-solid fa-trash"></i> Eliminar

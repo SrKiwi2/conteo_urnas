@@ -17,8 +17,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.IJuradoService;
+import com.usic.conteo.model.IService.IMesaService;
 import com.usic.conteo.model.IService.IPersonaService;
 import com.usic.conteo.model.entity.Jurado;
+import com.usic.conteo.model.entity.Mesa;
 import com.usic.conteo.model.entity.Usuario;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +35,8 @@ public class JuradoController {
 
     private final IJuradoService juradoService;
 
+    private final IMesaService mesaService;
+
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
     public String inicio() {
@@ -43,6 +47,7 @@ public class JuradoController {
     @PostMapping("/tabla-registros")
     public String tablaRegistros(Model model) throws Exception {
         List<Jurado> listaJurados = juradoService.listarJurados();
+        // List<Mesa> listMesas = mesaService.
         List<String> encryptedIds = new ArrayList<>();
         for (Jurado jurados : listaJurados) {
             String id_encryptado = Encriptar.encrypt(Long.toString(jurados.getId_jurado()));
