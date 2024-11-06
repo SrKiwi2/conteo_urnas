@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.IFrenteService;
+import com.usic.conteo.model.IService.IJuradoService;
 import com.usic.conteo.model.IService.IMesaService;
 import com.usic.conteo.model.entity.Frente;
 import com.usic.conteo.model.entity.Mesa;
@@ -29,6 +30,8 @@ import lombok.RequiredArgsConstructor;
 public class MesaController {
     
     private final IMesaService iMesaService;
+
+    private final IJuradoService iJuradoService;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -46,7 +49,7 @@ public class MesaController {
             String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
             encryptedIds.add(id_encryptado);
         }
-        model.addAttribute("listaFrentes", listaMesas);
+        model.addAttribute("listaMesas", listaMesas);
         model.addAttribute("id_encryptado", encryptedIds);
 
         return "mesa/tabla-registro";
@@ -55,6 +58,7 @@ public class MesaController {
     @ValidarUsuarioAutenticado
     @PostMapping("/formulario")
     public String formulario(Model model, Mesa mesa) {
+        model.addAttribute("listaJurados", iJuradoService.listarJurados());
         return "mesa/formulario";
     }
 
@@ -63,6 +67,7 @@ public class MesaController {
     public String formularioEdit(Model model, @PathVariable("id_mesa") String id_mesa) throws Exception {
 
         Long id = Long.parseLong(Encriptar.decrypt(id_mesa));
+        model.addAttribute("listaJurados", iJuradoService.listarJurados());
         model.addAttribute("mesa", iMesaService.findById(id));
         model.addAttribute("edit", "true");
 
@@ -89,7 +94,6 @@ public class MesaController {
         iMesaService.save(mesa);
 
         return ResponseEntity.ok("Se realizó la modificación correctamente");
-
     }
 
     @ValidarUsuarioAutenticado
