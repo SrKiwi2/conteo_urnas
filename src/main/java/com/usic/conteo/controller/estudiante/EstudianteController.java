@@ -17,12 +17,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 
+import com.usic.conteo.model.IService.ICarreraService;
 import com.usic.conteo.model.IService.IEstudianteService;
+import com.usic.conteo.model.IService.IFacultadService;
 import com.usic.conteo.model.IService.INacionalidadService;
 import com.usic.conteo.model.IService.IPersonaService;
 import com.usic.conteo.model.IService.ISexoService;
 import com.usic.conteo.model.entity.Carrera;
 import com.usic.conteo.model.entity.Estudiante;
+import com.usic.conteo.model.entity.Facultad;
 import com.usic.conteo.model.entity.Nacionalidad;
 import com.usic.conteo.model.entity.Persona;
 import com.usic.conteo.model.entity.Sexo;
@@ -49,6 +52,12 @@ public class EstudianteController {
 
     @Autowired
     private IEstudianteService estudianteService;
+
+    @Autowired
+    private ICarreraService carreraService;
+
+    @Autowired
+    private IFacultadService facultadService;
     
     @PostMapping("/api_estudiante")
     public ResponseEntity<String> buscarEstudianteApi(HttpServletRequest request, @RequestParam(name = "ru") String ru) {
@@ -86,7 +95,10 @@ public class EstudianteController {
                         nacionalidad.setNombre(data.get("nacionalidad").toString());
                         nacionalidad.setRegistroIdUsuario(usuario.getIdUsuario());
                         nacionalidadService.save(nacionalidad);
+                        nacionalidad.setEstado("ACTIVO");
                         persona.setNacionalidad(nacionalidad);
+                    }else{
+                        persona.setNacionalidad(nacionalidad_encontrada);
                     }
                     
                     Sexo sexo_encontrado = sexoService.buscarSexoPorNombre(data.get("sexo").toString());
@@ -94,9 +106,13 @@ public class EstudianteController {
                         Sexo sexo = new Sexo();
                         sexo.setNombre(data.get("sexo").toString());
                         sexo.setRegistroIdUsuario(usuario.getIdUsuario());
+                        sexo.setEstado("ACTIVO");
                         sexoService.save(sexo);
                         persona.setSexo(sexo);
+                    }else{
+                        persona.setSexo(sexo_encontrado);
                     }
+
                     persona.setEstado("ACTIVO");
                     personaService.save(persona);
 
@@ -106,7 +122,33 @@ public class EstudianteController {
                         estudiante.setPersona(persona);
                         estudiante.setRu(ru);
                         estudiante.setTipo_carrera(data.get("tipo_carrera").toString());
-                        
+                        estudiante.setEstado("ACTIVO");
+
+                        Facultad facultad_encontrada = facultadService.buscarFacultadPorNombre(data.get("facultad").toString());
+                        if (facultad_encontrada == null) {
+                            Facultad facultad = new Facultad();
+                            facultad.setNombre_facultad(data.get("facultad").toString());
+                            facultad.setRegistroIdUsuario(usuario.getIdUsuario());
+                            facultad.setEstado("ACTIVO");
+                            facultad.setSigla("---");
+                            facultadService.save(facultad);
+
+                            Carrera carrera_encontrada = carreraService.buscarCarreraPorNombre(data.get("carrera").toString());
+                            if (carrera_encontrada == null) {
+                                Carrera carrera = new Carrera();
+                                carrera.setNombre_carrera(data.get("carrera").toString());
+                                carrera.setFacultad(facultad);
+                                carrera.setRegistroIdUsuario(usuario.getIdUsuario());
+                                carrera.setEstado("ACTIVO");
+                                carreraService.save(carrera);
+                                estudiante.setCarrera(carrera);
+                            }else{
+                                estudiante.setCarrera(carrera_encontrada);
+                            }
+                        }
+                        estudiante.setPlan(data.get("plan").toString());
+                        estudiante.setRegistroIdUsuario(usuario.getIdUsuario());
+                        estudianteService.save(estudiante);
                     }
 
                     return ResponseEntity.ok("Se realizó el registro correctamente");

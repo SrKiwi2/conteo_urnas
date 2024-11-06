@@ -34,5 +34,15 @@ public class CarreraServiceImpl implements ICarreraService{
     public void deleteById(Long idEntidad) {
         carreraDao.deleteById(idEntidad);
     }
+
+    @Override
+    public Carrera buscarCarreraPorNombre(String nombre_carrera) {
+        return carreraDao.buscarCarreraPorNombre(nombre_carrera);
+    }
+
+    @Override
+    public List<Carrera> listarCarreras() {
+        return carreraDao.listarCarreras();
+    }
     
 }
