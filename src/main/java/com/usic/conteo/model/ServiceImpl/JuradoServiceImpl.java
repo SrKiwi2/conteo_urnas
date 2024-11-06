@@ -1,6 +1,7 @@
 package com.usic.conteo.model.ServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.usic.conteo.model.IService.IJuradoService;
 import com.usic.conteo.model.dao.IJuradoDao;
 import com.usic.conteo.model.entity.Jurado;
+import com.usic.conteo.model.entity.Persona;
 
 @Service
 public class JuradoServiceImpl implements IJuradoService{
@@ -38,5 +40,10 @@ public class JuradoServiceImpl implements IJuradoService{
     @Override
     public List<Jurado> listarJurados() {
         return dao.listarJurados();
+    }
+
+    @Override
+    public Optional<Jurado> buscarJuradoPorPersona(Persona persona) {
+        return dao.buscarJuradoPorPersona(persona);
     }
 }

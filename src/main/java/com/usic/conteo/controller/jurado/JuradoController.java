@@ -2,6 +2,7 @@ package com.usic.conteo.controller.jurado;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -72,14 +73,17 @@ public class JuradoController {
     @ValidarUsuarioAutenticado
     @PostMapping("/registrar-jurado")
     public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Jurado jurado) {
-        if (juradoService.findById(jurado.getPersona().getIdPersona()) == null) {
+
+        Optional<Jurado> juradoExistente = juradoService.buscarJuradoPorPersona(jurado.getPersona());
+
+        if (juradoExistente.isPresent()) {
+            return ResponseEntity.ok("Ya existe este jurado");
+        }else{
             Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
             jurado.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
             jurado.setEstado("ACTIVO");
             juradoService.save(jurado);
             return ResponseEntity.ok("Se realizó el registro correctamente");
-        } else {
-            return ResponseEntity.ok("Ya existe el usuario y contraseña");
         }
     }
 
