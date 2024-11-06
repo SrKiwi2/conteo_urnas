@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <h4 class="modal-title" th:text="${edit}? 'Modificar Jurado' : 'Registrar Jurado'"></h4>
+    <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
+</div>
+<form id="formularioJurado" method="post" th:action="${edit}? @{/jurado/modificar-jurado} : @{/jurado/registrar-jurado}"
+    novalidate>
+    <input type="hidden" th:if="${edit != null}" th:field="${jurado.id_jurado}">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12 col-md-8">
+                <label for="select2Basic" class="form-label">Persona</label>
+                <select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true"
+                    th:field="${jurado.persona}">
+                    <option th:each="persona : ${listaPersonas}" th:value="${persona.idPersona}"
+                        th:selected="${persona == jurado.persona}"
+                        th:text="${persona.nombreCompleto+ ' - ' + persona.ci}">
+                    </option>
+                </select>
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Debe seleccionar a una persona.</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="row">
+            <div class="col-12">
+                <a type="submit" class="btn btn-secondary" style="color: white;" data-bs-dismiss="modal">Cancelar</a>
+                <input type="submit" class="btn btn-success" th:value="${edit}? 'Guardar Cambios': 'Guardar Registro'">
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    manejarEnvioFormulario('#formularioJurado');
+</script>

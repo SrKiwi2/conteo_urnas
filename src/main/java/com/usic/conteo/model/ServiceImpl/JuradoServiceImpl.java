@@ -34,4 +34,9 @@ public class JuradoServiceImpl implements IJuradoService{
     public void deleteById(Long idEntidad) {
         dao.deleteById(idEntidad);
     }
+
+    @Override
+    public List<Jurado> listarJurados() {
+        return dao.listarJurados();
+    }
 }
