@@ -37,5 +37,11 @@ public class VotoServiceImpl implements IVotoService{
         // TODO Auto-generated method stub
         iVotoDao.deleteById(idEntidad);
     }
+
+    @Override
+    public List<Voto> listarVotos() {
+        // TODO Auto-generated method stub
+        return iVotoDao.listarVotos();
+    }
     
 }
