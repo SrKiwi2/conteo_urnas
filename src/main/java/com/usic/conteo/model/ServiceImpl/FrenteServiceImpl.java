@@ -38,5 +38,11 @@ public class FrenteServiceImpl implements IFrenteService{
         // TODO Auto-generated method stub
         iFrenteDao.deleteById(idEntidad);
     }
+
+    @Override
+    public List<Frente> listarFrentes() {
+        // TODO Auto-generated method stub
+        return iFrenteDao.listarFrentes();
+    }
     
 }

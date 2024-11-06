@@ -1,20 +1,19 @@
 <div class="modal-header">
-    <h4 class="modal-title" th:text="${edit}? 'Modificar Frente' : 'Registrar Frente'"></h4>
+    <h4 class="modal-title" th:text="${edit}? 'Modificar Mesa' : 'Registrar Mesa'"></h4>
     <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
 </div>
-<form id="formulariofrente" method="post"
-    th:action="${edit}? @{/frente/modificar-frente} : @{/frente/registrar-frente}" novalidate>
-    <input type="hidden" th:if="${edit != null}" th:field="${frente.id_frente}">
+<form id="formularioMesa" method="post"
+    th:action="${edit}? @{/mesa/modificar-mesa} : @{/mesa/registrar-mesa}" novalidate>
+    <input type="hidden" th:if="${edit != null}" th:field="${mesa.id_mesa}">
     <div class="modal-body">
         <div class="row">
             <div class="col-12 col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserLastName">Nombre del Frente</label>
-                <input type="text" th:field="${frente.nombre_frente}" class="form-control"
+                <label class="form-label" for="modalEditUserLastName">Nombre de la Mesa</label>
+                <input type="text" th:field="${mesa.nombre_mesa}" class="form-control"
                     required />
                 <div class="valid-feedback">Correcto!</div>
                 <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
             </div>
-            
         </div>
     </div>
     <div class="modal-footer">
@@ -28,5 +27,5 @@
 </form>
 
 <script>
-    manejarEnvioFormulario('#formulariofrente');
+    manejarEnvioFormulario('#formularioMesa');
 </script>

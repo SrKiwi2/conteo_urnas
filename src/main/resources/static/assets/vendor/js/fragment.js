@@ -93,7 +93,7 @@ function eliminarRegistroAlert(nombre, id, urlEliminar, cargarTablaFuncion) {
             // Si la sesión es válida, procede con la eliminación
             Swal.fire({
                 title: 'Eliminar Registro',
-                text: '¿Estás seguro de eliminar a ' + nombre + '?',
+                text: '¿Estás seguro de eliminar a ( ' + nombre + ' ) ?',
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonText: 'Sí, eliminar',

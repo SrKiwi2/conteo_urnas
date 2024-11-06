@@ -111,6 +111,33 @@
                 botonPulsado.classList.add("active");
 
             });
+            $("#opcion_frente").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/frente/vista");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_frente");;
+
+                botonPulsado.classList.add("active");
+
+            });
+
+            $("#opcion_mesa").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/mesa/vista");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_mesa");;
+
+                botonPulsado.classList.add("active");
+
+            });
 
             
             // Función para cargar el contenido de la opción seleccionada

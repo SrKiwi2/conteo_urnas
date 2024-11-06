@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
+import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.IFrenteService;
 import com.usic.conteo.model.IService.IMesaService;
+import com.usic.conteo.model.entity.Frente;
+import com.usic.conteo.model.entity.Mesa;
+import com.usic.conteo.model.entity.Usuario;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +28,79 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MesaController {
     
-    private IFrenteService frenteService;
+    private final IMesaService iMesaService;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
     public String inicio() {
         return "mesa/vista";
+    }
+
+    @ValidarUsuarioAutenticado
+    @PostMapping("/tabla-registros")
+    public String tablaRegistros(Model model) throws Exception {
+
+        List<Mesa> listaMesas = iMesaService.listarMesas();
+        List<String> encryptedIds = new ArrayList<>();
+        for (Mesa mesas : listaMesas) {
+            String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
+            encryptedIds.add(id_encryptado);
+        }
+        model.addAttribute("listaFrentes", listaMesas);
+        model.addAttribute("id_encryptado", encryptedIds);
+
+        return "mesa/tabla-registro";
+    }
+
+    @ValidarUsuarioAutenticado
+    @PostMapping("/formulario")
+    public String formulario(Model model, Mesa mesa) {
+        return "mesa/formulario";
+    }
+
+    @ValidarUsuarioAutenticado
+    @PostMapping("/formulario-edit/{id_mesa}")
+    public String formularioEdit(Model model, @PathVariable("id_mesa") String id_mesa) throws Exception {
+
+        Long id = Long.parseLong(Encriptar.decrypt(id_mesa));
+        model.addAttribute("mesa", iMesaService.findById(id));
+        model.addAttribute("edit", "true");
+
+        return "mesa/formulario";
+    }
+
+    @ValidarUsuarioAutenticado
+    @PostMapping("/registrar-mesa")
+    public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Mesa mesa) {
+
+        mesa.setEstado("ACTIVO");
+        iMesaService.save(mesa);
+
+        return ResponseEntity.ok("Se realizó el registro correctamente");
+    }
+
+    @PostMapping(value = "/modificar-mesa")
+    public ResponseEntity<String> modificar(HttpServletRequest request, Mesa mesa,
+            RedirectAttributes redirectAttrs) {
+
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        mesa.setModificacionIdUsuario(usuario.getIdUsuario());
+        mesa.setEstado("ACTIVO");
+        iMesaService.save(mesa);
+
+        return ResponseEntity.ok("Se realizó la modificación correctamente");
+
+    }
+
+    @ValidarUsuarioAutenticado
+    @PostMapping("/eliminar/{id_mesa}")
+    public ResponseEntity<String> eliminar(Model model, @PathVariable("id_mesa") String id_mesa) throws Exception {
+
+        Long id = Long.parseLong(Encriptar.decrypt(id_mesa));
+        Mesa mesa = iMesaService.findById(id);
+        mesa.setEstado("ELIMINADO");
+        iMesaService.save(mesa);
+
+        return ResponseEntity.ok("Registro Eliminado");
     }
 }

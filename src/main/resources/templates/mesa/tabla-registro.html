@@ -1,9 +1,9 @@
 <div class="card">
     <div class="card-header d-flex justify-content-lg-between">
-        <h5>Registro Frente</h5>
+        <h5>Registro Mesa</h5>
         <button type="button" class="btn btn-primary" onclick="cargarFormulario()" data-bs-toggle="modal"
-            data-bs-target="#modalFormularioFrente">
-            <i class="fa-solid fa-user-plus"></i> Agregar Frente
+            data-bs-target="#modalFormularioMesa">
+            <i class="fa-solid fa-user-plus"></i> Agregar Mesa
         </button>
     </div>
     <div class="card-datatable table-responsive pt-0">
@@ -16,16 +16,16 @@
                 </tr>
             </thead>
             <tbody class="animate__animated animate__bounceInDown">
-                <tr th:each="frens, index: ${listaFrentes}">
+                <tr th:each="mes, index: ${listaMesas}">
                     <th th:text="${index.index+1}"></th>
-                    <th th:text="${frens.nombre_frente}"></th>
+                    <th th:text="${mes.nombre_mesa}"></th>
                     <th>
                         <button type="button" class="btn btn-sm btn-primary"
                             th:onclick="cargarFormularioEdit([[${id_encryptado[__${index.index}__]}]])"
-                            data-bs-toggle="modal" data-bs-target="#modalFormularioFrente">
+                            data-bs-toggle="modal" data-bs-target="#modalFormularioMesa">
                             <i class="fa-solid fa-pen-to-square"></i> Editar
                         </button>
-                        <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${frens.nombre_frente}]],[[${id_encryptado[__${index.index}__]}]])">
+                        <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${mes.nombre_mesa}]],[[${id_encryptado[__${index.index}__]}]])">
                             <i class="fa-solid fa-trash"></i> Eliminar
                         </button>
                     </th>

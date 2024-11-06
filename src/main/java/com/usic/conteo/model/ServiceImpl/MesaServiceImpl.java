@@ -39,5 +39,11 @@ public class MesaServiceImpl implements IMesaService{
         // TODO Auto-generated method stub
         iMesaDao.deleteById(idEntidad);
     }
+
+    @Override
+    public List<Mesa> listarMesas() {
+        // TODO Auto-generated method stub
+        return iMesaDao.listarMesas();
+    }
     
 }

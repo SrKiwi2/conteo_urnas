@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/frente")
 @RequiredArgsConstructor
 public class FrenteController {
-    private IFrenteService frenteService;
+    private final IFrenteService frenteService;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -39,7 +39,7 @@ public class FrenteController {
     @PostMapping("/tabla-registros")
     public String tablaRegistros(Model model) throws Exception {
 
-        List<Frente> listaFrentes = frenteService.findAll();
+        List<Frente> listaFrentes = frenteService.listarFrentes();
         List<String> encryptedIds = new ArrayList<>();
         for (Frente frentes : listaFrentes) {
             String id_encryptado = Encriptar.encrypt(Long.toString(frentes.getId_frente()));
@@ -73,7 +73,6 @@ public class FrenteController {
     public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Frente frente) {
 
         frente.setEstado("ACTIVO");
-        frente.setNombre_frente(frente.getNombre_frente());
         frenteService.save(frente);
 
         return ResponseEntity.ok("Se realizó el registro correctamente");
