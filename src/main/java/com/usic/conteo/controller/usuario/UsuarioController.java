@@ -2,6 +2,7 @@ package com.usic.conteo.controller.usuario;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,9 +16,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
+import com.usic.conteo.model.IService.IJuradoService;
 import com.usic.conteo.model.IService.IPersonaService;
 import com.usic.conteo.model.IService.IRolService;
 import com.usic.conteo.model.IService.IUsuarioService;
+import com.usic.conteo.model.entity.Jurado;
+import com.usic.conteo.model.entity.Persona;
 import com.usic.conteo.model.entity.Usuario;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +35,7 @@ public class UsuarioController {
     private final IUsuarioService usuarioService;
     private final IPersonaService personaService;
     private final IRolService rolService;
+    private final IJuradoService juradoService;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -59,6 +64,7 @@ public class UsuarioController {
     public String formulario(Model model, Usuario usuario) {
 
         model.addAttribute("listaPersonas", personaService.listarPersonas());
+        model.addAttribute("listaJurados", juradoService.listarJurados());
         model.addAttribute("listaRoles", rolService.listarRoles());
 
         return "usuario/formulario";
@@ -81,9 +87,28 @@ public class UsuarioController {
     @PostMapping("/registrar-usuario")
     public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Usuario usuario) {
 
+        Long idPersona = usuario.getJurado().getPersona().getIdPersona();
+        Optional<Usuario> usuarioExistente = usuarioService.findByPersona_IdPersona(idPersona);
+
+        if (usuarioExistente.isPresent()) {
+            Usuario existente = usuarioExistente.get();
+            if ("ELIMINADO".equals(existente.getEstado())) {
+                existente.setEstado("ACTIVO");
+                usuarioService.save(existente);
+                return ResponseEntity.ok("Se reactivó el usuario existente.");
+            } else {
+                return ResponseEntity.ok("Ya existe un usuario activo registrado para esta persona.");
+            }
+        }
+
         if (usuarioService.UsuarioyContraseña(usuario.getNombre(), usuario.getPassword()) == null) {
+
             Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
             usuario.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
+            Persona persona_encontrada = personaService.findById(idPersona); 
+            if (persona_encontrada != null) {
+                usuario.setPersona(persona_encontrada);
+            }
             usuario.setEstado("ACTIVO");
             usuarioService.save(usuario);
 

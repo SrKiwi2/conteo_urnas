@@ -1,6 +1,7 @@
 package com.usic.conteo.model.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,6 @@ public interface IUsuarioDao extends JpaRepository <Usuario, Long>{
     @Query("SELECT u FROM Usuario u WHERE u.estado = 'ACTIVO'")
     List<Usuario> listarUsuarios();
     
+    Optional<Usuario> findByPersona_IdPersona(Long idPersona);
+
 }

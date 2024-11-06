@@ -187,6 +187,15 @@ function manejarEnvioFormulario(selectorFormulario) {
                                     response + '.',
                                     'success'
                                 );
+                            } else if (response === 'Se reactivó el usuario existente.' ){
+                                cargarTabla();
+                                $('.modal').modal('hide');
+                                //cargarFormulario();
+                                Swal.fire(
+                                    'Reactivado!',
+                                    response + '.',
+                                    'success'
+                                );
                             } else {
                                 Swal.fire(
                                     'Imposible Registrar!',

@@ -1,5 +1,6 @@
 package com.usic.conteo.model.IService;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -13,4 +14,6 @@ public interface IUsuarioService extends IServiceGenerico <Usuario, Long>{
     Usuario buscarUsuarioPorNombre(String nombre);
 
     List<Usuario> listarUsuarios();
+
+    Optional<Usuario> findByPersona_IdPersona(Long idPersona);
 }

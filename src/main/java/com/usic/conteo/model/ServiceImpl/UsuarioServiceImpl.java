@@ -1,6 +1,7 @@
 package com.usic.conteo.model.ServiceImpl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,5 +50,11 @@ public class UsuarioServiceImpl implements IUsuarioService{
     public Usuario buscarUsuarioPorNombre(String nombre) {
         return usuarioDao.buscarUsuarioPorNombre(nombre);
     }
-    
+
+    @Override
+    public Optional<Usuario> findByPersona_IdPersona(Long idPersona) {
+        return usuarioDao.findByPersona_IdPersona(idPersona);
+    }
+
+
 }
