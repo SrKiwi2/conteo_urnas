@@ -9,13 +9,25 @@
         <div class="row">
             <div class="col-12 col-md-6">
                 <label for="select2Basic" class="form-label">Tipo Voto</label>
-                <select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true">
+                <select id="select2Basic" name="tipoVoto" class="select2 form-select" data-allow-clear="true">
                     <option value="1">Nullo</option>
                     <option value="2">Vacio</option>
                     <option value="3">Correcto</option>
                 </select>
                 <div class="valid-feedback">Correcto!</div>
                 <div class="invalid-feedback">Debe seleccionar a un tipo</div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="select2Basic" class="form-label">Frente</label>
+                <select id="select2Basic" class="select2 form-select" data-allow-clear="true" th:field="${voto.frente}">
+                    <option th:each="frente : ${listaFrentes}" 
+                        th:value="${frente.id_frente}" 
+                        th:selected="${frente == voto.frente}"
+                        th:text="${frente.nombre_frente}">
+                    </option>
+                </select>
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Debe seleccionar a un Jurado.</div>
             </div>
         </div>
     </div>

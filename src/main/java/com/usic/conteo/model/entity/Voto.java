@@ -35,21 +35,11 @@ public class Voto extends AuditoriaConfig {
 	@JoinColumn(name = "id_mesa")
     private Mesa mesa;
 
-    @ManyToMany(mappedBy = "votos")
-    private Set<Frente> frentes = new HashSet<>();
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_frente")
+    private Frente frente;
 
-
-
-
-    // @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    // @JoinTable(
-    //     name = "grupo_persona",
-    //     joinColumns = @JoinColumn(name = "id_grupo"),
-    //     inverseJoinColumns = @JoinColumn(name = "id_persona")
-    // )
-    // private Set<Persona> personas = new HashSet<>();
-
-    // @ManyToMany(mappedBy = "personas")
-    // private Set<Grupo> grupos = new HashSet<>();
+    // @ManyToMany(mappedBy = "votos")
+    // private Set<Frente> frentes = new HashSet<>();
 }
 

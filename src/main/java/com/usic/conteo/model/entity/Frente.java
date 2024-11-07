@@ -1,5 +1,6 @@
 package com.usic.conteo.model.entity;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.usic.conteo.config.AuditoriaConfig;
@@ -14,6 +15,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -30,12 +32,15 @@ public class Frente extends AuditoriaConfig {
     private Long id_frente;
     private String nombre_frente;
     private String estado_frente;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "frente", fetch = FetchType.LAZY)
+	private List<Voto> votos;
     
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "frente_voto",
-        joinColumns = @JoinColumn(name = "id_frente"),
-        inverseJoinColumns = @JoinColumn(name = "id_voto")
-    )
-    private Set<Voto> votos = new HashSet<>();
+    // @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    // @JoinTable(
+    //     name = "frente_voto",
+    //     joinColumns = @JoinColumn(name = "id_frente"),
+    //     inverseJoinColumns = @JoinColumn(name = "id_voto")
+    // )
+    // private Set<Voto> votos = new HashSet<>();
 }

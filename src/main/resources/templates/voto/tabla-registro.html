@@ -20,7 +20,10 @@
                 <tr th:each="vots, index: ${listaVotos}">
                     <th th:text="${index.index+1}"></th>
                     <th th:text="${vots.tipo_voto}"></th>
-                    <th th:text="${vots.mesa.nombre_mesa}"></th>
+                    <th>                        
+                        <b th:if="${vots.mesa.id_mesa == null}">NULLO</b>
+                        <b th:text="${vots.mesa.nombre_mesa}" th:if="${vots.mesa.id_mesa != null}"></b>
+                    </th>
                     <th>
                         <button type="button" class="btn btn-sm btn-primary"
                             th:onclick="cargarFormularioEdit([[${id_encryptado[__${index.index}__]}]])"

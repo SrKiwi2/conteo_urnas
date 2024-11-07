@@ -10,14 +10,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
+import com.usic.conteo.model.IService.IFrenteService;
+import com.usic.conteo.model.IService.IMesaService;
 import com.usic.conteo.model.IService.IRolService;
 import com.usic.conteo.model.IService.IVotoService;
 import com.usic.conteo.model.Repository.ConsultasVistaVotos;
 import com.usic.conteo.model.entity.Frente;
+import com.usic.conteo.model.entity.Mesa;
 import com.usic.conteo.model.entity.Rol;
 import com.usic.conteo.model.entity.Usuario;
 import com.usic.conteo.model.entity.Voto;
@@ -31,6 +35,10 @@ import lombok.RequiredArgsConstructor;
 public class VotoController {
     
     private final IVotoService iVotoService;
+
+    private final IFrenteService iFrenteService;
+
+    private final IMesaService imesaService;
 
     private final ConsultasVistaVotos consultasVistaVotos;
 
@@ -59,6 +67,7 @@ public class VotoController {
     @ValidarUsuarioAutenticado
     @PostMapping("/formulario")
     public String formulario(Model model, Voto voto) {
+        model.addAttribute("listaFrentes", iFrenteService.listarFrentes());
         return "voto/formulario";
     }
 
@@ -73,14 +82,38 @@ public class VotoController {
 
     @ValidarUsuarioAutenticado
     @PostMapping("/registrar-voto")
-    public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto) {
+    public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto, @RequestParam(value = "tipoVoto", required = false) Integer tipoVoto) {
 
         System.out.println("================================================================");
-        System.out.println(consultasVistaVotos.ObtenerMesaXUsuario(1L));
-        System.out.println("================================================================");
+        System.out.println(tipoVoto);
 
-        voto.setEstado("ACTIVO");
-        iVotoService.save(voto);
+        Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(1L));
+
+        if (tipoVoto == 1) {
+            System.out.println("nullo");
+            voto.setTipo_voto("NULLO");
+            voto.setMesa(mesa);
+            voto.setFrente(null);
+            voto.setEstado("ACTIVO");
+            iVotoService.save(voto);
+
+        }else if (tipoVoto == 2) {
+            voto.setTipo_voto("VACIO");
+            voto.setMesa(mesa);
+            voto.setEstado("ACTIVO");
+            iVotoService.save(voto);
+        }else if (tipoVoto == 3) {
+            voto.setTipo_voto("CORRECTO");
+            voto.setMesa(mesa);
+            voto.setEstado("ACTIVO");
+            iVotoService.save(voto);
+            System.out.println("correcto");
+        }
+
+        System.out.println(voto.getFrente());
+        System.out.println("================================================================");
+        //System.out.println(consultasVistaVotos.ObtenerMesaXUsuario(1L));
+        System.out.println("================================================================");
 
         return ResponseEntity.ok("Se realizó el registro correctamente");
     }
