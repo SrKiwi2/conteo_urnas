@@ -50,7 +50,7 @@ public class VotoController {
 
     @ValidarUsuarioAutenticado
     @PostMapping("/tabla-registros")
-    public String tablaRegistros(Model model) throws Exception {
+    public String tablaRegistros(Model model, HttpServletRequest request) throws Exception {
         List<Voto> listaVotos = iVotoService.listarVotos();
         List<String> encryptedIds = new ArrayList<>();
         for (Voto votos : listaVotos) {
@@ -61,13 +61,23 @@ public class VotoController {
         model.addAttribute("listaVotos", listaVotos);
         model.addAttribute("id_encryptado", encryptedIds);
 
+        Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
+
+        Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
+
+        model.addAttribute("conteoNullos", consultasVistaVotos.ObtenerConteoXMesa("NULLO", mesa.getId_mesa()));
+        model.addAttribute("conteoBlancos", consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa()));
+        model.addAttribute("conteoCorrectos", consultasVistaVotos.ObtenerConteoXMesa("CORRECTO", mesa.getId_mesa()));
+
         return "voto/tabla-registro";
     }
 
     @ValidarUsuarioAutenticado
     @PostMapping("/formulario")
-    public String formulario(Model model, Voto voto) {
+    public String formulario(Model model, Voto voto, HttpServletRequest request) {
+
         model.addAttribute("listaFrentes", iFrenteService.listarFrentes());
+
         return "voto/formulario";
     }
 
@@ -84,10 +94,9 @@ public class VotoController {
     @PostMapping("/registrar-voto")
     public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto, @RequestParam(value = "tipoVoto", required = false) Integer tipoVoto) {
 
-        System.out.println("================================================================");
-        System.out.println(tipoVoto);
+        Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
 
-        Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(1L));
+        Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
 
         if (tipoVoto == 1) {
             System.out.println("nullo");
@@ -107,13 +116,7 @@ public class VotoController {
             voto.setMesa(mesa);
             voto.setEstado("ACTIVO");
             iVotoService.save(voto);
-            System.out.println("correcto");
         }
-
-        System.out.println(voto.getFrente());
-        System.out.println("================================================================");
-        //System.out.println(consultasVistaVotos.ObtenerMesaXUsuario(1L));
-        System.out.println("================================================================");
 
         return ResponseEntity.ok("Se realizó el registro correctamente");
     }

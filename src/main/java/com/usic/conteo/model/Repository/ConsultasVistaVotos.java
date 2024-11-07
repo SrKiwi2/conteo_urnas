@@ -21,4 +21,15 @@ public class ConsultasVistaVotos {
             return null;
         }
     }
+
+    public Integer ObtenerConteoXMesa(String tipo_voto,long v_id_mesa) {
+        String sql = "select count(voto.id_voto) from voto inner join mesa on mesa.id_mesa = voto.id_mesa where voto.tipo_voto = ? and mesa.id_mesa = ? and voto._estado = 'ACTIVO' and mesa._estado = 'ACTIVO'";
+        Object[] params = new Object[] {tipo_voto,v_id_mesa};
+    
+        try {
+            return jdbcTemplate.queryForObject(sql, params, Integer.class);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
 }

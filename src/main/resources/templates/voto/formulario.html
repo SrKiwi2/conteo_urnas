@@ -7,12 +7,28 @@
     <input type="hidden" th:if="${edit != null}" th:field="${voto.id_voto}">
     <div class="modal-body">
         <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning d-flex align-items-center" role="alert">
+                    <div class="row">
+                        <div class="col-12">
+                            <span class="alert-icon text-warning me-2"><i class="ti ti-bell ti-xs"></i></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            <b class="px-1">!ADVERTENCIA¡</b> Despues de registrar el voto no se podra <b class="px-2"> EDITAR </b> ni <b class="px-2"> ELIMINAR </b>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-12 col-md-6">
                 <label for="select2Basic" class="form-label">Tipo Voto</label>
-                <select id="select2Basic" name="tipoVoto" class="select2 form-select" data-allow-clear="true">
-                    <option value="1">Nullo</option>
-                    <option value="2">Vacio</option>
-                    <option value="3">Correcto</option>
+                <select id="select2Basic2" name="tipoVoto" class="select2 form-select" data-allow-clear="true">
+                    <option value="1">NULLO</option>
+                    <option value="2">VACIO</option>
+                    <option value="3">COORECTO</option>
                 </select>
                 <div class="valid-feedback">Correcto!</div>
                 <div class="invalid-feedback">Debe seleccionar a un tipo</div>

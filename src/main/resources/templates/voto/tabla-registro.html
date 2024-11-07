@@ -7,13 +7,26 @@
         </button>
     </div>
     <div class="card-datatable table-responsive pt-0">
+        <div class="row text-center">
+            <div class="col-12 col-md-4">
+                <label class="form-label">Conteo de Nullos</label>
+                <h1 th:text="${conteoNullos}"></h1>
+            </div>
+            <div class="col-12 col-md-4">
+                <label class="form-label">Conteo de Blancos</label>
+                <h1 th:text="${conteoBlancos}"></h1>
+            </div>
+            <div class="col-12 col-md-4">
+                <label class="form-label">Conteo de Correctos</label>
+                <h1 th:text="${conteoCorrectos}"></h1>
+            </div>
+        </div>
         <table class="datatables-basic table table-hover" id="data-table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>TIPO VOTO</th>
                     <th>MESA</th>
-                    <th>OPCIONES</th>
                 </tr>
             </thead>
             <tbody class="animate__animated animate__bounceInDown">
@@ -23,16 +36,6 @@
                     <th>                        
                         <b th:if="${vots.mesa.id_mesa == null}">NULLO</b>
                         <b th:text="${vots.mesa.nombre_mesa}" th:if="${vots.mesa.id_mesa != null}"></b>
-                    </th>
-                    <th>
-                        <button type="button" class="btn btn-sm btn-primary"
-                            th:onclick="cargarFormularioEdit([[${id_encryptado[__${index.index}__]}]])"
-                            data-bs-toggle="modal" data-bs-target="#modalFormularioVoto">
-                            <i class="fa-solid fa-pen-to-square"></i> Editar
-                        </button>
-                        <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${vots.id_voto}]],[[${id_encryptado[__${index.index}__]}]])">
-                            <i class="fa-solid fa-trash"></i> Eliminar
-                        </button>
                     </th>
                 </tr>
             </tbody>
