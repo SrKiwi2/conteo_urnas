@@ -10,4 +10,5 @@ import com.usic.conteo.model.entity.Voto;
 public interface IVotoDao extends JpaRepository <Voto, Long>{
     @Query("SELECT v FROM Voto v WHERE v.estado = 'ACTIVO'")
     List<Voto> listarVotos();
+    
 }

@@ -8,17 +8,21 @@
     </div>
     <div class="card-datatable table-responsive pt-0">
         <div class="row text-center">
-            <div class="col-12 col-md-4">
-                <label class="form-label">Conteo de Nullos</label>
-                <h1 th:text="${conteoNullos}"></h1>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Conteo de votos NULOS</label>
+                <h1 th:text="${conteoNulos}"></h1>
             </div>
-            <div class="col-12 col-md-4">
-                <label class="form-label">Conteo de Blancos</label>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Conteo de votos BLANCOS</label>
                 <h1 th:text="${conteoBlancos}"></h1>
             </div>
-            <div class="col-12 col-md-4">
-                <label class="form-label">Conteo de Correctos</label>
-                <h1 th:text="${conteoCorrectos}"></h1>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Conteo de votos VALIDOS</label>
+                <h1 th:text="${conteoValidos}"></h1>
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Total de VOTOS</label>
+                <h1 th:text="${totalVotos}"></h1>
             </div>
         </div>
         <table class="datatables-basic table table-hover" id="data-table">

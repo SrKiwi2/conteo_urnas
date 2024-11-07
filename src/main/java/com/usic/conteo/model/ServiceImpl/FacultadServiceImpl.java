@@ -35,16 +35,6 @@ public class FacultadServiceImpl implements IFacultadService{
     public void deleteById(Long idEntidad) {
         facutadDao.deleteById(idEntidad);
     }
-
-    @Override
-    public Facultad buscarFacultadPorNombre(String nombre_facultad) {
-        return facutadDao.buscarFacultadPorNombre(nombre_facultad);
-    }
-
-    @Override
-    public List<Facultad> listarFacultades() {
-        return facutadDao.listarFacultades();
-    }
     
     @Override
     public List<Facultad> listarFacultades() {
@@ -52,7 +42,7 @@ public class FacultadServiceImpl implements IFacultadService{
     }
 
     @Override
-    public Persona buscarFacultad(String nombre_facultad) {
+    public Facultad buscarFacultad(String nombre_facultad) {
         return facutadDao.buscarFacultad(nombre_facultad);
     }
 

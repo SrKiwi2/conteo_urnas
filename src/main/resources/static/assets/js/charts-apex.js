@@ -985,10 +985,297 @@
     radarChart.render();
   }
 
-  // Donut Chart
+  // Donut Chart 1
   // --------------------------------------------------------------------
   const donutChartEl = document.querySelector('#donutChart'),
-    donutChartConfig = {
+  donutChartConfig = {
+    chart: {
+      height: 390,
+      type: 'donut'
+    },
+    labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+    series: [42, 7, 25, 25],
+    colors: [
+      chartColors.donut.series1,
+      chartColors.donut.series4,
+      chartColors.donut.series3,
+      chartColors.donut.series2
+    ],
+    stroke: {
+      show: false,
+      curve: 'straight'
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val, opt) {
+        return parseInt(val, 10) + '%';
+      }
+    },
+    legend: {
+      show: true,
+      position: 'bottom',
+      markers: { offsetX: -3 },
+      itemMargin: {
+        vertical: 3,
+        horizontal: 10
+      },
+      labels: {
+        colors: legendColor,
+        useSeriesColors: false
+      }
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            name: {
+              fontSize: '2rem',
+              fontFamily: 'Public Sans'
+            },
+            value: {
+              fontSize: '1.2rem',
+              color: legendColor,
+              fontFamily: 'Public Sans',
+              formatter: function (val) {
+                return parseInt(val, 10) + '%';
+              }
+            },
+            total: {
+              show: true,
+              fontSize: '1.5rem',
+              color: headingColor,
+              label: 'Operational',
+              formatter: function (w) {
+                return '42%';
+              }
+            }
+          }
+        }
+      }
+    },
+    responsive: [
+      {
+        breakpoint: 992,
+        options: {
+          chart: {
+            height: 380
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              colors: legendColor,
+              useSeriesColors: false
+            }
+          }
+        }
+      },
+      {
+        breakpoint: 576,
+        options: {
+          chart: {
+            height: 320
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  show: true,
+                  name: {
+                    fontSize: '1.5rem'
+                  },
+                  value: {
+                    fontSize: '1rem'
+                  },
+                  total: {
+                    fontSize: '1.5rem'
+                  }
+                }
+              }
+            }
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              colors: legendColor,
+              useSeriesColors: false
+            }
+          }
+        }
+      },
+      {
+        breakpoint: 420,
+        options: {
+          chart: {
+            height: 280
+          },
+          legend: {
+            show: false
+          }
+        }
+      },
+      {
+        breakpoint: 360,
+        options: {
+          chart: {
+            height: 250
+          },
+          legend: {
+            show: false
+          }
+        }
+      }
+    ]
+  };
+
+  // Donut Chart 1
+  // --------------------------------------------------------------------
+  const donutChartEl1 = document.querySelector('#donutChart1'),
+  donutChartConfig1 = {
+    chart: {
+      height: 390,
+      type: 'donut'
+    },
+    labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+    series: [42, 7, 25, 25],
+    colors: [
+      chartColors.donut.series1,
+      chartColors.donut.series4,
+      chartColors.donut.series3,
+      chartColors.donut.series2
+    ],
+    stroke: {
+      show: false,
+      curve: 'straight'
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val, opt) {
+        return parseInt(val, 10) + '%';
+      }
+    },
+    legend: {
+      show: true,
+      position: 'bottom',
+      markers: { offsetX: -3 },
+      itemMargin: {
+        vertical: 3,
+        horizontal: 10
+      },
+      labels: {
+        colors: legendColor,
+        useSeriesColors: false
+      }
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            name: {
+              fontSize: '2rem',
+              fontFamily: 'Public Sans'
+            },
+            value: {
+              fontSize: '1.2rem',
+              color: legendColor,
+              fontFamily: 'Public Sans',
+              formatter: function (val) {
+                return parseInt(val, 10) + '%';
+              }
+            },
+            total: {
+              show: true,
+              fontSize: '1.5rem',
+              color: headingColor,
+              label: 'Operational',
+              formatter: function (w) {
+                return '42%';
+              }
+            }
+          }
+        }
+      }
+    },
+    responsive: [
+      {
+        breakpoint: 992,
+        options: {
+          chart: {
+            height: 380
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              colors: legendColor,
+              useSeriesColors: false
+            }
+          }
+        }
+      },
+      {
+        breakpoint: 576,
+        options: {
+          chart: {
+            height: 320
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  show: true,
+                  name: {
+                    fontSize: '1.5rem'
+                  },
+                  value: {
+                    fontSize: '1rem'
+                  },
+                  total: {
+                    fontSize: '1.5rem'
+                  }
+                }
+              }
+            }
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              colors: legendColor,
+              useSeriesColors: false
+            }
+          }
+        }
+      },
+      {
+        breakpoint: 420,
+        options: {
+          chart: {
+            height: 280
+          },
+          legend: {
+            show: false
+          }
+        }
+      },
+      {
+        breakpoint: 360,
+        options: {
+          chart: {
+            height: 250
+          },
+          legend: {
+            show: false
+          }
+        }
+      }
+    ]
+  };
+
+
+  // Donut Chart 2
+  // --------------------------------------------------------------------
+  const donutChartEl2 = document.querySelector('#donutChart2'),
+    donutChartConfig2 = {
       chart: {
         height: 390,
         type: 'donut'
@@ -1127,8 +1414,1485 @@
         }
       ]
     };
+
+    // Donut Chart 3
+  // --------------------------------------------------------------------
+  const donutChartEl3 = document.querySelector('#donutChart3'),
+  donutChartConfig3 = {
+    chart: {
+      height: 390,
+      type: 'donut'
+    },
+    labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+    series: [42, 7, 25, 25],
+    colors: [
+      chartColors.donut.series1,
+      chartColors.donut.series4,
+      chartColors.donut.series3,
+      chartColors.donut.series2
+    ],
+    stroke: {
+      show: false,
+      curve: 'straight'
+    },
+    dataLabels: {
+      enabled: true,
+      formatter: function (val, opt) {
+        return parseInt(val, 10) + '%';
+      }
+    },
+    legend: {
+      show: true,
+      position: 'bottom',
+      markers: { offsetX: -3 },
+      itemMargin: {
+        vertical: 3,
+        horizontal: 10
+      },
+      labels: {
+        colors: legendColor,
+        useSeriesColors: false
+      }
+    },
+    plotOptions: {
+      pie: {
+        donut: {
+          labels: {
+            show: true,
+            name: {
+              fontSize: '2rem',
+              fontFamily: 'Public Sans'
+            },
+            value: {
+              fontSize: '1.2rem',
+              color: legendColor,
+              fontFamily: 'Public Sans',
+              formatter: function (val) {
+                return parseInt(val, 10) + '%';
+              }
+            },
+            total: {
+              show: true,
+              fontSize: '1.5rem',
+              color: headingColor,
+              label: 'Operational',
+              formatter: function (w) {
+                return '42%';
+              }
+            }
+          }
+        }
+      }
+    },
+    responsive: [
+      {
+        breakpoint: 992,
+        options: {
+          chart: {
+            height: 380
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              colors: legendColor,
+              useSeriesColors: false
+            }
+          }
+        }
+      },
+      {
+        breakpoint: 576,
+        options: {
+          chart: {
+            height: 320
+          },
+          plotOptions: {
+            pie: {
+              donut: {
+                labels: {
+                  show: true,
+                  name: {
+                    fontSize: '1.5rem'
+                  },
+                  value: {
+                    fontSize: '1rem'
+                  },
+                  total: {
+                    fontSize: '1.5rem'
+                  }
+                }
+              }
+            }
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              colors: legendColor,
+              useSeriesColors: false
+            }
+          }
+        }
+      },
+      {
+        breakpoint: 420,
+        options: {
+          chart: {
+            height: 280
+          },
+          legend: {
+            show: false
+          }
+        }
+      },
+      {
+        breakpoint: 360,
+        options: {
+          chart: {
+            height: 250
+          },
+          legend: {
+            show: false
+          }
+        }
+      }
+    ]
+  };
+
+  // Donut Chart 4
+  // --------------------------------------------------------------------
+  const donutChartEl4 = document.querySelector('#donutChart4'),
+    donutChartConfig4 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+
+  // Donut Chart 5
+  // --------------------------------------------------------------------
+  const donutChartEl5 = document.querySelector('#donutChart5'),
+    donutChartConfig5 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+
+    const donutChartEl6 = document.querySelector('#donutChart6'),
+    donutChartConfig6 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+
+    const donutChartEl7 = document.querySelector('#donutChart7'),
+    donutChartConfig7 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+  
+    const donutChartEl8 = document.querySelector('#donutChart8'),
+    donutChartConfig8 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+
+    const donutChartEl9 = document.querySelector('#donutChart9'),
+    donutChartConfig9 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+
+    const donutChartEl10 = document.querySelector('#donutChart10'),
+    donutChartConfig10 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+
+    const donutChartEl11 = document.querySelector('#donutChart11'),
+    donutChartConfig11 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+
+    const donutChartEl12 = document.querySelector('#donutChart12'),
+    donutChartConfig12 = {
+      chart: {
+        height: 390,
+        type: 'donut'
+      },
+      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
+      series: [42, 7, 25, 25],
+      colors: [
+        chartColors.donut.series1,
+        chartColors.donut.series4,
+        chartColors.donut.series3,
+        chartColors.donut.series2
+      ],
+      stroke: {
+        show: false,
+        curve: 'straight'
+      },
+      dataLabels: {
+        enabled: true,
+        formatter: function (val, opt) {
+          return parseInt(val, 10) + '%';
+        }
+      },
+      legend: {
+        show: true,
+        position: 'bottom',
+        markers: { offsetX: -3 },
+        itemMargin: {
+          vertical: 3,
+          horizontal: 10
+        },
+        labels: {
+          colors: legendColor,
+          useSeriesColors: false
+        }
+      },
+      plotOptions: {
+        pie: {
+          donut: {
+            labels: {
+              show: true,
+              name: {
+                fontSize: '2rem',
+                fontFamily: 'Public Sans'
+              },
+              value: {
+                fontSize: '1.2rem',
+                color: legendColor,
+                fontFamily: 'Public Sans',
+                formatter: function (val) {
+                  return parseInt(val, 10) + '%';
+                }
+              },
+              total: {
+                show: true,
+                fontSize: '1.5rem',
+                color: headingColor,
+                label: 'Operational',
+                formatter: function (w) {
+                  return '42%';
+                }
+              }
+            }
+          }
+        }
+      },
+      responsive: [
+        {
+          breakpoint: 992,
+          options: {
+            chart: {
+              height: 380
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 576,
+          options: {
+            chart: {
+              height: 320
+            },
+            plotOptions: {
+              pie: {
+                donut: {
+                  labels: {
+                    show: true,
+                    name: {
+                      fontSize: '1.5rem'
+                    },
+                    value: {
+                      fontSize: '1rem'
+                    },
+                    total: {
+                      fontSize: '1.5rem'
+                    }
+                  }
+                }
+              }
+            },
+            legend: {
+              position: 'bottom',
+              labels: {
+                colors: legendColor,
+                useSeriesColors: false
+              }
+            }
+          }
+        },
+        {
+          breakpoint: 420,
+          options: {
+            chart: {
+              height: 280
+            },
+            legend: {
+              show: false
+            }
+          }
+        },
+        {
+          breakpoint: 360,
+          options: {
+            chart: {
+              height: 250
+            },
+            legend: {
+              show: false
+            }
+          }
+        }
+      ]
+    };
+  
   if (typeof donutChartEl !== undefined && donutChartEl !== null) {
     const donutChart = new ApexCharts(donutChartEl, donutChartConfig);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl1, donutChartConfig1);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl2, donutChartConfig2);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl3, donutChartConfig3);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl4, donutChartConfig4);
+    donutChart.render();
+  }
+  
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl5, donutChartConfig5);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl6, donutChartConfig6);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl7, donutChartConfig7);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl8, donutChartConfig8);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl9, donutChartConfig9);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl10, donutChartConfig10);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl11, donutChartConfig11);
+    donutChart.render();
+  }
+
+  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
+    const donutChart = new ApexCharts(donutChartEl12, donutChartConfig12);
     donutChart.render();
   }
 })();

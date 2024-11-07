@@ -65,9 +65,14 @@ public class VotoController {
 
         Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
 
-        model.addAttribute("conteoNullos", consultasVistaVotos.ObtenerConteoXMesa("NULLO", mesa.getId_mesa()));
+        model.addAttribute("conteoNulos", consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa()));
         model.addAttribute("conteoBlancos", consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa()));
-        model.addAttribute("conteoCorrectos", consultasVistaVotos.ObtenerConteoXMesa("CORRECTO", mesa.getId_mesa()));
+        model.addAttribute("conteoValidos", consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa()));
+        Integer totalNulos = consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa());
+        Integer totalBlancos = consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa());
+        Integer totalValidos = consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa());
+        Integer totalVotos = totalNulos + totalBlancos + totalValidos;
+        model.addAttribute("totalVotos", totalVotos);
 
         return "voto/tabla-registro";
     }
@@ -100,21 +105,24 @@ public class VotoController {
 
         if (tipoVoto == 1) {
             System.out.println("nullo");
-            voto.setTipo_voto("NULLO");
+            voto.setTipo_voto("NULO");
             voto.setMesa(mesa);
             voto.setFrente(null);
+            voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
             voto.setEstado("ACTIVO");
             iVotoService.save(voto);
 
         }else if (tipoVoto == 2) {
-            voto.setTipo_voto("VACIO");
+            voto.setTipo_voto("BLANCO");
             voto.setMesa(mesa);
             voto.setEstado("ACTIVO");
+            voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
             iVotoService.save(voto);
         }else if (tipoVoto == 3) {
-            voto.setTipo_voto("CORRECTO");
+            voto.setTipo_voto("VALIDO");
             voto.setMesa(mesa);
             voto.setEstado("ACTIVO");
+            voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
             iVotoService.save(voto);
         }
 

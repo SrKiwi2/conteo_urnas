@@ -124,7 +124,7 @@ public class EstudianteController {
                         estudiante.setTipo_carrera(data.get("tipo_carrera").toString());
                         estudiante.setEstado("ACTIVO");
 
-                        Facultad facultad_encontrada = facultadService.buscarFacultadPorNombre(data.get("facultad").toString());
+                        Facultad facultad_encontrada = facultadService.buscarFacultad(data.get("facultad").toString());
                         if (facultad_encontrada == null) {
                             Facultad facultad = new Facultad();
                             facultad.setNombre_facultad(data.get("facultad").toString());

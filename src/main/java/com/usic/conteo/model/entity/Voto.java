@@ -38,8 +38,5 @@ public class Voto extends AuditoriaConfig {
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_frente")
     private Frente frente;
-
-    // @ManyToMany(mappedBy = "votos")
-    // private Set<Frente> frentes = new HashSet<>();
 }
 

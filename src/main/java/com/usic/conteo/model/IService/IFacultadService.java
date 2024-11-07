@@ -9,6 +9,6 @@ import com.usic.conteo.model.entity.Persona;
 
 @Service
 public interface IFacultadService extends IServiceGenerico<Facultad, Long> {
-    Facultad buscarFacultadPorNombre(String nombre_facultad);
+    Facultad buscarFacultad(String nombre_facultad);
     List<Facultad> listarFacultades();
 }

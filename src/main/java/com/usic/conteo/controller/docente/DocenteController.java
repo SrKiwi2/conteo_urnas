@@ -114,7 +114,7 @@ public class DocenteController {
                             docente.setPersona(persona);
                             docente.setAsignatura(nombreAsignatura);
 
-                            Facultad facultad_encontrada = facultadService.buscarFacultadPorNombre(facultad);
+                            Facultad facultad_encontrada = facultadService.buscarFacultad(facultad);
 
                             if (facultad_encontrada == null) {
                                 Facultad facultad2 = new Facultad();
