@@ -77,6 +77,11 @@ public class VotoController {
         Integer totalVotos = totalNulos + totalBlancos + totalValidos;
         model.addAttribute("totalVotos", totalVotos);
 
+        model.addAttribute("conteoNulos", totalNulos);
+        model.addAttribute("conteoBlancos", totalBlancos);
+        model.addAttribute("conteoValidos", totalValidos);
+        model.addAttribute("totalVotos", totalVotos);
+
         return "voto/tabla-registro";
     }
 

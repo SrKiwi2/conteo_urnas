@@ -985,19 +985,22 @@
     radarChart.render();
   }
 
-  // Donut Chart 1
+  // Donut Chart
   // --------------------------------------------------------------------
+  const conteoNulos = /*[[${conteoNulos}]]*/ 0;
+    const conteoBlancos = /*[[${conteoBlancos}]]*/ 0;
+    const conteoValidos = /*[[${conteoValidos}]]*/ 0;
+
   const donutChartEl = document.querySelector('#donutChart'),
   donutChartConfig = {
     chart: {
       height: 390,
       type: 'donut'
     },
-    labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
-    series: [42, 7, 25, 25],
+    labels: ['Blancos', 'Nulos', 'Validos'],
+    series: [conteoBlancos, conteoNulos, conteoValidos],
     colors: [
       chartColors.donut.series1,
-      chartColors.donut.series4,
       chartColors.donut.series3,
       chartColors.donut.series2
     ],
@@ -1045,9 +1048,10 @@
               show: true,
               fontSize: '1.5rem',
               color: headingColor,
-              label: 'Operational',
+              label: 'Total',
               formatter: function (w) {
-                return '42%';
+                const totalSum = w.globals.series.reduce((a, b) => a + b, 0); // Suma todos los valores en la serie
+                return totalSum + '%';
               }
             }
           }

@@ -35,12 +35,5 @@ public class Frente extends AuditoriaConfig {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "frente", fetch = FetchType.LAZY)
 	private List<Voto> votos;
-    
-    // @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    // @JoinTable(
-    //     name = "frente_voto",
-    //     joinColumns = @JoinColumn(name = "id_frente"),
-    //     inverseJoinColumns = @JoinColumn(name = "id_voto")
-    // )
-    // private Set<Voto> votos = new HashSet<>();
+
 }
