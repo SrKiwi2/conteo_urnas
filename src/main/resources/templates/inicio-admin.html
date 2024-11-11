@@ -153,6 +153,20 @@
 
             });
 
+            $("#opcion_facultad").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/facultad/vista");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_facultad");;
+
+                botonPulsado.classList.add("active");
+
+            });
+
             
             // Función para cargar el contenido de la opción seleccionada
             function cargarContenido(url) {

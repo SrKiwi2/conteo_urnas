@@ -29,6 +29,7 @@ public class Mesa extends AuditoriaConfig {
     private Long id_mesa;
     private String nombre_mesa;
     private String estado_mesa;
+    private String tipo_mesa;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "mesa", fetch = FetchType.LAZY)
 	private List<Voto> votos;
@@ -36,4 +37,8 @@ public class Mesa extends AuditoriaConfig {
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_jurado")
     private Jurado jurado;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_carrera")
+    private Carrera carrera;
 }

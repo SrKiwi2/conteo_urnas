@@ -46,7 +46,7 @@ public class FacultadController {
             String id_encryptado = Encriptar.encrypt(Long.toString(facultades.getId_facultad()));
             encrypteIds.add(id_encryptado);
         }
-        model.addAttribute("    ", listaFacultades);
+        model.addAttribute("listaFacultades", listaFacultades);
         model.addAttribute("id_encryptado", encrypteIds);
 
         return "facultad/tabla-registro";
