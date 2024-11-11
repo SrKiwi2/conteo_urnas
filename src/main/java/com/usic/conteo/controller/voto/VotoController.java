@@ -51,7 +51,11 @@ public class VotoController {
     @ValidarUsuarioAutenticado
     @PostMapping("/tabla-registros")
     public String tablaRegistros(Model model, HttpServletRequest request) throws Exception {
-        List<Voto> listaVotos = iVotoService.listarVotos();
+
+        Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
+        System.out.println(usuarioLogueado.getIdUsuario());
+
+        List<Voto> listaVotos = iVotoService.listarVotosPorUsuario(usuarioLogueado.getIdUsuario());
         List<String> encryptedIds = new ArrayList<>();
         for (Voto votos : listaVotos) {
             String id_encryptado = Encriptar.encrypt(Long.toString(votos.getId_voto()));
@@ -61,8 +65,7 @@ public class VotoController {
         model.addAttribute("listaVotos", listaVotos);
         model.addAttribute("id_encryptado", encryptedIds);
 
-        Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
-
+        
         Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
 
         model.addAttribute("conteoNulos", consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa()));

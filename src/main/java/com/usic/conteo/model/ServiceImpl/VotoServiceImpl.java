@@ -43,5 +43,11 @@ public class VotoServiceImpl implements IVotoService{
         // TODO Auto-generated method stub
         return iVotoDao.listarVotos();
     }
+
+    @Override
+    public List<Voto> listarVotosPorUsuario(Long id_usuario) {
+        // TODO Auto-generated method stub
+        return iVotoDao.listarVotosPorUsuario(id_usuario);
+    }
     
 }
