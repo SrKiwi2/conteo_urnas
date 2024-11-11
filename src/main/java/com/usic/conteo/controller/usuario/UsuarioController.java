@@ -77,6 +77,7 @@ public class UsuarioController {
         Long id = Long.parseLong(Encriptar.decrypt(idUsuario));
         model.addAttribute("usuario", usuarioService.findById(id));
         model.addAttribute("listaPersonas", personaService.listarPersonas());
+        model.addAttribute("listaJurados", juradoService.listarJurados());
         model.addAttribute("listaRoles", rolService.listarRoles());
         model.addAttribute("edit", "true");
 
