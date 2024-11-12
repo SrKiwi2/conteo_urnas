@@ -167,6 +167,20 @@
 
             });
 
+            $("#opcion_carrera").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/carrera/vista");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_carrera");;
+
+                botonPulsado.classList.add("active");
+
+            });
+
             
             // Función para cargar el contenido de la opción seleccionada
             function cargarContenido(url) {
