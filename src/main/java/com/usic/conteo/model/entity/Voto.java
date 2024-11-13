@@ -1,20 +1,14 @@
 package com.usic.conteo.model.entity;
-import java.util.HashSet;
-import java.util.Set;
 
 import com.usic.conteo.config.AuditoriaConfig;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,7 +23,7 @@ public class Voto extends AuditoriaConfig {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_voto;
     private String tipo_voto;
-    private String estado_voto;
+    private String cantidad;
     
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_mesa")

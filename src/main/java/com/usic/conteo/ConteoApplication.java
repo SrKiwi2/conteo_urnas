@@ -25,7 +25,7 @@ public class ConteoApplication {
 	@Bean
     ApplicationRunner init(IUsuarioService usuarioService, IPersonaService personaService, IRolService rolService) {
         return args -> {
-            logger.info("SISTEMA INICIADO ;p ....");
+            logger.info("SISTEMA CONTEO DE URNAS INICIADO....");
             // Verificar y crear roles si no existen
             String[] roles = { "SUPER USUARIO", "ADMINISTRADOR" };
             Rol[] rolObjects = new Rol[roles.length];

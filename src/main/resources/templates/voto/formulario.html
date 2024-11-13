@@ -23,16 +23,36 @@
             </div>
         </div>
         <div class="row">
+            <div class="col-12 col-md-6 mb-2">
+                <label class="form-label" for="modalEditUserLastName">Cantidad</label>
+                <input type="number" name="cantidad" class="form-control" required placeholder="Introduce una cantidad"/>
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
+            </div>
             <div class="col-12 col-md-6">
                 <label for="select2Basic" class="form-label">Tipo Voto</label>
                 <select id="select2Basic2" name="tipoVoto" class="select2 form-select" data-allow-clear="true">
+                    <option value="3">VALIDO</option>
                     <option value="1">NULO</option>
                     <option value="2">BLANCO</option>
-                    <option value="3">VALIDO</option>
                 </select>
                 <div class="valid-feedback">Correcto!</div>
                 <div class="invalid-feedback">Debe seleccionar a un tipo</div>
             </div>
+
+            <div class="col-12 col-md-6">
+                <label for="select2Basic" class="form-label">Mesa</label>
+                <select id="select2Basic" class="select2 form-select" data-allow-clear="true" th:field="${voto.mesa}">
+                    <option th:each="mesa : ${listarMesa}" 
+                        th:value="${mesa.id_mesa}" 
+                        th:selected="${mesa == voto.mesa}"
+                        th:text="${mesa.nombre_mesa}">
+                    </option>
+                </select>
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Debe seleccionar a una Mesa.</div>
+            </div>
+            
             <div class="col-12 col-md-6">
                 <label for="select2Basic" class="form-label">Frente</label>
                 <select id="select2Basic" class="select2 form-select" data-allow-clear="true" th:field="${voto.frente}">

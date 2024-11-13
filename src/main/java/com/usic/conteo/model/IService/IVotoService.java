@@ -12,4 +12,5 @@ public interface IVotoService extends IServiceGenerico <Voto, Long>{
 
     List<Voto> listarVotosPorUsuario(@Param("idUsuario") Long id_usuario);
     List<Voto> listarVotos();
+    
 }

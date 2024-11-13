@@ -1,35 +1,43 @@
 <div class="card">
     <div class="card-header d-flex justify-content-lg-between">
-        <h5>Registro de Jurados</h5>
+        <h5>Registro Voto</h5>
         <button type="button" class="btn btn-primary" onclick="cargarFormulario()" data-bs-toggle="modal"
-            data-bs-target="#modalFormularioJurado">
-            <i class="fa-solid fa-user-plus"></i> Agregar Jurado
+            data-bs-target="#modalFormularioVoto">
+            <i class="fa-solid fa-user-plus"></i> Agregar Voto
         </button>
     </div>
     <div class="card-datatable table-responsive pt-0">
+        <!-- <div class="row text-center">
+            <div class="col-12 col-md-3">
+                <label class="form-label">Conteo de votos NULOS</label>
+                <h1 th:text="${conteoNulos}"></h1>
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Conteo de votos BLANCOS</label>
+                <h1 th:text="${conteoBlancos}"></h1>
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Conteo de votos VALIDOS</label>
+                <h1 th:text="${conteoValidos}"></h1>
+            </div>
+            <div class="col-12 col-md-3">
+                <label class="form-label">Total de VOTOS</label>
+                <h1 th:text="${totalVotos}"></h1>
+            </div>
+        </div> -->
         <table class="datatables-basic table table-hover" id="data-table">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>NOMBRE</th>
-                    <th>PATERNO</th>
-                    <th>MATERNO</th>
-                    <th>C.I.</th>
-                    <th>OPCIONES</th>
+                    <th>TIPO VOTO</th>
+                    <th>CANTIDAD</th>
                 </tr>
             </thead>
             <tbody class="animate__animated animate__bounceInDown">
-                <tr th:each="jur, index: ${listaJurados}">
+                <tr th:each="facul, index: ${listarFacultades}">
                     <th th:text="${index.index+1}"></th>
-                    <th th:text="${jur.persona.nombre}"></th>
-                    <th th:text="${jur.persona.paterno}"></th>
-                    <th th:text="${jur.persona.materno}"></th>
-                    <th th:text="${jur.persona.ci}"></th>
-                    <th>
-                        <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${jur.persona.nombreCompleto}]],[[${id_encryptado[__${index.index}__]}]])">
-                            <i class="fa-solid fa-trash"></i> Eliminar
-                        </button>
-                    </th>
+                    <th th:text="${facul.tipo_voto}"></th>
+                    <th th:text="${facul.cantidad}"></th>
                 </tr>
             </tbody>
         </table>

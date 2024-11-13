@@ -53,34 +53,34 @@ public class VotoController {
     public String tablaRegistros(Model model, HttpServletRequest request) throws Exception {
 
         Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
-        System.out.println(usuarioLogueado.getIdUsuario());
 
-        List<Voto> listaVotos = iVotoService.listarVotosPorUsuario(usuarioLogueado.getIdUsuario());
+        // List<Voto> listaVotos = iVotoService.listarVotosPorUsuario(usuarioLogueado.getIdUsuario());
+
+        List<Voto> listarvotosGeneral = iVotoService.listarVotos();
         List<String> encryptedIds = new ArrayList<>();
-        for (Voto votos : listaVotos) {
+        for (Voto votos : listarvotosGeneral) {
             String id_encryptado = Encriptar.encrypt(Long.toString(votos.getId_voto()));
             encryptedIds.add(id_encryptado);
         }
 
-        model.addAttribute("listaVotos", listaVotos);
+        model.addAttribute("listaVotos", listarvotosGeneral);
         model.addAttribute("id_encryptado", encryptedIds);
 
-        
-        Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
+        // Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
 
-        model.addAttribute("conteoNulos", consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa()));
-        model.addAttribute("conteoBlancos", consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa()));
-        model.addAttribute("conteoValidos", consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa()));
-        Integer totalNulos = consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa());
-        Integer totalBlancos = consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa());
-        Integer totalValidos = consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa());
-        Integer totalVotos = totalNulos + totalBlancos + totalValidos;
-        model.addAttribute("totalVotos", totalVotos);
+        // model.addAttribute("conteoNulos", consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa()));
+        // model.addAttribute("conteoBlancos", consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa()));
+        // model.addAttribute("conteoValidos", consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa()));
+        // Integer totalNulos = consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa());
+        // Integer totalBlancos = consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa());
+        // Integer totalValidos = consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa());
+        // Integer totalVotos = totalNulos + totalBlancos + totalValidos;
+        // model.addAttribute("totalVotos", totalVotos);
 
-        model.addAttribute("conteoNulos", totalNulos);
-        model.addAttribute("conteoBlancos", totalBlancos);
-        model.addAttribute("conteoValidos", totalValidos);
-        model.addAttribute("totalVotos", totalVotos);
+        // model.addAttribute("conteoNulos", totalNulos);
+        // model.addAttribute("conteoBlancos", totalBlancos);
+        // model.addAttribute("conteoValidos", totalValidos);
+        // model.addAttribute("totalVotos", totalVotos);
 
         return "voto/tabla-registro";
     }
@@ -90,6 +90,7 @@ public class VotoController {
     public String formulario(Model model, Voto voto, HttpServletRequest request) {
 
         model.addAttribute("listaFrentes", iFrenteService.listarFrentes());
+        model.addAttribute("listarMesa", imesaService.listarMesas());
 
         return "voto/formulario";
     }
@@ -109,27 +110,26 @@ public class VotoController {
 
         Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
 
-        Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
+        // Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
 
         if (tipoVoto == 1) {
-            System.out.println("nullo");
             voto.setTipo_voto("NULO");
-            voto.setMesa(mesa);
             voto.setFrente(null);
+            voto.setMesa(voto.getMesa());
             voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
             voto.setEstado("ACTIVO");
             iVotoService.save(voto);
 
         }else if (tipoVoto == 2) {
             voto.setTipo_voto("BLANCO");
-            voto.setMesa(mesa);
             voto.setEstado("ACTIVO");
+            voto.setMesa(voto.getMesa());
             voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
             iVotoService.save(voto);
         }else if (tipoVoto == 3) {
             voto.setTipo_voto("VALIDO");
-            voto.setMesa(mesa);
             voto.setEstado("ACTIVO");
+            voto.setMesa(voto.getMesa());
             voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
             iVotoService.save(voto);
         }

@@ -12,6 +12,7 @@
                 <tr>
                     <th>#</th>
                     <th>CARRERA</th>
+                    <th>FACULTAD</th>
                     <th>OPCIONEs</th>
                 </tr>
             </thead>
@@ -19,13 +20,14 @@
                 <tr th:each="c, index: ${listaCarreras}">
                     <th th:text="${index.index+1}"></th>
                     <th th:text="${c.nombre_carrera}"></th>
+                    <th th:text="${c.facultad.nombre_facultad}"></th>
                     <th>
                         <button type="button" class="btn btn-sm btn-primary"
                             th:onclick="cargarFormularioEdit([[${id_encryptado[__${index.index}__]}]])"
                             data-bs-toggle="modal" data-bs-target="#modalFormularioCarrera">
                             <i class="fa-solid fa-pen-to-square"></i> Editar
                         </button>
-                        <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${f.nombre_carrera}]],[[${id_encryptado[__${index.index}__]}]])">
+                        <button type="button" class="btn btn-sm btn-danger" th:onclick="eliminar([[${c.nombre_carrera}]],[[${id_encryptado[__${index.index}__]}]])">
                             <i class="fa-solid fa-trash"></i> Eliminar
                         </button>
                     </th>

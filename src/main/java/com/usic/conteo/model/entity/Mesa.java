@@ -10,10 +10,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +26,6 @@ public class Mesa extends AuditoriaConfig {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_mesa;
     private String nombre_mesa;
-    private String estado_mesa;
     private String tipo_mesa;
     
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "mesa", fetch = FetchType.LAZY)

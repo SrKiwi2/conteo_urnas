@@ -49,5 +49,6 @@ public class VotoServiceImpl implements IVotoService{
         // TODO Auto-generated method stub
         return iVotoDao.listarVotosPorUsuario(id_usuario);
     }
+
     
 }

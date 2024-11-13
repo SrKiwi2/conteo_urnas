@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
+import com.usic.conteo.model.IService.ICarreraService;
 import com.usic.conteo.model.IService.IFrenteService;
 import com.usic.conteo.model.IService.IJuradoService;
 import com.usic.conteo.model.IService.IMesaService;
@@ -33,6 +34,8 @@ public class MesaController {
     private final IMesaService iMesaService;
 
     private final IJuradoService iJuradoService;
+
+    private final ICarreraService carreraService;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -60,6 +63,7 @@ public class MesaController {
     @PostMapping("/formulario")
     public String formulario(Model model, Mesa mesa) {
         model.addAttribute("listaJurados", iJuradoService.listarJurados());
+        model.addAttribute("listarCarreras", carreraService.listarCarreras());
         return "mesa/formulario";
     }
 
@@ -78,7 +82,8 @@ public class MesaController {
     @ValidarUsuarioAutenticado
     @PostMapping("/registrar-mesa")
     public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Mesa mesa) {
-
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        mesa.setModificacionIdUsuario(usuario.getIdUsuario());
         mesa.setEstado("ACTIVO");
         iMesaService.save(mesa);
 

@@ -7,7 +7,7 @@
         </button>
     </div>
     <div class="card-datatable table-responsive pt-0">
-        <div class="row text-center">
+        <!-- <div class="row text-center">
             <div class="col-12 col-md-3">
                 <label class="form-label">Conteo de votos NULOS</label>
                 <h1 th:text="${conteoNulos}"></h1>
@@ -24,13 +24,13 @@
                 <label class="form-label">Total de VOTOS</label>
                 <h1 th:text="${totalVotos}"></h1>
             </div>
-        </div>
-        <p th:text="${conteoNulos}"></p>
+        </div> -->
         <table class="datatables-basic table table-hover" id="data-table">
             <thead>
                 <tr>
                     <th>#</th>
                     <th>TIPO VOTO</th>
+                    <th>CANTIDAD</th>
                     <th>MESA</th>
                 </tr>
             </thead>
@@ -38,6 +38,7 @@
                 <tr th:each="vots, index: ${listaVotos}">
                     <th th:text="${index.index+1}"></th>
                     <th th:text="${vots.tipo_voto}"></th>
+                    <th th:text="${vots.cantidad}"></th>
                     <th>                        
                         <b th:if="${vots.mesa.id_mesa == null}">NULLO</b>
                         <b th:text="${vots.mesa.nombre_mesa}" th:if="${vots.mesa.id_mesa != null}"></b>

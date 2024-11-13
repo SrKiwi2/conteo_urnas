@@ -987,9 +987,7 @@
 
   // Donut Chart
   // --------------------------------------------------------------------
-  const conteoNulos = /*[[${conteoNulos}]]*/ 0;
-    const conteoBlancos = /*[[${conteoBlancos}]]*/ 0;
-    const conteoValidos = /*[[${conteoValidos}]]*/ 0;
+
 
   const donutChartEl = document.querySelector('#donutChart'),
   donutChartConfig = {
@@ -998,7 +996,7 @@
       type: 'donut'
     },
     labels: ['Blancos', 'Nulos', 'Validos'],
-    series: [conteoBlancos, conteoNulos, conteoValidos],
+    series: [1, 2, 3],
     colors: [
       chartColors.donut.series1,
       chartColors.donut.series3,
@@ -2840,63 +2838,63 @@
     donutChart.render();
   }
 
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl1, donutChartConfig1);
-    donutChart.render();
+  if (typeof donutChartEl1 !== undefined && donutChartEl1 !== null) {
+    const donutChart1 = new ApexCharts(donutChartEl1, donutChartConfig1);
+    donutChart1.render();
   }
 
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl2, donutChartConfig2);
-    donutChart.render();
+  if (typeof donutChartEl2 !== undefined && donutChartEl2 !== null) {
+    const donutChart2 = new ApexCharts(donutChartEl2, donutChartConfig2);
+    donutChart2.render();
   }
 
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl3, donutChartConfig3);
-    donutChart.render();
+  if (typeof donutChartEl3 !== undefined && donutChartEl3 !== null) {
+    const donutChart3 = new ApexCharts(donutChartEl3, donutChartConfig3);
+    donutChart3.render();
   }
 
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl4, donutChartConfig4);
-    donutChart.render();
+  if (typeof donutChartEl4 !== undefined && donutChartEl4 !== null) {
+    const donutChart4 = new ApexCharts(donutChartEl4, donutChartConfig4);
+    donutChart4.render();
   }
   
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl5, donutChartConfig5);
+  if (typeof donutChartEl5 !== undefined && donutChartEl5 !== null) {
+    const donutChart5 = new ApexCharts(donutChartEl5, donutChartConfig5);
+    donutChart5.render();
+  }
+
+  if (typeof donutChartEl6 !== undefined && donutChartEl6 !== null) {
+    const donutChart6 = new ApexCharts(donutChartEl6, donutChartConfig6);
+    donutChart6.render();
+  }
+
+  if (typeof donutChartEl7 !== undefined && donutChartEl7 !== null) {
+    const donutChart7 = new ApexCharts(donutChartEl7, donutChartConfig7);
+    donutChart7.render();
+  }
+
+  if (typeof donutChartEl8 !== undefined && donutChartEl8 !== null) {
+    const donutChart8 = new ApexCharts(donutChartEl8, donutChartConfig8);
+    donutChart8.render();
+  }
+
+  if (typeof donutChartEl9 !== undefined && donutChartEl9 !== null) {
+    const donutChart9 = new ApexCharts(donutChartEl9, donutChartConfig9);
     donutChart.render();
   }
 
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl6, donutChartConfig6);
-    donutChart.render();
+  if (typeof donutChartEl10 !== undefined && donutChartEl10 !== null) {
+    const donutChart10 = new ApexCharts(donutChartEl10, donutChartConfig10);
+    donutChart10.render();
   }
 
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl7, donutChartConfig7);
-    donutChart.render();
+  if (typeof donutChartEl11 !== undefined && donutChartEl11 !== null) {
+    const donutChart11 = new ApexCharts(donutChartEl11, donutChartConfig11);
+    donutChart11.render();
   }
 
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl8, donutChartConfig8);
-    donutChart.render();
-  }
-
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl9, donutChartConfig9);
-    donutChart.render();
-  }
-
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl10, donutChartConfig10);
-    donutChart.render();
-  }
-
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl11, donutChartConfig11);
-    donutChart.render();
-  }
-
-  if (typeof donutChartEl !== undefined && donutChartEl !== null) {
-    const donutChart = new ApexCharts(donutChartEl12, donutChartConfig12);
-    donutChart.render();
+  if (typeof donutChartEl12 !== undefined && donutChartEl12 !== null) {
+    const donutChart12 = new ApexCharts(donutChartEl12, donutChartConfig12);
+    donutChart12.render();
   }
 })();
