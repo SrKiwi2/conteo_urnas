@@ -74,6 +74,7 @@ public class VistaPublicaController {
         Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
 
         List<Facultad> listarFacultad = facultadService.listarFacultades();
+        List<Carrera> listarCarrera = carreraService.listarCarreras();
         List<String> encryptedIds = new ArrayList<>();
         for (Facultad facultades : listarFacultad) {
             String id_encryptado = Encriptar.encrypt(Long.toString(facultades.getId_facultad()));
@@ -81,6 +82,7 @@ public class VistaPublicaController {
         }
 
         model.addAttribute("listarFacultades", listarFacultad);
+        model.addAttribute("listarCarreras", listarCarrera);
         model.addAttribute("id_encryptado", encryptedIds);
 
         return "voto/tabla-registro";

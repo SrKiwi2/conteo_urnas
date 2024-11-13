@@ -14,6 +14,18 @@
                 <div class="valid-feedback">Correcto!</div>
                 <div class="invalid-feedback">Porfavor Introduzca la carrera.</div>
             </div>
+            <div class="col-12 col-md-6">
+                <label for="select2Basic" class="form-label">Facultad</label>
+                <select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true" th:field="${carrera.facultad}">
+                    <option th:each="facultad : ${listarFacultades}" 
+                        th:value="${facultad.id_facultad}" 
+                        th:selected="${facultdad == carrera.facultad}"
+                        th:text="${facultad.nombre_facultad}">
+                    </option>
+                </select>
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Debe seleccionar a un Jurado.</div>
+            </div>
         </div>
     </div>
     <div class="modal-footer">

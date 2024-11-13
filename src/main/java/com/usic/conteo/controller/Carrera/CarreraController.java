@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.ICarreraService;
+import com.usic.conteo.model.IService.IFacultadService;
 import com.usic.conteo.model.entity.Carrera;
 import com.usic.conteo.model.entity.Usuario;
 
@@ -28,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class CarreraController {
 
     private final ICarreraService carreraService;
+    private final IFacultadService facultadService;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -53,7 +55,8 @@ public class CarreraController {
 
     @ValidarUsuarioAutenticado
     @PostMapping("/formulario")
-    public String formulario(Carrera carrera) {
+    public String formulario(Model model, Carrera carrera) {
+        model.addAttribute("listarFacultades", facultadService.listarFacultades());
         return "carrera/formulario";
     }
 
