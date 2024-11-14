@@ -11,4 +11,6 @@ import com.usic.conteo.model.entity.Mesa;
 public interface IMesaService extends IServiceGenerico<Mesa, Long>{
 
     List<Mesa> listarMesas();
+
+    List<Integer> findMesasWithRestantes(Long id_mesa);
 }

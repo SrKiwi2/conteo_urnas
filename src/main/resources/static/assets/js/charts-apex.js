@@ -1016,7 +1016,7 @@
         height: 390,
         type: 'donut'
       },
-      labels: ['Blancos', 'Nulos', 'Validos'],
+      labels: ['Blancos', 'Nulos', 'Renovacion'],
       series: [porcentajeBlanco, porcentajeNulo, porcentajeValido],
       colors: [
         chartColors.donut.series1,
@@ -1186,7 +1186,7 @@
         height: 390,
         type: 'donut'
       },
-      labels: ['Blancos', 'Nulos', 'Validos'],
+      labels: ['Blancos', 'Nulos', 'Renovacion'],
       series: [porcentajeBlancoD, porcentajeNuloD, porcentajeValidoD],
       colors: [
         chartColors.donut.series1,
@@ -1356,7 +1356,7 @@
         height: 390,
         type: 'donut'
       },
-      labels: ['Blancos', 'Nulos', 'Validos'],
+      labels: ['Blancos', 'Nulos', 'Renovacion'],
       series: [porcentajeBlancoT, porcentajeNuloT, porcentajeValidoT],
       colors: [
         chartColors.donut.series1,

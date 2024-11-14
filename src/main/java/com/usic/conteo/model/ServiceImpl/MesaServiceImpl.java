@@ -45,5 +45,11 @@ public class MesaServiceImpl implements IMesaService{
         // TODO Auto-generated method stub
         return iMesaDao.listarMesas();
     }
+
+    @Override
+    public List<Integer> findMesasWithRestantes(Long id_mesa) {
+        // TODO Auto-generated method stub
+        return iMesaDao.findMesasWithRestantes(id_mesa);
+    }
     
 }

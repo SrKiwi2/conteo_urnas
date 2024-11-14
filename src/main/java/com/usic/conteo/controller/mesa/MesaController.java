@@ -47,7 +47,11 @@ public class MesaController {
     @PostMapping("/tabla-registros")
     public String tablaRegistros(Model model) throws Exception {
 
+        //List<Mesa> listaMesas = iMesaService.listarMesas();
         List<Mesa> listaMesas = iMesaService.listarMesas();
+        for (Mesa mesa : listaMesas) {
+            mesa.setRestante(String.valueOf(iMesaService.findMesasWithRestantes(mesa.getId_mesa())));
+        }
         List<String> encryptedIds = new ArrayList<>();
         for (Mesa mesas : listaMesas) {
             String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
@@ -55,6 +59,7 @@ public class MesaController {
         }
         model.addAttribute("listaMesas", listaMesas);
         model.addAttribute("id_encryptado", encryptedIds);
+        //model.addAttribute("listaMesas",iMesaService.findMesasWithRestantes());
 
         return "mesa/tabla-registro";
     }
