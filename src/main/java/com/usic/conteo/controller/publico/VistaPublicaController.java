@@ -233,6 +233,8 @@ public class VistaPublicaController {
         List<Map<String, Object>> resultado_estudiante = consultasVistaVotos.votosPorCarrera(idCarrera, tipo_mesa);
         List<Map<String, Object>> resultado_docente = consultasVistaVotos.votosPorCarrera(idCarrera, tipo_mesa2);
         
+        Carrera carrera = carreraService.findById(idCarrera);
+        
 
         List<Mesa> listaMesas = iMesaService.listarMesasPorIdCarrera(idCarrera);
         for (Mesa mesa : listaMesas) {
@@ -247,7 +249,8 @@ public class VistaPublicaController {
             encryptedIds.add(id_encryptado);
         }
 
-        System.out.println(resultado_estudiante);
+        
+
 
         Long sumMesasValidoE = 0L;
         Long sumMesasNuloE = 0L;
@@ -287,6 +290,8 @@ public class VistaPublicaController {
         model.addAttribute("sumMesasVacioE", sumMesasVacioE);
         model.addAttribute("sumMesasNuloE", sumMesasNuloE);
 
+        System.out.println(carrera.getNombre_carrera());
+        System.out.println(resultado_estudiante);
         System.out.println(sumMesasValidoE);
         System.out.println(sumMesasVacioE);
         System.out.println(sumMesasNuloE);
@@ -294,6 +299,11 @@ public class VistaPublicaController {
         model.addAttribute("sumMesasValidoD", sumMesasValidoD);
         model.addAttribute("sumMesasVacioD", sumMesasVacioD);
         model.addAttribute("sumMesasNuloD", sumMesasNuloD);
+
+        System.out.println(resultado_docente);
+        System.out.println(sumMesasValidoD);
+        System.out.println(sumMesasVacioD);
+        System.out.println(sumMesasNuloD);
 
         
         model.addAttribute("listaMesas", listaMesas );
