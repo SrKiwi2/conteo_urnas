@@ -59,6 +59,30 @@ public class ConsultasVistaVotos {
         }
     }
 
+    public List<Map<String, Object>> votosPorCarrera(Long id_carrera, String tipo_mesa) {
+        String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) " + 
+                     "FROM voto v " + 
+                     "INNER JOIN mesa m ON m.id_mesa = v.id_mesa " + 
+                     "INNER JOIN carrera c ON c.id_carrera = m.id_carrera " + 
+                     "INNER JOIN facultad f ON f.id_facultad = c.id_facultad " + 
+                     "WHERE c.id_carrera = ? AND m.tipo_mesa = ? " + 
+                     "AND m._estado = 'ACTIVO' " + 
+                     "AND f._estado = 'ACTIVO' " + 
+                     "AND c._estado = 'ACTIVO' " + 
+                     "AND v._estado = 'ACTIVO' " + 
+                     "GROUP BY v.tipo_voto " + 
+                     "ORDER BY v.tipo_voto ASC";
+        
+        Object[] params = new Object[] {id_carrera, tipo_mesa};
+    
+        try {
+            return jdbcTemplate.queryForList(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+    
+
     public List<Map<String, Object>> listarVotosTipoMesa(String tipo_mesa) {
         String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) " +
                      "FROM voto v " +

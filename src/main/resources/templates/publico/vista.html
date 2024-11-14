@@ -1,8 +1,11 @@
 <!doctype html>
-<html lang="en" class="light-style layout-wide customizer-hide" dir="ltr" data-theme="theme-default" data-assets-path="../../assets/" data-template="vertical-menu-template">
+<html lang="en" class="light-style layout-wide customizer-hide" dir="ltr" data-theme="theme-default"
+    data-assets-path="../../assets/" data-template="vertical-menu-template">
+
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <title>Conteo | Votos</title>
 
@@ -12,7 +15,9 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+        rel="stylesheet" />
 
     <link rel="stylesheet" href="../../assets/vendor/fonts/fontawesome.css" />
     <link rel="stylesheet" href="../../assets/vendor/fonts/tabler-icons.css" />
@@ -26,13 +31,14 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css" />
 
     <link rel="stylesheet" href="../../assets/vendor/css/pages/page-misc.css" />
-
+    <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
     <script src="../../assets/vendor/js/helpers.js"></script>
     <script src="../../assets/vendor/js/template-customizer.js"></script>
     <script src="../../assets/js/config.js"></script>
     <style>
         body {
-            background-image: url('../../assets/img/front-pages/backgrounds/Dash.jpg'); /* Ruta a tu imagen */
+            background-image: url('../../assets/img/front-pages/backgrounds/Dash.jpg');
+            /* Ruta a tu imagen */
             background-size: cover;
             background-position: center center;
             background-attachment: fixed;
@@ -54,10 +60,9 @@
                                 <div class="card-body text-center">
                                     <h5>Total - Estudiantes</h5>
                                 </div>
-                                <div id="donutChart"  th:data-sum-valido="${sumValido_E}"
-                                th:data-sum-blanco="${sumBlanco_E}"
-                                th:data-sum-nulo="${sumNulo_E}"></div>
-                                
+                                <div id="donutChart" th:data-sum-valido="${sumValido_E}"
+                                    th:data-sum-blanco="${sumBlanco_E}" th:data-sum-nulo="${sumNulo_E}"></div>
+
                             </div>
                         </div>
                     </div>
@@ -67,10 +72,8 @@
                                 <div class="card-body text-center">
                                     <h5>Total - Docentes</h5>
                                 </div>
-                                <div id="donutChart1"
-                                    th:data-sum-valido-d="${sumValido_D}"
-                                    th:data-sum-blanco-d="${sumBlanco_D}"
-                                    th:data-sum-nulo-d="${sumNulo_D}">
+                                <div id="donutChart1" th:data-sum-valido-d="${sumValido_D}"
+                                    th:data-sum-blanco-d="${sumBlanco_D}" th:data-sum-nulo-d="${sumNulo_D}">
                                 </div>
                             </div>
                         </div>
@@ -81,19 +84,17 @@
                                 <div class="card-body text-center">
                                     <h5>Total - Generales</h5>
                                 </div>
-                                <div id="donutChart2"
-                                    th:data-sum-valido-t="${sumValido_T}"
-                                    th:data-sum-blanco-t="${sumBlanco_T}"
-                                    th:data-sum-nulo-t="${sumNulo_T}">
+                                <div id="donutChart2" th:data-sum-valido-t="${sumValido_T}"
+                                    th:data-sum-blanco-t="${sumBlanco_T}" th:data-sum-nulo-t="${sumNulo_T}">
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="card">
                     <div class="card-datatable table-responsive pt-0">
-                        <table class="datatables-basic table table-hover" id="data-table">
+                        <table class="datatables-basic table table-hover" id="data-tableFac">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -108,9 +109,8 @@
                                     <th>
                                         <button type="button" class="btn btn-primary"
                                             th:attr="onclick='cargarFormulario(' + ${facultad.id_facultad} + ')'"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#modalFormularioVoto">
-                                            <i class="fa-solid fa-check-to-slot"> Votos</i> 
+                                            data-bs-toggle="modal" data-bs-target="#modalFormularioVoto">
+                                            <i class="fa-solid fa-check-to-slot"> Votos</i>
                                         </button>
                                     </th>
                                 </tr>
@@ -118,37 +118,12 @@
                         </table>
                     </div>
                 </div>
-                
-                <script>
-                    $('#data-table').DataTable({
-                        language: {
-                            "sProcessing": "Procesando...",
-                            "sLengthMenu": "Mostrar _MENU_ registros",
-                            "sZeroRecords": "No se encontraron resultados",
-                            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-                            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-                            "sInfoPostFix": "",
-                            "sSearch": "Buscar:",
-                            "sUrl": "",
-                            "sInfoThousands": ",",
-                            "sLoadingRecords": "Cargando...",
-                            "oPaginate": {
-                                "sFirst": "Primero",
-                                "sLast": "Último",
-                                "sNext": "Siguiente",
-                                "sPrevious": "Anterior"
-                            },
-                            "oAria": {
-                                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                            }
-                        }
-                    });
-                </script>
             </div>
+            <div class="container-fluid" id="contenidoMesasPublica"></div>
         </div>
     </div>
+
+    
 
     <div class="modal fade" id="modalFormularioVoto" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -164,10 +139,8 @@
                                 <div class="card">
                                     <div class="card-body text-center">
                                         <h5>Total - Estudiante</h5>
-                                        <div id="donutChart3" 
-                                        data-sum-valido-ef="${sumValido_TEF}"
-                                        data-sum-blanco-ef="${sumBlanco_EF}"
-                                        data-sum-nulo-ef="${sumNulo_EF}">
+                                        <div id="donutChart3" data-sum-valido-ef="${sumValido_TEF}"
+                                            data-sum-blanco-ef="${sumBlanco_EF}" data-sum-nulo-ef="${sumNulo_EF}">
                                         </div>
                                     </div>
                                 </div>
@@ -176,10 +149,8 @@
                                 <div class="card">
                                     <div class="card-body text-center">
                                         <h5>Total - Docente</h5>
-                                        <div id="donutChart4" 
-                                        data-sum-valido-df="${sumValido_DF}"
-                                        data-sum-blanco-df="${sumBlanco_DF}"
-                                        data-sum-nulo-df="${sumNulo_DF}">
+                                        <div id="donutChart4" data-sum-valido-df="${sumValido_DF}"
+                                            data-sum-blanco-df="${sumBlanco_DF}" data-sum-nulo-df="${sumNulo_DF}">
                                         </div>
                                     </div>
                                 </div>
@@ -195,11 +166,50 @@
             </div>
         </div>
     </div>
+    
+    <script src="../../assets/vendor/js/fragment.js"></script>
 
+    <script src="../../assets/js/tables-datatables-extensions.js"></script>
+
+    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../../assets/vendor/js/bootstrap.js"></script>
+
+    <script src="../../assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+    <script src="../../assets/js/main.js"></script>
+
+    <script src="../../assets/js/charts-apex.js"></script>
+    <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
     <script>
         $(document).ready(function () {
-            cargarTabla();
+            //cargarTabla();
+            cargarMesas();
 
+            $('#data-tableFac').DataTable({
+                language: {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                }
+            });
         });
 
         function cargarFormulario(id_facultad) {
@@ -207,7 +217,7 @@
             $.ajax({
                 type: 'POST',
                 url: "/publico/formularioFacultad/" + id_facultad,
-                success: function(response){
+                success: function (response) {
                     console.log("Datos recibidos", response)
                     console.log("ID Facultad recibido:", id_facultad);
 
@@ -226,14 +236,15 @@
                     }
 
                     renderDonutChart();
+                    
                 },
                 error: function (xhr, status, error) {
-                console.log("Error: ", error);
-            }
+                    console.log("Error: ", error);
+                }
             });
         }
 
-        function renderDonutChart(){
+        function renderDonutChart() {
             let cardColor, headingColor, labelColor, borderColor, legendColor;
 
             if (isDarkStyle) {
@@ -251,21 +262,21 @@
             }
             const chartColors = {
                 column: {
-                series1: '#826af9',
-                series2: '#d2b0ff',
-                bg: '#f8d3ff'
+                    series1: '#826af9',
+                    series2: '#d2b0ff',
+                    bg: '#f8d3ff'
                 },
                 donut: {
-                series1: '#fee802',
-                series2: '#3fd0bd',
-                series3: '#826bf8',
-                series4: '#2b9bf4',
-                series5: '#90EE90'
+                    series1: '#fee802',
+                    series2: '#3fd0bd',
+                    series3: '#826bf8',
+                    series4: '#2b9bf4',
+                    series5: '#90EE90'
                 },
                 area: {
-                series1: '#29dac7',
-                series2: '#60f2ca',
-                series3: '#a5f8cd'
+                    series1: '#29dac7',
+                    series2: '#60f2ca',
+                    series3: '#a5f8cd'
                 }
             };
 
@@ -273,121 +284,22 @@
                 let i = 0;
                 let series = [];
                 while (i < count) {
-                let x = 'w' + (i + 1).toString();
-                let y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+                    let x = 'w' + (i + 1).toString();
+                    let y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
 
-                series.push({
-                    x: x,
-                    y: y
-                });
-                i++;
+                    series.push({
+                        x: x,
+                        y: y
+                    });
+                    i++;
                 }
                 return series;
             }
 
-            const areaChartEl = document.querySelector('#lineAreaChart'),
-            areaChartConfig = {
-            chart: {
-                height: 400,
-                type: 'area',
-                parentHeightOffset: 0,
-                toolbar: {
-                show: false
-                }
-            },
-            dataLabels: {
-                enabled: false
-            },
-            stroke: {
-                show: false,
-                curve: 'straight'
-            },
-            legend: {
-                show: true,
-                position: 'top',
-                horizontalAlign: 'start',
-                labels: {
-                colors: legendColor,
-                useSeriesColors: false
-                }
-            },
-            grid: {
-                borderColor: borderColor,
-                xaxis: {
-                lines: {
-                    show: true
-                }
-                }
-            },
-            colors: [chartColors.area.series3, chartColors.area.series2, chartColors.area.series1],
-            series: [
-                {
-                name: 'Visits',
-                data: [100, 120, 90, 170, 130, 160, 140, 240, 220, 180, 270, 280, 375]
-                },
-                {
-                name: 'Clicks',
-                data: [60, 80, 70, 110, 80, 100, 90, 180, 160, 140, 200, 220, 275]
-                },
-                {
-                name: 'Sales',
-                data: [20, 40, 30, 70, 40, 60, 50, 140, 120, 100, 140, 180, 220]
-                }
-            ],
-            xaxis: {
-                categories: [
-                '7/12',
-                '8/12',
-                '9/12',
-                '10/12',
-                '11/12',
-                '12/12',
-                '13/12',
-                '14/12',
-                '15/12',
-                '16/12',
-                '17/12',
-                '18/12',
-                '19/12',
-                '20/12'
-                ],
-                axisBorder: {
-                show: false
-                },
-                axisTicks: {
-                show: false
-                },
-                labels: {
-                style: {
-                    colors: labelColor,
-                    fontSize: '13px'
-                }
-                }
-            },
-            yaxis: {
-                labels: {
-                style: {
-                    colors: labelColor,
-                    fontSize: '13px'
-                }
-                }
-            },
-            fill: {
-                opacity: 1,
-                type: 'solid'
-            },
-            tooltip: {
-                shared: false
-            }
-            };
-        if (typeof areaChartEl !== undefined && areaChartEl !== null) {
-            const areaChart = new ApexCharts(areaChartEl, areaChartConfig);
-            areaChart.render();
-        }
             // Donut Chart 3
             // --------------------------------------------------------------------
             const donutChartEl3 = document.querySelector('#donutChart3');
-            if(donutChartEl3 !== null){
+            if (donutChartEl3 !== null) {
                 const sumValidoEF = parseInt(donutChartEl3.getAttribute('data-sum-valido-ef'), 10);
                 const sumBlancoEF = parseInt(donutChartEl3.getAttribute('data-sum-blanco-ef'), 10);
                 const sumNuloEF = parseInt(donutChartEl3.getAttribute('data-sum-nulo-ef'), 10);
@@ -404,151 +316,151 @@
 
                 if (totalVotosEF > 0) {
                     porcentajeValidoEF = (sumValidoEF / totalVotosEF) * 100;
-                    porcentajeBlancoEF= (sumBlancoEF / totalVotosEF) * 100;
+                    porcentajeBlancoEF = (sumBlancoEF / totalVotosEF) * 100;
                     porcentajeNuloEF = (sumNuloEF / totalVotosEF) * 100;
                 }
 
                 const donutChartConfig3 = {
-                chart: {
-                    height: 390,
-                    type: 'donut'
-                },
-                labels: ['Blancos', 'Nulos', 'Validos'],
-                series: [porcentajeBlancoEF, porcentajeNuloEF, porcentajeValidoEF],
-                colors: [
-                    chartColors.donut.series1,
-                    chartColors.donut.series3,
-                    chartColors.donut.series5
-                ],
-                stroke: {
-                    show: false,
-                    curve: 'straight'
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: function (val, opt) {
-                    return val.toFixed(2) + '%';
-                    }
-                },
-                legend: {
-                    show: true,
-                    position: 'bottom',
-                    markers: { offsetX: -3 },
-                    itemMargin: {
-                    vertical: 3,
-                    horizontal: 10
+                    chart: {
+                        height: 390,
+                        type: 'donut'
                     },
-                    labels: {
-                    colors: legendColor,
-                    useSeriesColors: false
-                    }
-                },
-                plotOptions: {
-                    pie: {
-                    donut: {
-                        labels: {
+                    labels: ['Blancos', 'Nulos', 'Validos'],
+                    series: [porcentajeBlancoEF, porcentajeNuloEF, porcentajeValidoEF],
+                    colors: [
+                        chartColors.donut.series1,
+                        chartColors.donut.series3,
+                        chartColors.donut.series5
+                    ],
+                    stroke: {
+                        show: false,
+                        curve: 'straight'
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val, opt) {
+                            return val.toFixed(2) + '%';
+                        }
+                    },
+                    legend: {
                         show: true,
-                        name: {
-                            fontSize: '2rem',
-                            fontFamily: 'Public Sans'
-                        },
-                        value: {
-                            fontSize: '1.2rem',
-                            color: legendColor,
-                            fontFamily: 'Public Sans',
-                            formatter: function (val) {
-                            if (typeof val === 'number' && !isNaN(val)) {
-                                return val.toFixed(2); // Redondear a 2 decimales
-                            } else {
-                                return val; // Si no es un número, devolver el valor tal como está
-                            }
-                            }
-                        },
-                        total: {
-                            show: true,
-                            fontSize: '1.5rem',
-                            color: headingColor,
-                            label: 'Total',
-                            formatter: function (w) {
-                            return totalVotosEF + ' votos';
-                            }
-                        }
-                        }
-                    }
-                    }
-                },
-                responsive: [
-                    {
-                    breakpoint: 992,
-                    options: {
-                        chart: {
-                        height: 380
-                        },
-                        legend: {
                         position: 'bottom',
+                        markers: { offsetX: -3 },
+                        itemMargin: {
+                            vertical: 3,
+                            horizontal: 10
+                        },
                         labels: {
                             colors: legendColor,
                             useSeriesColors: false
                         }
-                        }
-                    }
                     },
-                    {
-                    breakpoint: 576,
-                    options: {
-                        chart: {
-                        height: 320
-                        },
-                        plotOptions: {
+                    plotOptions: {
                         pie: {
                             donut: {
-                            labels: {
-                                show: true,
-                                name: {
-                                fontSize: '1.5rem'
-                                },
-                                value: {
-                                fontSize: '1rem'
-                                },
-                                total: {
-                                fontSize: '1.5rem'
+                                labels: {
+                                    show: true,
+                                    name: {
+                                        fontSize: '2rem',
+                                        fontFamily: 'Public Sans'
+                                    },
+                                    value: {
+                                        fontSize: '1.2rem',
+                                        color: legendColor,
+                                        fontFamily: 'Public Sans',
+                                        formatter: function (val) {
+                                            if (typeof val === 'number' && !isNaN(val)) {
+                                                return val.toFixed(2); // Redondear a 2 decimales
+                                            } else {
+                                                return val; // Si no es un número, devolver el valor tal como está
+                                            }
+                                        }
+                                    },
+                                    total: {
+                                        show: true,
+                                        fontSize: '1.5rem',
+                                        color: headingColor,
+                                        label: 'Total',
+                                        formatter: function (w) {
+                                            return totalVotosEF + ' votos';
+                                        }
+                                    }
                                 }
                             }
+                        }
+                    },
+                    responsive: [
+                        {
+                            breakpoint: 992,
+                            options: {
+                                chart: {
+                                    height: 380
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 576,
+                            options: {
+                                chart: {
+                                    height: 320
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        donut: {
+                                            labels: {
+                                                show: true,
+                                                name: {
+                                                    fontSize: '1.5rem'
+                                                },
+                                                value: {
+                                                    fontSize: '1rem'
+                                                },
+                                                total: {
+                                                    fontSize: '1.5rem'
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 420,
+                            options: {
+                                chart: {
+                                    height: 280
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 360,
+                            options: {
+                                chart: {
+                                    height: 250
+                                },
+                                legend: {
+                                    show: false
+                                }
                             }
                         }
-                        },
-                        legend: {
-                        position: 'bottom',
-                        labels: {
-                            colors: legendColor,
-                            useSeriesColors: false
-                        }
-                        }
-                    }
-                    },
-                    {
-                    breakpoint: 420,
-                    options: {
-                        chart: {
-                        height: 280
-                        },
-                        legend: {
-                        show: false
-                        }
-                    }
-                    },
-                    {
-                    breakpoint: 360,
-                    options: {
-                        chart: {
-                        height: 250
-                        },
-                        legend: {
-                        show: false
-                        }
-                    }
-                    }
-                ]
+                    ]
                 };
                 const donutChart3 = new ApexCharts(donutChartEl3, donutChartConfig3);
                 donutChart3.render();
@@ -557,7 +469,7 @@
             // Donut Chart 4
             // --------------------------------------------------------------------
             const donutChartEl4 = document.querySelector('#donutChart4');
-            if(donutChartEl4 !== null){
+            if (donutChartEl4 !== null) {
                 const sumValidoDF = parseInt(donutChartEl4.getAttribute('data-sum-valido-df'), 10);
                 const sumBlancoDF = parseInt(donutChartEl4.getAttribute('data-sum-blanco-df'), 10);
                 const sumNuloDF = parseInt(donutChartEl4.getAttribute('data-sum-nulo-df'), 10);
@@ -579,175 +491,169 @@
                 }
 
                 const donutChartConfig4 = {
-                chart: {
-                    height: 390,
-                    type: 'donut'
-                },
-                labels: ['Blancos', 'Nulos', 'Validos'],
-                series: [porcentajeBlancoDF, porcentajeNuloDF, porcentajeValidoDF],
-                colors: [
-                    chartColors.donut.series1,
-                    chartColors.donut.series3,
-                    chartColors.donut.series5
-                ],
-                stroke: {
-                    show: false,
-                    curve: 'straight'
-                },
-                dataLabels: {
-                    enabled: true,
-                    formatter: function (val, opt) {
-                    return val.toFixed(2) + '%';
-                    }
-                },
-                legend: {
-                    show: true,
-                    position: 'bottom',
-                    markers: { offsetX: -3 },
-                    itemMargin: {
-                    vertical: 3,
-                    horizontal: 10
+                    chart: {
+                        height: 390,
+                        type: 'donut'
                     },
-                    labels: {
-                    colors: legendColor,
-                    useSeriesColors: false
-                    }
-                },
-                plotOptions: {
-                    pie: {
-                    donut: {
-                        labels: {
+                    labels: ['Blancos', 'Nulos', 'Validos'],
+                    series: [porcentajeBlancoDF, porcentajeNuloDF, porcentajeValidoDF],
+                    colors: [
+                        chartColors.donut.series1,
+                        chartColors.donut.series3,
+                        chartColors.donut.series5
+                    ],
+                    stroke: {
+                        show: false,
+                        curve: 'straight'
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val, opt) {
+                            return val.toFixed(2) + '%';
+                        }
+                    },
+                    legend: {
                         show: true,
-                        name: {
-                            fontSize: '2rem',
-                            fontFamily: 'Public Sans'
-                        },
-                        value: {
-                            fontSize: '1.2rem',
-                            color: legendColor,
-                            fontFamily: 'Public Sans',
-                            formatter: function (val) {
-                            if (typeof val === 'number' && !isNaN(val)) {
-                                return val.toFixed(2); // Redondear a 2 decimales
-                            } else {
-                                return val; // Si no es un número, devolver el valor tal como está
-                            }
-                            }
-                        },
-                        total: {
-                            show: true,
-                            fontSize: '1.5rem',
-                            color: headingColor,
-                            label: 'Total',
-                            formatter: function (w) {
-                            return totalVotosDF + ' votos';
-                            }
-                        }
-                        }
-                    }
-                    }
-                },
-                responsive: [
-                    {
-                    breakpoint: 992,
-                    options: {
-                        chart: {
-                        height: 380
-                        },
-                        legend: {
                         position: 'bottom',
+                        markers: { offsetX: -3 },
+                        itemMargin: {
+                            vertical: 3,
+                            horizontal: 10
+                        },
                         labels: {
                             colors: legendColor,
                             useSeriesColors: false
                         }
-                        }
-                    }
                     },
-                    {
-                    breakpoint: 576,
-                    options: {
-                        chart: {
-                        height: 320
-                        },
-                        plotOptions: {
+                    plotOptions: {
                         pie: {
                             donut: {
-                            labels: {
-                                show: true,
-                                name: {
-                                fontSize: '1.5rem'
-                                },
-                                value: {
-                                fontSize: '1rem'
-                                },
-                                total: {
-                                fontSize: '1.5rem'
+                                labels: {
+                                    show: true,
+                                    name: {
+                                        fontSize: '2rem',
+                                        fontFamily: 'Public Sans'
+                                    },
+                                    value: {
+                                        fontSize: '1.2rem',
+                                        color: legendColor,
+                                        fontFamily: 'Public Sans',
+                                        formatter: function (val) {
+                                            if (typeof val === 'number' && !isNaN(val)) {
+                                                return val.toFixed(2); // Redondear a 2 decimales
+                                            } else {
+                                                return val; // Si no es un número, devolver el valor tal como está
+                                            }
+                                        }
+                                    },
+                                    total: {
+                                        show: true,
+                                        fontSize: '1.5rem',
+                                        color: headingColor,
+                                        label: 'Total',
+                                        formatter: function (w) {
+                                            return totalVotosDF + ' votos';
+                                        }
+                                    }
                                 }
                             }
+                        }
+                    },
+                    responsive: [
+                        {
+                            breakpoint: 992,
+                            options: {
+                                chart: {
+                                    height: 380
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 576,
+                            options: {
+                                chart: {
+                                    height: 320
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        donut: {
+                                            labels: {
+                                                show: true,
+                                                name: {
+                                                    fontSize: '1.5rem'
+                                                },
+                                                value: {
+                                                    fontSize: '1rem'
+                                                },
+                                                total: {
+                                                    fontSize: '1.5rem'
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 420,
+                            options: {
+                                chart: {
+                                    height: 280
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 360,
+                            options: {
+                                chart: {
+                                    height: 250
+                                },
+                                legend: {
+                                    show: false
+                                }
                             }
                         }
-                        },
-                        legend: {
-                        position: 'bottom',
-                        labels: {
-                            colors: legendColor,
-                            useSeriesColors: false
-                        }
-                        }
-                    }
-                    },
-                    {
-                    breakpoint: 420,
-                    options: {
-                        chart: {
-                        height: 280
-                        },
-                        legend: {
-                        show: false
-                        }
-                    }
-                    },
-                    {
-                    breakpoint: 360,
-                    options: {
-                        chart: {
-                        height: 250
-                        },
-                        legend: {
-                        show: false
-                        }
-                    }
-                    }
-                ]
+                    ]
                 };
                 const donutChart4 = new ApexCharts(donutChartEl4, donutChartConfig4);
                 donutChart4.render();
             }
         }
 
-        function cargarTabla() {
+        function cargarMesas() {
+            // Verifica si la sesión está activa antes de cargar el contenido
             $.ajax({
-                type: 'POST',
-                url: "/publico/tabla-votos",
-                success: function (response) {
-                    $("#tablaVotos").html(response);
+                url: '/publico/tabla-mesa',
+                method: "GET",
+                success: function (data) {
+                    
+                    $("#contenidoMesasPublica").html(data); // Carga el contenido si todo está bien
+                    
+                },
+                error: function (xhr) {
+                    console.error('Error en la solicitud:', xhr);
                 }
             });
         }
     </script>
-    <script src="../../assets/vendor/js/fragment.js"></script>
 
-    <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
-    <script src="../../assets/js/tables-datatables-extensions.js"></script>
-
-    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
-    <script src="../../assets/vendor/js/bootstrap.js"></script>
-
-    <script src="../../assets/vendor/libs/apex-charts/apexcharts.js"></script>
-
-    <script src="../../assets/js/main.js"></script>
-
-    <script src="../../assets/js/charts-apex.js"></script>
 
 </body>
 

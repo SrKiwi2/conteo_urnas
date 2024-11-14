@@ -19,6 +19,7 @@ import com.usic.conteo.model.IService.ICarreraService;
 import com.usic.conteo.model.IService.IFacultadService;
 import com.usic.conteo.model.IService.IMesaService;
 import com.usic.conteo.model.Repository.ConsultasVistaVotos;
+import com.usic.conteo.model.entity.Carrera;
 import com.usic.conteo.model.entity.Facultad;
 import com.usic.conteo.model.entity.Mesa;
 
@@ -201,6 +202,8 @@ public class VistaPublicaController {
             encryptedIds.add(id_encryptado);
         }
 
+        
+
         model.addAttribute("listaFacultades", facultadService.listarFacultades());
         model.addAttribute("listaMesas", listaMesas);
         model.addAttribute("id_encryptado", encryptedIds);
@@ -215,11 +218,21 @@ public class VistaPublicaController {
 
         model.addAttribute("listaCarreras", carreraService.findByFacultad(idFacultad));
 
+        
+
+        
+
         return "carrera/opcion";
     }
 
     @GetMapping("/mesasPorCarrera/{params}")
     public String mostrar_carrera(Model model, @PathVariable("params")Long idCarrera) throws Exception {
+
+        String tipo_mesa = "ESTUDIANTE";
+        String tipo_mesa2 = "DOCENTE";
+        List<Map<String, Object>> resultado_estudiante = consultasVistaVotos.votosPorCarrera(idCarrera, tipo_mesa);
+        List<Map<String, Object>> resultado_docente = consultasVistaVotos.votosPorCarrera(idCarrera, tipo_mesa2);
+        
 
         List<Mesa> listaMesas = iMesaService.listarMesasPorIdCarrera(idCarrera);
         for (Mesa mesa : listaMesas) {
@@ -234,6 +247,55 @@ public class VistaPublicaController {
             encryptedIds.add(id_encryptado);
         }
 
+        System.out.println(resultado_estudiante);
+
+        Long sumMesasValidoE = 0L;
+        Long sumMesasNuloE = 0L;
+        Long sumMesasVacioE = 0L;
+
+        Long sumMesasValidoD = 0L;
+        Long sumMesasNuloD = 0L;
+        Long sumMesasVacioD = 0L;
+
+        for (Map<String, Object> row : resultado_estudiante) {
+            String tipoVoto = (String) row.get("tipo_voto");
+            Long sumE = ((Number) row.get("sum")).longValue();
+            
+            if ("VALIDO".equals(tipoVoto)) {
+                sumMesasValidoE = sumE;
+            } else if ("BLANCO".equals(tipoVoto)) {
+                sumMesasVacioE = sumE;
+            } else if ("NULO".equals(tipoVoto)) {
+                sumMesasNuloE = sumE;
+            }
+        }
+
+        for (Map<String, Object> row : resultado_docente) {
+            String tipoVoto = (String) row.get("tipo_voto");
+            Long sumD = ((Number) row.get("sum")).longValue();
+            
+            if ("VALIDO".equals(tipoVoto)) {
+                sumMesasValidoD = sumD;
+            } else if ("BLANCO".equals(tipoVoto)) {
+                sumMesasVacioD = sumD;
+            } else if ("NULO".equals(tipoVoto)) {
+                sumMesasNuloD = sumD;
+            }
+        }
+
+        model.addAttribute("sumMesasValidoE", sumMesasValidoE);
+        model.addAttribute("sumMesasVacioE", sumMesasVacioE);
+        model.addAttribute("sumMesasNuloE", sumMesasNuloE);
+
+        System.out.println(sumMesasValidoE);
+        System.out.println(sumMesasVacioE);
+        System.out.println(sumMesasNuloE);
+
+        model.addAttribute("sumMesasValidoD", sumMesasValidoD);
+        model.addAttribute("sumMesasVacioD", sumMesasVacioD);
+        model.addAttribute("sumMesasNuloD", sumMesasNuloD);
+
+        
         model.addAttribute("listaMesas", listaMesas );
 
         return "publico/tablaMesas";

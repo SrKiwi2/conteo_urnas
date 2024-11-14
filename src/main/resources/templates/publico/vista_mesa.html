@@ -1,20 +1,27 @@
-<h4 class="py-3 mb-4"><span class="text-muted fw-light">Menú /</span> Mesa</h4>
-
+<head>
+    <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
+</head>
 <div class="card">
+    <h4 class="py-3 mb-4"><span class="text-muted fw-light">VOTOS POR</span> MESA</h4>
     <div class="card-header d-flex justify-content-lg-between">
-        <div>
+        <div style="display: flex; gap: 20px;">
             <label for="">Facultad</label>
-            <select class="select2 form-select form-select-lg" onchange="filtrarCarreras(this.value)">
-                <option th:each="facultad : ${listaFacultades}" th:value="${facultad.id_facultad}"
-                    th:text="${facultad.nombre_facultad}">
-                </option>
-            </select>
-            <label for="">Carrera</label>
-            <select class="select2 form-select form-select-lg" id="selectCarrera" onchange="filtrarMesas(this.value)">
-                
-            </select>
+                <div class="col-12 col-md-8">
+                    <select class="select2 form-select form-select-lg" onchange="filtrarCarreras(this.value)" style="width: 200px;">
+                        <option th:each="facultad : ${listaFacultades}" th:value="${facultad.id_facultad}"
+                            th:text="${facultad.nombre_facultad}">
+                        </option>
+                    </select>
+                </div>
+                <label for="">Carrera</label>
+                <div class="col-12 col-md-8">
+                    <select class="select2 form-select form-select-lg" id="selectCarrera" onchange="filtrarMesas(this.value)" style="width: 200px;">
+                        <!-- Opciones dinámicas de carrera -->
+                    </select>
+                </div>
         </div>
     </div>
+    
     <div class="card-datatable table-responsive pt-0" id="mesaRegistros">
         <table class="datatables-basic table table-hover" id="data-table">
             <thead>
@@ -46,7 +53,7 @@
         <div class="modal-content" id="contenidoModalMesa"></div>
     </div>
 </div>
-
+<script src="../../assets/vendor/libs/select2/select2.js"></script>
 <script>
     $(document).ready(function () {
         cargarTabla();
@@ -63,6 +70,7 @@
             type: 'GET',
             url: "/publico/carrerasPorFacultad/"+params,  // Ruta del método del controlador en Spring Boot para cargar el formulario
             success: function (response) {
+                
                 $('#selectCarrera').html(response);
             },
             error: function (xhr) {
@@ -72,6 +80,18 @@
     }
 
     function filtrarMesas(params) {
+        $.ajax({
+            type: 'GET',
+            url: "/publico/mesasPorCarrera/"+params,  // Ruta del método del controlador en Spring Boot para cargar el formulario
+            success: function (response) {
+                $('#mesaRegistros').html(response);
+            },
+            error: function (xhr) {
+                console.error('Error en la solicitud del formulario:', xhr);
+            }
+        });
+
+
         $.ajax({
             type: 'GET',
             url: "/publico/mesasPorCarrera/"+params,  // Ruta del método del controlador en Spring Boot para cargar el formulario
