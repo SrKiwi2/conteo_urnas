@@ -108,32 +108,46 @@ public class VotoController {
 
     @ValidarUsuarioAutenticado
     @PostMapping("/registrar-voto")
-    public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto, @RequestParam(value = "tipoVoto", required = false) Integer tipoVoto) {
+    public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto, 
+        @RequestParam(value = "tipoVoto", required = false) Integer tipoVoto, 
+        @RequestParam(value = "cantidad_valido") Integer cantidad_valido,
+        @RequestParam(value = "cantidad_blanco") Integer cantidad_blanco,
+        @RequestParam(value = "cantidad_nulo") Integer cantidad_null) {
 
         Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
 
         // Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
 
-        if (tipoVoto == 1) {
-            voto.setTipo_voto("NULO");
-            voto.setFrente(null);
-            voto.setMesa(voto.getMesa());
-            voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
-            voto.setEstado("ACTIVO");
-            iVotoService.save(voto);
-
-        }else if (tipoVoto == 2) {
-            voto.setTipo_voto("BLANCO");
-            voto.setEstado("ACTIVO");
-            voto.setMesa(voto.getMesa());
-            voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
-            iVotoService.save(voto);
-        }else if (tipoVoto == 3) {
+        if (cantidad_valido > 0) {
             voto.setTipo_voto("VALIDO");
             voto.setEstado("ACTIVO");
             voto.setMesa(voto.getMesa());
             voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
+            voto.setCantidad(Integer.toString(cantidad_valido));
             iVotoService.save(voto);
+        }
+
+        if (cantidad_valido > 0) {
+            Voto voto2 = new Voto();
+
+            voto2.setTipo_voto("NULO");
+            voto2.setEstado("ACTIVO");
+            voto2.setMesa(voto.getMesa());
+            voto2.setFrente(null);
+            voto2.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
+            voto2.setCantidad(Integer.toString(cantidad_null));
+            iVotoService.save(voto2);
+        }
+
+        if (cantidad_valido > 0) {
+            Voto voto3 = new Voto();
+            voto3.setTipo_voto("BLANCO");
+            voto3.setFrente(null);
+            voto3.setEstado("ACTIVO");
+            voto3.setMesa(voto.getMesa());
+            voto3.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
+            voto3.setCantidad(Integer.toString(cantidad_blanco));
+            iVotoService.save(voto3);
         }
 
         return ResponseEntity.ok("Se realizó el registro correctamente");

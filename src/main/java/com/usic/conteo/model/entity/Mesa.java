@@ -27,7 +27,8 @@ public class Mesa extends AuditoriaConfig {
     private Long id_mesa;
     private String nombre_mesa;
     private String tipo_mesa;
-    
+    private Integer habilitados;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "mesa", fetch = FetchType.LAZY)
 	private List<Voto> votos;
 

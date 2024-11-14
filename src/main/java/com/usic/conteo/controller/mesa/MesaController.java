@@ -73,6 +73,7 @@ public class MesaController {
 
         Long id = Long.parseLong(Encriptar.decrypt(id_mesa));
         model.addAttribute("listaJurados", iJuradoService.listarJurados());
+        model.addAttribute("listarCarreras", carreraService.listarCarreras());
         model.addAttribute("mesa", iMesaService.findById(id));
         model.addAttribute("edit", "true");
 

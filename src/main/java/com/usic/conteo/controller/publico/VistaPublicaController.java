@@ -138,8 +138,7 @@ public class VistaPublicaController {
         }
 
         System.out.println("facultad> " + facultad.getNombre_facultad());
-
-        System.out.println(resultado_e);
+        System.out.println("VOTOS FACULTDAD ESTUDIANTE");
         System.out.println(sumValido_EF);
         System.out.println(sumNulo_EF);
         System.out.println(sumBlanco_EF);
@@ -161,7 +160,7 @@ public class VistaPublicaController {
             }
         }
 
-        System.out.println(resultado_d);
+        System.out.println("VOTOS FACULTDAD ESTUDIANTE");
         System.out.println(sumValido_DF);
         System.out.println(sumBlanco_DF);
         System.out.println(sumNulo_DF);

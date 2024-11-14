@@ -15,6 +15,13 @@
                 <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
             </div>
             <div class="col-12 col-md-6 mb-2">
+                <label class="form-label" for="modalEditUserLastName">Habilitados</label>
+                <input type="number" th:field="${mesa.habilitados}" class="form-control"
+                    required />
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
+            </div>
+            <div class="col-12 col-md-6 mb-2">
                 <label class="form-label" for="modalEditUserLastName">Tipo Mesa</label>
                 <select th:field="${mesa.tipo_mesa}" class="form-control" required>
                     <option value="" disabled selected>Seleccione una opción</option>

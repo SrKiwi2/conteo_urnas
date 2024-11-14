@@ -13,6 +13,7 @@
                     <th>#</th>
                     <th>NOMBRE</th>
                     <th>TIPO MESA</th>
+                    <th>HABILITADOS</th>
                     <th>OPCIONES</th>
                 </tr>
             </thead>
@@ -21,6 +22,7 @@
                     <th th:text="${index.index+1}"></th>
                     <th th:text="${mes.nombre_mesa}"></th>
                     <th th:text="${mes.tipo_mesa}"></th>
+                    <th th:text="${mes.habilitados}"></th>
                     <th>
                         <button type="button" class="btn btn-sm btn-primary"
                             th:onclick="cargarFormularioEdit([[${id_encryptado[__${index.index}__]}]])"
