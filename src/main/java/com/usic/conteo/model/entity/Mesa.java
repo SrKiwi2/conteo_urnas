@@ -31,7 +31,10 @@ public class Mesa extends AuditoriaConfig {
     private Integer habilitados;
 
     @Transient
-    private String restante;
+    private Long restante;
+
+    @Transient
+    private Long registrado;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "mesa", fetch = FetchType.LAZY)
 	private List<Voto> votos;

@@ -1,0 +1,114 @@
+<h4 class="py-3 mb-4"><span class="text-muted fw-light">Menú /</span> Mesa</h4>
+
+<div class="card">
+    <div class="card-header d-flex justify-content-lg-between">
+        <div>
+            <label for="">Facultad</label>
+            <select class="select2 form-select form-select-lg" onchange="filtrarCarreras(this.value)">
+                <option th:each="facultad : ${listaFacultades}" th:value="${facultad.id_facultad}"
+                    th:text="${facultad.nombre_facultad}">
+                </option>
+            </select>
+            <label for="">Carrera</label>
+            <select class="select2 form-select form-select-lg" id="selectCarrera" onchange="filtrarMesas(this.value)">
+                
+            </select>
+        </div>
+    </div>
+    <div class="card-datatable table-responsive pt-0" id="mesaRegistros">
+        <table class="datatables-basic table table-hover" id="data-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>NOMBRE</th>
+                    <th>TIPO MESA</th>
+                    <th>HABILITADOS</th>
+                    <th>REGISTRADOS</th>
+                    <th>RESTANTES</th>
+                </tr>
+            </thead>
+            <tbody class="animate__animated animate__bounceInDown">
+                <tr th:each="mes, index: ${listaMesas}">
+                    <th th:text="${index.index+1}"></th>
+                    <th th:text="${mes.nombre_mesa}"></th>
+                    <th th:text="${mes.tipo_mesa}"></th>
+                    <th th:text="${mes.habilitados}"></th>
+                    <th th:text="${mes.registrado}"></th>
+                    <th th:text="${mes.restante}"></th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="modalFormularioMesa" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="contenidoModalMesa"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        cargarTabla();
+
+    });
+
+
+    $('.select2').select2({
+        // Especificar el parent para el dropdown
+    });
+
+    function filtrarCarreras(params) {
+        $.ajax({
+            type: 'GET',
+            url: "/publico/carrerasPorFacultad/"+params,  // Ruta del método del controlador en Spring Boot para cargar el formulario
+            success: function (response) {
+                $('#selectCarrera').html(response);
+            },
+            error: function (xhr) {
+                console.error('Error en la solicitud del formulario:', xhr);
+            }
+        });
+    }
+
+    function filtrarMesas(params) {
+        $.ajax({
+            type: 'GET',
+            url: "/publico/mesasPorCarrera/"+params,  // Ruta del método del controlador en Spring Boot para cargar el formulario
+            success: function (response) {
+                $('#mesaRegistros').html(response);
+            },
+            error: function (xhr) {
+                console.error('Error en la solicitud del formulario:', xhr);
+            }
+        });
+    }
+</script>
+
+<script>
+    $('#data-table').DataTable({
+        language: {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        }
+    });
+</script>

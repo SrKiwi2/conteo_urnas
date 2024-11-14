@@ -15,11 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.ICarreraService;
-import com.usic.conteo.model.IService.IFrenteService;
 import com.usic.conteo.model.IService.IJuradoService;
 import com.usic.conteo.model.IService.IMesaService;
-import com.usic.conteo.model.Repository.ConsultasVistaVotos;
-import com.usic.conteo.model.entity.Frente;
 import com.usic.conteo.model.entity.Mesa;
 import com.usic.conteo.model.entity.Usuario;
 
@@ -50,7 +47,10 @@ public class MesaController {
         //List<Mesa> listaMesas = iMesaService.listarMesas();
         List<Mesa> listaMesas = iMesaService.listarMesas();
         for (Mesa mesa : listaMesas) {
-            mesa.setRestante(String.valueOf(iMesaService.findMesasWithRestantes(mesa.getId_mesa())));
+            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+                mesa.setRestante((Long) resultado[0]);
+                mesa.setRegistrado((Long) resultado[1]);
+            }
         }
         List<String> encryptedIds = new ArrayList<>();
         for (Mesa mesas : listaMesas) {

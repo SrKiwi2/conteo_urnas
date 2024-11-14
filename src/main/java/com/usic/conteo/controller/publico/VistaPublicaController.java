@@ -1,5 +1,6 @@
 package com.usic.conteo.controller.publico;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,9 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
+import com.usic.conteo.config.Encriptar;
+import com.usic.conteo.model.IService.ICarreraService;
 import com.usic.conteo.model.IService.IFacultadService;
+import com.usic.conteo.model.IService.IMesaService;
 import com.usic.conteo.model.Repository.ConsultasVistaVotos;
 import com.usic.conteo.model.entity.Facultad;
+import com.usic.conteo.model.entity.Mesa;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +34,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class VistaPublicaController {
 
     private final IFacultadService facultadService;
+    private final ICarreraService carreraService;
     private final ConsultasVistaVotos consultasVistaVotos;
+    private final IMesaService iMesaService;
 
     @GetMapping(value = "/vista")
     public String vistaPublica(Model model) {
@@ -174,6 +182,61 @@ public class VistaPublicaController {
         result.put("sumNulo_DF", sumNulo_DF);
 
         return result;
+    }
+
+    @GetMapping("/tabla-mesa")
+    public String tablaMesas(Model model) throws Exception {
+
+        //List<Mesa> listaMesas = iMesaService.listarMesas();
+        List<Mesa> listaMesas = iMesaService.listarMesas();
+        for (Mesa mesa : listaMesas) {
+            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+                mesa.setRestante((Long) resultado[0]);
+                mesa.setRegistrado((Long) resultado[1]);
+            }
+        }
+        List<String> encryptedIds = new ArrayList<>();
+        for (Mesa mesas : listaMesas) {
+            String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
+            encryptedIds.add(id_encryptado);
+        }
+
+        model.addAttribute("listaFacultades", facultadService.listarFacultades());
+        model.addAttribute("listaMesas", listaMesas);
+        model.addAttribute("id_encryptado", encryptedIds);
+        //model.addAttribute("listaMesas",iMesaService.findMesasWithRestantes());
+
+        return "publico/vista_mesa";
+    }
+
+
+    @GetMapping("/carrerasPorFacultad/{params}")
+    public String carreraPorFacultad(Model model, @PathVariable("params")Long idFacultad) throws Exception {
+
+        model.addAttribute("listaCarreras", carreraService.findByFacultad(idFacultad));
+
+        return "carrera/opcion";
+    }
+
+    @GetMapping("/mesasPorCarrera/{params}")
+    public String mostrar_carrera(Model model, @PathVariable("params")Long idCarrera) throws Exception {
+
+        List<Mesa> listaMesas = iMesaService.listarMesasPorIdCarrera(idCarrera);
+        for (Mesa mesa : listaMesas) {
+            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+                mesa.setRestante((Long) resultado[0]);
+                mesa.setRegistrado((Long) resultado[1]);
+            }
+        }
+        List<String> encryptedIds = new ArrayList<>();
+        for (Mesa mesas : listaMesas) {
+            String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
+            encryptedIds.add(id_encryptado);
+        }
+
+        model.addAttribute("listaMesas", listaMesas );
+
+        return "publico/tablaMesas";
     }
 
 }

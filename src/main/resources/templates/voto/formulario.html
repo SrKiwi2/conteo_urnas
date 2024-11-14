@@ -44,7 +44,7 @@
 
             <div class="col-12 col-md-6">
                 <label for="select2Basic" class="form-label">Mesa</label>
-                <select id="select2Basic" class="select2 form-select" data-allow-clear="true" th:field="${voto.mesa}">
+                <select class="select2 form-select" th:field="${voto.mesa}">
                     <option th:each="mesa : ${listarMesa}" 
                         th:value="${mesa.id_mesa}" 
                         th:selected="${mesa == voto.mesa}"
@@ -57,7 +57,7 @@
             
             <div class="col-12 col-md-6">
                 <label for="select2Basic" class="form-label">Frente</label>
-                <select id="select2Basic" class="select2 form-select" data-allow-clear="true" th:field="${voto.frente}">
+                <select id="select2Basic" class="select2 form-select" th:field="${voto.frente}">
                     <option th:each="frente : ${listaFrentes}" 
                         th:value="${frente.id_frente}" 
                         th:selected="${frente == voto.frente}"
@@ -80,5 +80,9 @@
 </form>
 
 <script>
+     $('.select2').select2({
+        // Especificar el parent para el dropdown
+    });
     manejarEnvioFormulario('#formularioVoto');
+   
 </script>

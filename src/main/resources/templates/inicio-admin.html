@@ -181,6 +181,20 @@
 
             });
 
+            $("#opcion_publicoMesa").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/publico/tabla-mesa");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_publicoMesa");;
+
+                botonPulsado.classList.add("active");
+
+            });
+
             
             // Función para cargar el contenido de la opción seleccionada
             function cargarContenido(url) {
