@@ -1419,14 +1419,18 @@
 
     // Donut Chart 3
   // --------------------------------------------------------------------
+  var sumValido = /*[[${sumValido}]]*/ 0;
+    var sumBlanco = /*[[${sumBlanco}]]*/ 0;
+    var sumNulo = /*[[${sumNulo}]]*/ 0;
   const donutChartEl3 = document.querySelector('#donutChart3'),
+
   donutChartConfig3 = {
     chart: {
       height: 390,
       type: 'donut'
     },
-    labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
-    series: [42, 7, 25, 25],
+    labels: ['VALID', 'BLANCO', 'NULO'],
+    series: [sumValido, sumBlanco, sumNulo],
     colors: [
       chartColors.donut.series1,
       chartColors.donut.series4,
@@ -1568,8 +1572,8 @@
         height: 390,
         type: 'donut'
       },
-      labels: ['Operational', 'Networking', 'Hiring', 'R&D'],
-      series: [42, 7, 25, 25],
+      labels: ['VALID', 'BLANCO', 'NULO'],
+      series: [32, 37, 1],
       colors: [
         chartColors.donut.series1,
         chartColors.donut.series4,

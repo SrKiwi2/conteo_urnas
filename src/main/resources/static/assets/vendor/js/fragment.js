@@ -10,8 +10,9 @@ function cargarFormularioAlert(urlFormulario, idContenedorModal, idFormulario) {
                 type: 'POST',
                 url: urlFormulario,  // Ruta del método del controlador en Spring Boot para cargar el formulario
                 success: function (response) {
+                    console.log(response);
                     $(idContenedorModal).html(response);  // Actualiza el contenido del modal con la respuesta del servidor
-
+                    
                     // Inicializa select2 en los elementos con la clase .select2 dentro del formulario
                     $('.select2').select2({
                         dropdownParent: $(idFormulario)  // Especificar el parent para el dropdown
@@ -39,6 +40,49 @@ function cargarFormularioAlert(urlFormulario, idContenedorModal, idFormulario) {
         }
     });
 }
+
+function mostrarDatosFacultdad(urlFormulario, idContenedorModal, idFormulario) {
+    // Verifica si la sesión está activa antes de cargar el formulario
+    $.ajax({
+        url: "/adm/cargar-datos", // URL para verificar la sesión
+        method: "GET",
+        success: function () {
+            // Si la sesión es válida, procede a cargar el formulario
+            $.ajax({
+                type: 'POST',
+                url: urlFormulario,  // Ruta del método del controlador en Spring Boot para cargar el formulario
+                success: function (response) {
+                    console.log(response);
+                    $(idContenedorModal).html(response);  // Actualiza el contenido del modal con la respuesta del servidor
+                    
+                    // Inicializa select2 en los elementos con la clase .select2 dentro del formulario
+                    $('.select2').select2({
+                        dropdownParent: $(idFormulario)  // Especificar el parent para el dropdown
+                    });
+                },
+                error: function (xhr) {
+                    console.error('Error en la solicitud del formulario:', xhr);
+                }
+            });
+        },
+        error: function (xhr) {
+            if (xhr.status === 401) {
+                // Si la sesión ha expirado, muestra una alerta con SweetAlert2
+                Swal.fire({
+                    title: 'Sesión expirada',
+                    text: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
+                    icon: 'warning',
+                    confirmButtonText: 'Ir al login'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/form-login'; // Redirige a la página de login
+                    }
+                });
+            }
+        }
+    });
+}
+
 
 // Función para cargar un formulario de edición con un ID específico dentro de un modal
 function cargarFormularioEditAlert(id, urlFormulario, idContenedorModal, idFormulario) {

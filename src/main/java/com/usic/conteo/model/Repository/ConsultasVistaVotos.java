@@ -1,6 +1,7 @@
 package com.usic.conteo.model.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -37,4 +38,28 @@ public class ConsultasVistaVotos {
             return null;
         }
     }
+
+    public List<Map<String, Object>> obtenerIdsDeGrupo(Long id_facultad, String tipo_mesa) {
+        String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) " + 
+                     "FROM voto v " + 
+                     "INNER JOIN mesa m ON m.id_mesa = v.id_mesa " + 
+                     "INNER JOIN carrera c ON c.id_carrera = m.id_carrera " + 
+                     "INNER JOIN facultad f ON f.id_facultad = c.id_facultad " + 
+                     "WHERE f.id_facultad = ? AND m.tipo_mesa = ? " + 
+                     "AND m._estado = 'ACTIVO' " + 
+                     "AND f._estado = 'ACTIVO' " + 
+                     "AND c._estado = 'ACTIVO' " + 
+                     "AND v._estado = 'ACTIVO' " + 
+                     "GROUP BY v.tipo_voto " + 
+                     "ORDER BY v.tipo_voto ASC";
+        
+        Object[] params = new Object[] {id_facultad, tipo_mesa};
+    
+        try {
+            return jdbcTemplate.queryForList(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+    
 }
