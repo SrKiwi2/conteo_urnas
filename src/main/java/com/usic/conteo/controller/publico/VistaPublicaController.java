@@ -1,29 +1,25 @@
 package com.usic.conteo.controller.publico;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
-import com.usic.conteo.config.Encriptar;
-import com.usic.conteo.model.IService.ICarreraService;
 import com.usic.conteo.model.IService.IFacultadService;
-import com.usic.conteo.model.IService.IVotoService;
 import com.usic.conteo.model.Repository.ConsultasVistaVotos;
-import com.usic.conteo.model.entity.Carrera;
 import com.usic.conteo.model.entity.Facultad;
-import com.usic.conteo.model.entity.Voto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 
 @Controller
@@ -31,83 +27,154 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VistaPublicaController {
 
-    private final IVotoService votoService;
     private final IFacultadService facultadService;
-    private final ICarreraService carreraService;
-
     private final ConsultasVistaVotos consultasVistaVotos;
 
-    
     @GetMapping(value = "/vista")
-    public String vistaPublica(HttpServletRequest request,@Validated Voto voto, Model model) {
-        model.addAttribute("votos", votoService.findAll());
+    public String vistaPublica(Model model) {
+        List<Facultad> listarFacultad = facultadService.listarFacultades();
+        model.addAttribute("listarFacultades", listarFacultad);
 
-        List<Carrera> listarCarrera = carreraService.listarCarreras();
-        model.addAttribute("listarCarreras", listarCarrera);
+        String tipo_mesa = "ESTUDIANTE";
+        String tipo_mesa2 = "DOCENTE";
+        List<Map<String, Object>> resultado_estudiante = consultasVistaVotos.listarVotosTipoMesa(tipo_mesa);
+        List<Map<String, Object>> resultado_docente = consultasVistaVotos.listarVotosTipoMesa(tipo_mesa2);
+        List<Map<String, Object>> resultado_total = consultasVistaVotos.listarVotosTotal();
+
+        Long sumValido_E = 0L;
+        Long sumBlanco_E = 0L;
+        Long sumNulo_E = 0L;
+
+        for (Map<String, Object> row : resultado_estudiante) {
+            String tipoVoto = (String) row.get("tipo_voto");
+            Long sum = ((Number) row.get("sum")).longValue();
+            
+            if ("VALIDO".equals(tipoVoto)) {
+                sumValido_E = sum;
+            } else if ("BLANCO".equals(tipoVoto)) {
+                sumBlanco_E = sum;
+            } else if ("NULO".equals(tipoVoto)) {
+                sumNulo_E = sum;
+            }
+        }
+
+        model.addAttribute("sumValido_E", sumValido_E);
+        model.addAttribute("sumBlanco_E", sumBlanco_E);
+        model.addAttribute("sumNulo_E", sumNulo_E);
+
+        Long sumValido_D = 0L;
+        Long sumBlanco_D = 0L;
+        Long sumNulo_D = 0L;
+
+        for (Map<String, Object> row : resultado_docente) {
+            String tipoVoto = (String) row.get("tipo_voto");
+            Long sumD = ((Number) row.get("sum")).longValue();
+            
+            if ("VALIDO".equals(tipoVoto)) {
+                sumValido_D = sumD;
+            } else if ("BLANCO".equals(tipoVoto)) {
+                sumBlanco_D = sumD;
+            } else if ("NULO".equals(tipoVoto)) {
+                sumNulo_D = sumD;
+            }
+        }
+
+        model.addAttribute("sumValido_D", sumValido_D);
+        model.addAttribute("sumBlanco_D", sumBlanco_D);
+        model.addAttribute("sumNulo_D", sumNulo_D);
+
+        Long sumValido_T = 0L;
+        Long sumBlanco_T = 0L;
+        Long sumNulo_T = 0L;
+
+        for (Map<String, Object> row : resultado_total) {
+            String tipoVoto = (String) row.get("tipo_voto");
+            Long sumD = ((Number) row.get("sum")).longValue();
+            
+            if ("VALIDO".equals(tipoVoto)) {
+                sumValido_T = sumD;
+            } else if ("BLANCO".equals(tipoVoto)) {
+                sumBlanco_T = sumD;
+            } else if ("NULO".equals(tipoVoto)) {
+                sumNulo_T = sumD;
+            }
+        }
+
+        model.addAttribute("sumValido_T", sumValido_T);
+        model.addAttribute("sumBlanco_T", sumBlanco_T);
+        model.addAttribute("sumNulo_T", sumNulo_T);
+
         return "publico/vista";
     }
 
-    @ValidarUsuarioAutenticado
-    @PostMapping("/tabla-votos")
-    public String tablaVotos(Model model, HttpServletRequest request) throws Exception {
-
-        List<Facultad> listarFacultad = facultadService.listarFacultades();
-        
-        List<String> encryptedIds = new ArrayList<>();
-        for (Facultad facultades : listarFacultad) {
-            String id_encryptado = Encriptar.encrypt(Long.toString(facultades.getId_facultad()));
-            encryptedIds.add(id_encryptado);
-        }
-
-        model.addAttribute("listarFacultades", listarFacultad);
-       
-        model.addAttribute("id_encryptado", encryptedIds);
-
-        return "voto/tabla-registro";
-    }
-
-
+    /* obtener votos por tipo_mesa y id_facultad */
     @PostMapping("/formularioFacultad/{id_facultad}")
-    public String formularioFacultad(HttpServletRequest request, Model model,
+    @ResponseBody
+    public Map<String, Object> formularioFacultad(HttpServletRequest request, Model model,
             @PathVariable("id_facultad") Long id_facultad) {
-        
-        String tipo_mesa = "ESTUDIANTE";
-        List<Map<String, Object>> resultado = consultasVistaVotos.obtenerIdsDeGrupo(id_facultad, tipo_mesa);
-        
-        System.out.println(resultado);
-        System.out.println(id_facultad);
 
-        Long sumValido = null;
-        Long sumBlanco = null;
-        Long sumNulo = null;
-        
-        // Iterar sobre los resultados y asignar los valores a las variables
-        for (Map<String, Object> row : resultado) {
+                System.out.println("ID Facultad recibido en backend: " + id_facultad);
+        Facultad facultad = facultadService.findById(id_facultad);
+        String tipo_mesa_e = "ESTUDIANTE";
+        String tipo_mesa_d = "DOCENTE";
+        List<Map<String, Object>> resultado_e = consultasVistaVotos.votosTipoMEsaFacultad(id_facultad, tipo_mesa_e);
+        List<Map<String, Object>> resultado_d = consultasVistaVotos.votosTipoMEsaFacultad(id_facultad, tipo_mesa_d);
+
+        Long sumValido_EF = 0L;
+        Long sumBlanco_EF = 0L;
+        Long sumNulo_EF = 0L;
+
+        for (Map<String, Object> row : resultado_e) {
             String tipoVoto = (String) row.get("tipo_voto");
-            Long sum = (Long) row.get("sum");
+            Long sumEF = ((Number) row.get("sum")).longValue();
             
             if ("VALIDO".equals(tipoVoto)) {
-                sumValido = sum;
+                sumValido_EF = sumEF;
             } else if ("BLANCO".equals(tipoVoto)) {
-                sumBlanco = sum;
+                sumBlanco_EF = sumEF;
             } else if ("NULO".equals(tipoVoto)) {
-                sumNulo = sum;
+                sumNulo_EF = sumEF;
             }
         }
-        
-        // Verificar los valores obtenidos
-        System.out.println("Sum Válido: " + sumValido);
-        System.out.println("Sum Blanco: " + sumBlanco);
-        System.out.println("Sum Nulo: " + sumNulo);
-        
-        // Puedes guardar estos valores en el request para usarlos en el frontend
-        request.setAttribute("sumValido", sumValido);
-        request.setAttribute("sumBlanco", sumBlanco);
-        request.setAttribute("sumNulo", sumNulo);
-        
-        model.addAttribute("sumValido", sumValido);
-        model.addAttribute("sumBlanco", sumBlanco);
-        model.addAttribute("sumNulo", sumNulo);
-        return "redirect:/publico/vista";
+
+        System.out.println("facultad> " + facultad.getNombre_facultad());
+
+        System.out.println(resultado_e);
+        System.out.println(sumValido_EF);
+        System.out.println(sumNulo_EF);
+        System.out.println(sumBlanco_EF);
+
+        Long sumValido_DF = 0L;
+        Long sumBlanco_DF = 0L;
+        Long sumNulo_DF = 0L;
+
+        for (Map<String, Object> row : resultado_d) {
+            String tipoVoto = (String) row.get("tipo_voto");
+            Long sumDF = ((Number) row.get("sum")).longValue();
+            
+            if ("VALIDO".equals(tipoVoto)) {
+                sumValido_DF = sumDF;
+            } else if ("BLANCO".equals(tipoVoto)) {
+                sumBlanco_DF = sumDF;
+            } else if ("NULO".equals(tipoVoto)) {
+                sumNulo_DF = sumDF;
+            }
+        }
+
+        System.out.println(resultado_d);
+        System.out.println(sumValido_DF);
+        System.out.println(sumBlanco_DF);
+        System.out.println(sumNulo_DF);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("sumValido_EF", sumValido_EF);
+        result.put("sumBlanco_EF", sumBlanco_EF);
+        result.put("sumNulo_EF", sumNulo_EF);
+        result.put("sumValido_DF", sumValido_DF);
+        result.put("sumBlanco_DF", sumBlanco_DF);
+        result.put("sumNulo_DF", sumNulo_DF);
+
+        return result;
     }
+
 }

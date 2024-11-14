@@ -5,11 +5,8 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import com.usic.conteo.model.entity.Voto;
 
 @Repository
 public class ConsultasVistaVotos {
@@ -39,7 +36,7 @@ public class ConsultasVistaVotos {
         }
     }
 
-    public List<Map<String, Object>> obtenerIdsDeGrupo(Long id_facultad, String tipo_mesa) {
+    public List<Map<String, Object>> votosTipoMEsaFacultad(Long id_facultad, String tipo_mesa) {
         String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) " + 
                      "FROM voto v " + 
                      "INNER JOIN mesa m ON m.id_mesa = v.id_mesa " + 
@@ -61,5 +58,73 @@ public class ConsultasVistaVotos {
             return null;
         }
     }
+
+    public List<Map<String, Object>> listarVotosTipoMesa(String tipo_mesa) {
+        String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) " +
+                     "FROM voto v " +
+                     "INNER JOIN mesa m ON m.id_mesa = v.id_mesa " +
+                     "INNER JOIN carrera c ON c.id_carrera = m.id_carrera " +
+                     "INNER JOIN facultad f ON f.id_facultad = c.id_facultad " +
+                     "WHERE m.tipo_mesa = ? " +
+                     "AND m._estado = 'ACTIVO' " +
+                     "AND f._estado = 'ACTIVO' " +
+                     "AND c._estado = 'ACTIVO' " +
+                     "AND v._estado = 'ACTIVO' " +
+                     "GROUP BY v.tipo_voto " +
+                     "ORDER BY v.tipo_voto ASC";
     
+        Object[] params = new Object[] {tipo_mesa};
+    
+        try {
+            return jdbcTemplate.queryForList(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
+    }
+
+    public List<Map<String, Object>> listarVotosTotal() {
+        String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) " +
+                     "FROM voto v " +
+                     "INNER JOIN mesa m ON m.id_mesa = v.id_mesa " +
+                     "INNER JOIN carrera c ON c.id_carrera = m.id_carrera " +
+                     "INNER JOIN facultad f ON f.id_facultad = c.id_facultad " +
+                     "WHERE m._estado = 'ACTIVO' " +
+                     "AND f._estado = 'ACTIVO' " +
+                     "AND c._estado = 'ACTIVO' " +
+                     "AND v._estado = 'ACTIVO' " +
+                     "GROUP BY v.tipo_voto " +
+                     "ORDER BY v.tipo_voto ASC";
+    
+        Object[] params = new Object[] {};  // Si no hay parámetros dinámicos, no es necesario incluirlos
+    
+        try {
+            return jdbcTemplate.queryForList(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            return null;  // Retorna null si no se encuentran resultados
+        }
+    }
+    
+    public List<Map<String, Object>> ObtenerConteoDeVotosXTipoMesaXFacultad(Long id_facultad, String tipo_mesa) {
+        String sql = "SELECT SUM(CAST(v.cantidad AS INT)) FROM voto v INNER JOIN mesa m ON m.id_mesa = v.id_mesa inner join carrera c on c.id_carrera = m.id_carrera inner join facultad f on f.id_facultad = c.id_facultad where f.id_facultad = ? and m.tipo_mesa = ? and m._estado = 'ACTIVO' and f._estado = 'ACTIVO' and c._estado = 'ACTIVO' and v._estado = 'ACTIVO' group by v.tipo_voto order by v.tipo_voto asc;";
+        Object[] params = new Object[] {id_facultad, tipo_mesa};
+    
+        try {
+            return jdbcTemplate.queryForList(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            
+            return null;
+        }
+    }
+
+    public List<Map<String, Object>> ObtenerConteoDeVotosXTipoMesa(Long id_facultad, String v_tipo_mesa) {
+        String sql = "SELECT SUM(CAST(v.cantidad AS INT)) FROM voto v INNER JOIN mesa m ON m.id_mesa = v.id_mesa inner join carrera c on c.id_carrera = m.id_carrera inner join facultad f on f.id_facultad = c.id_facultad where m.tipo_mesa = ? and m.'_estado' = 'ACTIVO and f.'_estado' = 'ACTIVO' and c.'_estado' = 'ACTIVO' and v.'_estado' = 'ACTIVO' group by v.tipo_voto order by v.tipo_voto asc;";
+        Object[] params = new Object[] {id_facultad, v_tipo_mesa};
+    
+        try {
+            return jdbcTemplate.queryForList(sql, params);
+        } catch (EmptyResultDataAccessException e) {
+            
+            return null;
+        }
+    }
 }
