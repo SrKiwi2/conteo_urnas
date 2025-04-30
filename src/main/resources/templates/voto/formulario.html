@@ -2,7 +2,7 @@
     <h4 class="modal-title" th:text="${edit}? 'Modificar Voto' : 'Registrar Voto'"></h4>
     <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
 </div>
-<form id="formularioVoto" method="post"
+<!-- <form id="formularioVoto" method="post"
     th:action="${edit}? @{/voto/modificar-voto} : @{/voto/registrar-voto}" novalidate>
     <input type="hidden" th:if="${edit != null}" th:field="${voto.id_voto}">
     <div class="modal-body">
@@ -77,7 +77,66 @@
             </div>
         </div>
     </div>
+</form> -->
+
+<form id="formularioVoto" method="post" th:action="@{/voto/registrar-voto}" novalidate>
+    <div class="modal-body">
+        <div class="row">
+            <!-- Votos Frente 1 -->
+            <div class="col-md-6 mb-2">
+                <label class="form-label">VOTOS RENOVACION CON CIENCIA</label>
+                <select class="form-select" name="frente1">
+                    <option th:each="frente : ${listaFrentes}"
+                            th:value="${frente.id_frente}"
+                            th:text="${frente.nombre_frente}"
+                            th:selected="${frente.nombre_frente == 'RENOVACION CON CIENCIA'}">
+                    </option>
+                </select>
+                <input type="number" class="form-control mt-1" name="cantidad_frente1" placeholder="Cantidad votos Frente 1" required />
+            </div>
+
+            <!-- Votos Frente 2 -->
+            <div class="col-md-6 mb-2">
+                <label class="form-label">100% ACBN</label>
+                <select class="form-select" name="frente2">
+                    <option th:each="frente : ${listaFrentes}"
+                            th:value="${frente.id_frente}"
+                            th:text="${frente.nombre_frente}"
+                            th:selected="${frente.nombre_frente == '100% ACBN'}">
+                    </option>
+                </select>
+                <input type="number" class="form-control mt-1" name="cantidad_frente2" placeholder="Cantidad votos Frente 2" required />
+            </div>
+
+            <!-- Votos en Blanco -->
+            <div class="col-md-6 mb-2">
+                <label class="form-label">Cantidad voto BLANCO</label>
+                <input type="number" name="cantidad_blanco" class="form-control" required placeholder="Introduce cantidad"/>
+            </div>
+
+            <!-- Votos Nulos -->
+            <div class="col-md-6 mb-2">
+                <label class="form-label">Cantidad voto NULO</label>
+                <input type="number" name="cantidad_nulo" class="form-control" required placeholder="Introduce cantidad"/>
+            </div>
+
+            <!-- Mesa -->
+            <div class="col-md-12 mb-2">
+                <label class="form-label">Mesa</label>
+                <select class="form-select" name="id_mesa" required>
+                    <option th:each="mesa : ${listarMesa}"
+                            th:value="${mesa.id_mesa}"
+                            th:text="${mesa.nombre_mesa}">
+                    </option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-success" value="Guardar Votos">
+    </div>
 </form>
+
 
 <script>
      $('.select2').select2({
