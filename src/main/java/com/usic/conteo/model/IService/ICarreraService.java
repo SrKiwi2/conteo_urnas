@@ -10,5 +10,5 @@ import com.usic.conteo.model.entity.Carrera;
 public interface ICarreraService extends IServiceGenerico<Carrera, Long>{
     Carrera buscarCarreraPorNombre(String nombre_carrera);
     List<Carrera> listarCarreras();
-    List<Carrera> findByFacultad(Long idFacultad);
+    List<Carrera> findByFacultadId(Long idFacultad);
 }

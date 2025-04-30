@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.usic.conteo.model.entity.Mesa;
 
@@ -25,6 +26,6 @@ public interface IMesaDao extends JpaRepository<Mesa, Long> {
     List<Object[]> findMesasWithRestantes(Long id_mesa);
 
     @Query("SELECT m FROM Mesa m WHERE m.carrera.id_carrera = ?1 AND m.estado = 'ACTIVO' order by m.id_mesa asc")
-    List<Mesa> listarMesasPorIdCarrera(Long idCarrera);
+    List<Mesa> findByCarrera(@Param("idCarrera") Long idCarrera);
 }
 

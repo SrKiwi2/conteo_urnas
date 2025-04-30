@@ -1,10 +1,9 @@
 package com.usic.conteo.controller.voto;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
@@ -19,12 +18,7 @@ import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.IFrenteService;
 import com.usic.conteo.model.IService.IMesaService;
-import com.usic.conteo.model.IService.IRolService;
 import com.usic.conteo.model.IService.IVotoService;
-import com.usic.conteo.model.Repository.ConsultasVistaVotos;
-import com.usic.conteo.model.entity.Frente;
-import com.usic.conteo.model.entity.Mesa;
-import com.usic.conteo.model.entity.Rol;
 import com.usic.conteo.model.entity.Usuario;
 import com.usic.conteo.model.entity.Voto;
 
@@ -42,7 +36,7 @@ public class VotoController {
 
     private final IMesaService imesaService;
 
-    private final ConsultasVistaVotos consultasVistaVotos;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -53,47 +47,22 @@ public class VotoController {
     @ValidarUsuarioAutenticado
     @PostMapping("/tabla-registros")
     public String tablaRegistros(Model model, HttpServletRequest request) throws Exception {
-
-        Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
-
-        // List<Voto> listaVotos = iVotoService.listarVotosPorUsuario(usuarioLogueado.getIdUsuario());
-
         List<Voto> listarvotosGeneral = iVotoService.listarVotos();
         List<String> encryptedIds = new ArrayList<>();
         for (Voto votos : listarvotosGeneral) {
             String id_encryptado = Encriptar.encrypt(Long.toString(votos.getId_voto()));
             encryptedIds.add(id_encryptado);
         }
-
         model.addAttribute("listaVotos", listarvotosGeneral);
         model.addAttribute("id_encryptado", encryptedIds);
-
-        // Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
-
-        // model.addAttribute("conteoNulos", consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa()));
-        // model.addAttribute("conteoBlancos", consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa()));
-        // model.addAttribute("conteoValidos", consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa()));
-        // Integer totalNulos = consultasVistaVotos.ObtenerConteoXMesa("NULO", mesa.getId_mesa());
-        // Integer totalBlancos = consultasVistaVotos.ObtenerConteoXMesa("BLANCO", mesa.getId_mesa());
-        // Integer totalValidos = consultasVistaVotos.ObtenerConteoXMesa("VALIDO", mesa.getId_mesa());
-        // Integer totalVotos = totalNulos + totalBlancos + totalValidos;
-        // model.addAttribute("totalVotos", totalVotos);
-
-        // model.addAttribute("conteoNulos", totalNulos);
-        // model.addAttribute("conteoBlancos", totalBlancos);
-        // model.addAttribute("conteoValidos", totalValidos);
-        // model.addAttribute("totalVotos", totalVotos);
-
         return "voto/tabla-registro";
     }
 
     @ValidarUsuarioAutenticado
     @PostMapping("/formulario")
     public String formulario(Model model, Voto voto, HttpServletRequest request) {
-
         model.addAttribute("listaFrentes", iFrenteService.listarFrentes());
         model.addAttribute("listarMesa", imesaService.listarMesas());
-
         return "voto/formulario";
     }
 
@@ -115,8 +84,6 @@ public class VotoController {
         @RequestParam(value = "cantidad_nulo") Integer cantidad_null) {
 
         Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
-
-        // Mesa mesa = imesaService.findById(consultasVistaVotos.ObtenerMesaXUsuario(usuarioLogueado.getIdUsuario()));
 
         if (cantidad_valido > 0) {
             voto.setTipo_voto("VALIDO");
@@ -150,6 +117,7 @@ public class VotoController {
             iVotoService.save(voto3);
         }
 
+        messagingTemplate.convertAndSend("/topic/actualizar-graficos", "actualizar");
         return ResponseEntity.ok("Se realizó el registro correctamente");
     }
 

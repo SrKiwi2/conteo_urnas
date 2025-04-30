@@ -1,0 +1,272 @@
+<div class="card-body">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="donutChartEC" th:data-sum-valido-ec="${sumMesasValidoE}" th:data-sum-blanco-ec="${sumMesasVacioE}"
+                th:data-sum-nulo-ec="${sumMesasNuloE}">
+            </div>
+        </div>
+    </div>
+</div>
+
+<table class="datatables-basic table table-hover" id="data-table2">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>MESA</th>
+            <th>TIPO MESA</th>
+            <th>HABILITADOS</th>
+            <th>VOTOS EMITIDOS</th>
+            <th>AUSENTES</th>
+        </tr>
+    </thead>
+    <tbody class="animate__animated animate__bounceInDown">
+        <tr th:each="mes, index: ${listaMesas}">
+            <th th:text="${index.index+1}"></th>
+            <th th:text="${mes.nombre_mesa}"></th>
+            <th th:text="${mes.tipo_mesa}"></th>
+            <th th:text="${mes.habilitados}"></th>
+            <th th:text="${mes.registrado}"></th>
+            <th th:text="${mes.restante}"></th>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        let cardColor, headingColor, labelColor, borderColor, legendColor;
+
+        if (isDarkStyle) {
+            cardColor = config.colors_dark.cardColor;
+            headingColor = config.colors_dark.headingColor;
+            labelColor = config.colors_dark.textMuted;
+            legendColor = config.colors_dark.bodyColor;
+            borderColor = config.colors_dark.borderColor;
+        } else {
+            cardColor = config.colors.cardColor;
+            headingColor = config.colors.headingColor;
+            labelColor = config.colors.textMuted;
+            legendColor = config.colors.bodyColor;
+            borderColor = config.colors.borderColor;
+        }
+
+        // Color constant
+        const chartColors = {
+            column: {
+                series1: '#826af9',
+                series2: '#d2b0ff',
+                bg: '#f8d3ff'
+            },
+            donut: {
+                series1: '#fee802',
+                series2: '#3fd0bd',
+                series3: '#826bf8',
+                series4: '#2b9bf4',
+                series5: '#90EE90'
+            },
+            area: {
+                series1: '#29dac7',
+                series2: '#60f2ca',
+                series3: '#a5f8cd'
+            }
+        };
+
+        //estudinate por carrera
+        const donutChartElEC = document.querySelector('#donutChartEC');
+        if (donutChartElEC !== null) {
+            const sumValidoEC = parseInt(donutChartElEC.getAttribute('data-sum-valido-ec'), 10);
+            const sumBlancoEC = parseInt(donutChartElEC.getAttribute('data-sum-blanco-ec'), 10);
+            const sumNuloEC = parseInt(donutChartElEC.getAttribute('data-sum-nulo-ec'), 10);
+
+            const totalVotosEC = sumValidoEC + sumBlancoEC + sumNuloEC;
+
+            console.log("sumValido:", sumValidoEC);
+            console.log("sumBlanco:", sumBlancoEC);
+            console.log("sumNulo:", sumNuloEC);
+
+            let porcentajeValidoEC = 0;
+            let porcentajeBlancoDF = 0;
+            let porcentajeNuloDF = 0;
+
+            if (totalVotosEC > 0) {
+                porcentajeValidoEC = (sumValidoEC / totalVotosEC) * 100;
+                porcentajeBlancoEC = (sumBlancoEC / totalVotosEC) * 100;
+                porcentajeNuloEC = (sumNuloEC / totalVotosEC) * 100;
+            }
+
+            const donutChartConfigEC = {
+                chart: {
+                    height: 390,
+                    type: 'donut'
+                },
+                labels: ['Blancos', 'Nulos', 'Validos'],
+                series: [sumBlancoEC, sumNuloEC, sumValidoEC],
+                colors: [
+                    chartColors.donut.series1,
+                    chartColors.donut.series3,
+                    chartColors.donut.series5
+                ],
+                stroke: {
+                    show: false,
+                    curve: 'straight'
+                },
+                dataLabels: {
+                    enabled: true,
+                    formatter: function (val, opt) {
+                        return val.toFixed(2) + '%';
+                    }
+                },
+                legend: {
+                    show: true,
+                    position: 'bottom',
+                    markers: { offsetX: -3 },
+                    itemMargin: {
+                        vertical: 3,
+                        horizontal: 10
+                    },
+                    labels: {
+                        colors: legendColor,
+                        useSeriesColors: false
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        donut: {
+                            labels: {
+                                show: true,
+                                name: {
+                                    fontSize: '2rem',
+                                    fontFamily: 'Public Sans'
+                                },
+                                value: {
+                                    fontSize: '1.2rem',
+                                    color: legendColor,
+                                    fontFamily: 'Public Sans',
+                                    formatter: function (val) {
+                                        if (typeof val === 'number' && !isNaN(val)) {
+                                            return val.toFixed(2); // Redondear a 2 decimales
+                                        } else {
+                                            return val; // Si no es un número, devolver el valor tal como está
+                                        }
+                                    }
+                                },
+                                total: {
+                                    show: true,
+                                    fontSize: '1.5rem',
+                                    color: headingColor,
+                                    label: 'Total',
+                                    formatter: function (w) {
+                                        return totalVotosEC + ' votos';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                responsive: [
+                    {
+                        breakpoint: 992,
+                        options: {
+                            chart: {
+                                height: 380
+                            },
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    colors: legendColor,
+                                    useSeriesColors: false
+                                }
+                            }
+                        }
+                    },
+                    {
+                        breakpoint: 576,
+                        options: {
+                            chart: {
+                                height: 320
+                            },
+                            plotOptions: {
+                                pie: {
+                                    donut: {
+                                        labels: {
+                                            show: true,
+                                            name: {
+                                                fontSize: '1.5rem'
+                                            },
+                                            value: {
+                                                fontSize: '1rem'
+                                            },
+                                            total: {
+                                                fontSize: '1.5rem'
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    colors: legendColor,
+                                    useSeriesColors: false
+                                }
+                            }
+                        }
+                    },
+                    {
+                        breakpoint: 420,
+                        options: {
+                            chart: {
+                                height: 280
+                            },
+                            legend: {
+                                show: false
+                            }
+                        }
+                    },
+                    {
+                        breakpoint: 360,
+                        options: {
+                            chart: {
+                                height: 250
+                            },
+                            legend: {
+                                show: false
+                            }
+                        }
+                    }
+                ]
+            };
+            
+            const donutChartEC = new ApexCharts(donutChartElEC, donutChartConfigEC);
+            donutChartEC.render();
+        }
+    });
+</script>
+
+<script>
+    $('#data-table2').DataTable({
+        language: {
+            "sProcessing": "Procesando...",
+            "sLengthMenu": "Mostrar _MENU_ registros",
+            "sZeroRecords": "No se encontraron resultados",
+            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix": "",
+            "sSearch": "Buscar:",
+            "sUrl": "",
+            "sInfoThousands": ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst": "Primero",
+                "sLast": "Último",
+                "sNext": "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            }
+        }
+    });
+</script>
+

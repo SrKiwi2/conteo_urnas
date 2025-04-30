@@ -1,0 +1,24 @@
+<div class="card-datatable table-responsive pt-0" id="mesaRegistros">
+    <table class="datatables-basic table table-hover" id="data-table-carrera">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>MESA</th>
+                <th>TIPO MESA</th>
+                <th>HABILITADOS</th>
+                <th>REGISTRADOS</th>
+                <th>RESTANTES</th>
+            </tr>
+        </thead>
+        <tbody class="animate__animated animate__bounceInDown">
+            <tr th:each="mes, index: ${listaMesas}">
+                <th th:text="${index.index+1}"></th>
+                <th th:text="${mes.nombre_mesa}"></th>
+                <th th:text="${mes.tipo_mesa}"></th>
+                <th th:text="${mes.habilitados}"></th>
+                <th th:text="${mes.registrado}"></th>
+                <th th:text="${mes.restante}"></th>
+            </tr>
+        </tbody>
+    </table>
+</div>

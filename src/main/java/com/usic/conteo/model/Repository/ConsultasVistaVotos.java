@@ -151,4 +151,25 @@ public class ConsultasVistaVotos {
             return null;
         }
     }
+
+    public List<Map<String, Object>> listarVotosEstudiantesRenovacion(String tipoMesa, String nombreFrente) {
+        String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) AS total_votos " +
+                     "FROM voto v " +
+                     "INNER JOIN mesa m ON m.id_mesa = v.id_mesa " +
+                     "INNER JOIN frente f ON f.id_frente = v.id_frente " +
+                     "WHERE m.tipo_mesa = ? " +
+                     "AND f.nombre_frente = ? " +
+                     "AND m._estado = 'ACTIVO' " +
+                     "AND v._estado = 'ACTIVO' " +
+                     "GROUP BY v.tipo_voto " +
+                     "ORDER BY v.tipo_voto ASC";
+    
+        try {
+            return jdbcTemplate.queryForList(sql, tipoMesa, nombreFrente);
+        } catch (EmptyResultDataAccessException e) {
+            return null; // mejor que null
+        }
+    }
+    
+    
 }

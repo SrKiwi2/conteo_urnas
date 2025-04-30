@@ -1,4 +1,4 @@
-package com.usic.conteo.controller.publico;
+package com.usic.conteo.controller.publico_acbn;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.usic.conteo.config.Encriptar;
@@ -26,24 +27,64 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequestMapping("/publico")
+@RequestMapping("/acbn")
 @RequiredArgsConstructor
-public class VistaPublicaController {
-
+public class VistaPublicaAcbsController {
+    
     private final IFacultadService facultadService;
     private final ICarreraService carreraService;
     private final ConsultasVistaVotos consultasVistaVotos;
     private final IMesaService iMesaService;
 
     @GetMapping(value = "/vista")
-    public String vistaPublica(Model model) {
-        List<Facultad> listarFacultad = facultadService.listarFacultades();
-        model.addAttribute("listarFacultades", listarFacultad);
+    public String vista_acbn(Model model) {
+
+        model.addAttribute("listaFacultades", facultadService.listarFacultades());
+        model.addAttribute("listaCarreras", carreraService.listarCarreras());
+        return "publico_acbn/vista-acbn";
+    }
+
+    @GetMapping("/tabla-mesa")
+    public String tablaMesasPorCarerra(@RequestParam("idCarrera") Long idCarrera, Model model) throws Exception {
+
+        List<Mesa> listaMesas = iMesaService.findByCarrera(idCarrera);
+
+        for (Mesa mesa : listaMesas) {
+            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+                mesa.setRestante((Long) resultado[0]);
+                mesa.setRegistrado((Long) resultado[1]);
+            }
+        }
+
+        List<String> encryptedIds = new ArrayList<>();
+        for (Mesa mesas : listaMesas) {
+            String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
+            encryptedIds.add(id_encryptado);
+        }
+
+        model.addAttribute("listaMesas", listaMesas);
+        model.addAttribute("id_encryptado", encryptedIds);
+
+        return "publico_acbn/vista-mesa-acbn";
+    }
+
+    @GetMapping("/graficos")
+    public String graficos(Model model) throws Exception {
+
+        List<Carrera> carreras = carreraService.listarCarreras();
+        model.addAttribute("listaCarreras", carreras);
+
+        if (!carreras.isEmpty()) {
+            Long idPrimeraCarrera = carreras.get(0).getId_carrera();
+            model.addAttribute("idPrimeraCarrera", idPrimeraCarrera);
+        }
 
         String tipo_mesa = "ESTUDIANTE";
         String tipo_mesa2 = "DOCENTE";
-        List<Map<String, Object>> resultado_estudiante = consultasVistaVotos.listarVotosTipoMesa(tipo_mesa);
-        List<Map<String, Object>> resultado_docente = consultasVistaVotos.listarVotosTipoMesa(tipo_mesa2);
+        String nomnre_frente = "RENOVACION CON CIENCIA";
+
+        List<Map<String, Object>> resultado_estudiante = consultasVistaVotos.listarVotosEstudiantesRenovacion(tipo_mesa, nomnre_frente);
+        List<Map<String, Object>> resultado_docente = consultasVistaVotos.listarVotosEstudiantesRenovacion(tipo_mesa2, nomnre_frente);
         List<Map<String, Object>> resultado_total = consultasVistaVotos.listarVotosTotal();
 
         Long sumValido_E = 0L;
@@ -52,7 +93,7 @@ public class VistaPublicaController {
 
         for (Map<String, Object> row : resultado_estudiante) {
             String tipoVoto = (String) row.get("tipo_voto");
-            Long sum = ((Number) row.get("sum")).longValue();
+            Long sum = ((Number) row.get("total_votos")).longValue();
             
             if ("VALIDO".equals(tipoVoto)) {
                 sumValido_E = sum;
@@ -73,7 +114,7 @@ public class VistaPublicaController {
 
         for (Map<String, Object> row : resultado_docente) {
             String tipoVoto = (String) row.get("tipo_voto");
-            Long sumD = ((Number) row.get("sum")).longValue();
+            Long sumD = ((Number) row.get("total_votos")).longValue();
             
             if ("VALIDO".equals(tipoVoto)) {
                 sumValido_D = sumD;
@@ -94,7 +135,7 @@ public class VistaPublicaController {
 
         for (Map<String, Object> row : resultado_total) {
             String tipoVoto = (String) row.get("tipo_voto");
-            Long sumD = ((Number) row.get("sum")).longValue();
+            Long sumD = ((Number) row.get("total_votos")).longValue();
             
             if ("VALIDO".equals(tipoVoto)) {
                 sumValido_T = sumD;
@@ -109,106 +150,17 @@ public class VistaPublicaController {
         model.addAttribute("sumBlanco_T", sumBlanco_T);
         model.addAttribute("sumNulo_T", sumNulo_T);
 
-        return "publico/vista";
+        return "publico_acbn/graficos";
     }
 
-    /* obtener votos por tipo_mesa y id_facultad */
-    @PostMapping("/formularioFacultad/{id_facultad}")
+    @GetMapping("/facultad/{id}")
     @ResponseBody
-    public Map<String, Object> formularioFacultad(HttpServletRequest request, Model model,
-            @PathVariable("id_facultad") Long id_facultad) {
-
-                System.out.println("ID Facultad recibido en backend: " + id_facultad);
-        Facultad facultad = facultadService.findById(id_facultad);
-        String tipo_mesa_e = "ESTUDIANTE";
-        String tipo_mesa_d = "DOCENTE";
-        List<Map<String, Object>> resultado_e = consultasVistaVotos.votosTipoMEsaFacultad(id_facultad, tipo_mesa_e);
-        List<Map<String, Object>> resultado_d = consultasVistaVotos.votosTipoMEsaFacultad(id_facultad, tipo_mesa_d);
-
-        Long sumValido_EF = 0L;
-        Long sumBlanco_EF = 0L;
-        Long sumNulo_EF = 0L;
-
-        for (Map<String, Object> row : resultado_e) {
-            String tipoVoto = (String) row.get("tipo_voto");
-            Long sumEF = ((Number) row.get("sum")).longValue();
-            
-            if ("VALIDO".equals(tipoVoto)) {
-                sumValido_EF = sumEF;
-            } else if ("BLANCO".equals(tipoVoto)) {
-                sumBlanco_EF = sumEF;
-            } else if ("NULO".equals(tipoVoto)) {
-                sumNulo_EF = sumEF;
-            }
-        }
-
-        System.out.println("facultad> " + facultad.getNombre_facultad());
-        System.out.println("VOTOS FACULTDAD ESTUDIANTE");
-        System.out.println(sumValido_EF);
-        System.out.println(sumNulo_EF);
-        System.out.println(sumBlanco_EF);
-
-        Long sumValido_DF = 0L;
-        Long sumBlanco_DF = 0L;
-        Long sumNulo_DF = 0L;
-
-        for (Map<String, Object> row : resultado_d) {
-            String tipoVoto = (String) row.get("tipo_voto");
-            Long sumDF = ((Number) row.get("sum")).longValue();
-            
-            if ("VALIDO".equals(tipoVoto)) {
-                sumValido_DF = sumDF;
-            } else if ("BLANCO".equals(tipoVoto)) {
-                sumBlanco_DF = sumDF;
-            } else if ("NULO".equals(tipoVoto)) {
-                sumNulo_DF = sumDF;
-            }
-        }
-
-        System.out.println("VOTOS FACULTDAD ESTUDIANTE");
-        System.out.println(sumValido_DF);
-        System.out.println(sumBlanco_DF);
-        System.out.println(sumNulo_DF);
-
-        Map<String, Object> result = new HashMap<>();
-        result.put("sumValido_EF", sumValido_EF);
-        result.put("sumBlanco_EF", sumBlanco_EF);
-        result.put("sumNulo_EF", sumNulo_EF);
-        result.put("sumValido_DF", sumValido_DF);
-        result.put("sumBlanco_DF", sumBlanco_DF);
-        result.put("sumNulo_DF", sumNulo_DF);
-
-        return result;
+    public List<Carrera> obtenerCarrerasPorFacultad(@PathVariable Long id) {
+        return carreraService.findByFacultadId(id);
     }
-
-    @GetMapping("/tabla-mesa")
-    public String tablaMesas(Model model) throws Exception {
-
-        //List<Mesa> listaMesas = iMesaService.listarMesas();
-        List<Mesa> listaMesas = iMesaService.listarMesas();
-        for (Mesa mesa : listaMesas) {
-            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
-                mesa.setRestante((Long) resultado[0]);
-                mesa.setRegistrado((Long) resultado[1]);
-            }
-        }
-        List<String> encryptedIds = new ArrayList<>();
-        for (Mesa mesas : listaMesas) {
-            String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
-            encryptedIds.add(id_encryptado);
-        }
-
-        model.addAttribute("listaFacultades", facultadService.listarFacultades());
-        model.addAttribute("listaMesas", listaMesas);
-        model.addAttribute("id_encryptado", encryptedIds);
-        //model.addAttribute("listaMesas",iMesaService.findMesasWithRestantes());
-
-        return "publico/vista_mesa";
-    }
-
 
     @GetMapping("/carrerasPorFacultad/{params}")
-    public String carreraPorFacultad(Model model, @PathVariable("params")Long idFacultad) throws Exception {
+    public String carreraPorFacultad_acbn(Model model, @PathVariable("params")Long idFacultad) throws Exception {
 
         model.addAttribute("listaCarreras", carreraService.findByFacultadId(idFacultad));
         return "carrera/opcion";
@@ -292,6 +244,6 @@ public class VistaPublicaController {
 
         model.addAttribute("listaMesas", listaMesas );
 
-        return "publico/tablaMesas";
+        return "publico_acbn/mesa-carrera-acbn";
     }
 }

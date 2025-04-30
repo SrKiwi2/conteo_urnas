@@ -12,7 +12,7 @@ function cargarFormularioAlert(urlFormulario, idContenedorModal, idFormulario) {
                 success: function (response) {
                     console.log(response);
                     $(idContenedorModal).html(response);  // Actualiza el contenido del modal con la respuesta del servidor
-                    
+                    localStorage.setItem("actualizarGraficos", "true");
                     // Inicializa select2 en los elementos con la clase .select2 dentro del formulario
                     $('.select2').select2({
                         dropdownParent: $(idFormulario)  // Especificar el parent para el dropdown
@@ -40,6 +40,7 @@ function cargarFormularioAlert(urlFormulario, idContenedorModal, idFormulario) {
         }
     });
 }
+
 
 function mostrarDatosFacultdad(urlFormulario, idContenedorModal, idFormulario) {
     // Verifica si la sesión está activa antes de cargar el formulario

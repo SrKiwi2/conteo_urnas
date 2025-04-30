@@ -53,9 +53,7 @@ public class MesaServiceImpl implements IMesaService{
     }
 
     @Override
-    public List<Mesa> listarMesasPorIdCarrera(Long idCarrera) {
-        // TODO Auto-generated method stub
-        return iMesaDao.listarMesasPorIdCarrera(idCarrera);
+    public List<Mesa> findByCarrera(Long idCarrera) {
+        return iMesaDao.findByCarrera(idCarrera);
     }
-    
 }

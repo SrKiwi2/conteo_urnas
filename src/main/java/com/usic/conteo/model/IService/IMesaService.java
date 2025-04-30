@@ -13,5 +13,5 @@ public interface IMesaService extends IServiceGenerico<Mesa, Long>{
     List<Mesa> listarMesas();
 
     List<Object[]> findMesasWithRestantes(Long id_mesa);
-    List<Mesa> listarMesasPorIdCarrera(Long idCarrera);
+    List<Mesa> findByCarrera(@Param("idCarrera") Long idCarrera);
 }

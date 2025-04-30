@@ -46,8 +46,8 @@ public class CarreraServiceImpl implements ICarreraService{
     }
 
     @Override
-    public List<Carrera> findByFacultad(Long idFacultad) {
-        return carreraDao.findByFacultad(idFacultad);
+    public List<Carrera> findByFacultadId(Long idFacultad) {
+        return findByFacultadId(idFacultad);
     }
-    
+
 }
