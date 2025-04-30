@@ -60,14 +60,13 @@
             <div class="text-center my-4 d-flex justify-content-center align-items-center">
                 <div>
                     <h2 class="mb-1 text-dark fw-bold text-shadow">TOTAL DE VOTOS</h2>
-                    <p class="mb-0 text-muted fs-5 text-shadow">ELECCIONES 2025 - 2029</p>
+                    <p class="mb-0 text-muted fs-3 text-shadow">ELECCIONES 2025 - 2029</p>
                 </div>
                 <div class="me-3" style="width: 150px; height: 150px;">
                     <img src="../../assets/img/front-pages/backgrounds/logo1.png" 
                          alt="Logo Elecciones" 
                          class="img-fluid h-100 w-100 object-fit-contain">
                 </div>
-               
             </div>
 
             <div class="container-xxl flex-grow-1 container-p-y">
@@ -239,37 +238,41 @@
 
             const donutChartEl = document.querySelector('#donutChart');
             if (donutChartEl !== null) {
-                const sumValido = parseInt(donutChartEl.getAttribute('data-sum-valido'), 10);
-                const sumBlanco = parseInt(donutChartEl.getAttribute('data-sum-blanco'), 10);
-                const sumNulo = parseInt(donutChartEl.getAttribute('data-sum-nulo'), 10);
+                const sumValidoE = parseInt(donutChartEl.getAttribute('data-sum-valido'), 10);
+                const sumBlancoE = parseInt(donutChartEl.getAttribute('data-sum-blanco'), 10);
+                const sumNuloE = parseInt(donutChartEl.getAttribute('data-sum-nulo'), 10);
+                const sumACBNE = parseInt(donutChartEl.getAttribute('data-sum-acbn'), 10); // Nuevo
 
-                const totalVotos = sumValido + sumBlanco + sumNulo;
+                const totalVotosE = sumValidoE + sumBlancoE + sumNuloE + sumACBNE;
+                
+                console.log("sumValido:", sumValidoE);
+                console.log("sumBlanco:", sumBlancoE);
+                console.log("sumNulo:", sumNuloE);
 
-                // console.log("sumValido:", sumValido);
-                // console.log("sumBlanco:", sumBlanco);
-                // console.log("sumNulo:", sumNulo);
+                let porcentajeValidoE = 0;
+                let porcentajeBlancoE = 0;
+                let porcentajeNuloE = 0;
+                let porcentajeACBNE = 0;
 
-                let porcentajeValido = 0;
-                let porcentajeBlanco = 0;
-                let porcentajeNulo = 0;
-
-                if (totalVotos > 0) {
-                    porcentajeValido = (sumValido / totalVotos) * 100;
-                    porcentajeBlanco = (sumBlanco / totalVotos) * 100;
-                    porcentajeNulo = (sumNulo / totalVotos) * 100;
+                if(totalVotosE > 0){
+                    porcentajeValidoE = (sumValidoE / 701) * 100;
+                    porcentajeBlancoE = (sumBlancoE / 701) * 100;
+                    porcentajeNuloE = (sumNuloE / 701) * 100;
+                    porcentajeACBNE = (sumACBNE / 701) * 100;
                 }
 
-                const donutChartConfig = {
+                const donutChartConfigE = {
                     chart: {
                         height: 390,
                         type: 'donut'
                     },
-                    labels: ['Blancos', 'Nulos', 'Renovacion con ciencia'],
-                    series: [sumBlanco, sumNulo, sumValido],
+                    labels: ['Blancos', 'Nulos', 'Renovacion con ciencia', '100% ACBN'],
+                    series: [sumBlancoE, sumNuloE, sumValidoE, sumACBNE],
                     colors: [
                         chartColors.donut.series1,
                         chartColors.donut.series3,
-                        chartColors.donut.series5
+                        chartColors.donut.series5,
+                        "#FF0000"
                     ],
                     stroke: {
                         show: false,
@@ -278,7 +281,13 @@
                     dataLabels: {
                         enabled: true,
                         formatter: function (val, opt) {
-                            return val.toFixed(2) + '%';
+                            const porcentajes = [
+                                porcentajeBlancoE.toFixed(2) + '%', // Blanco
+                                porcentajeNuloE.toFixed(2) + '%',   // Nulo
+                                porcentajeValidoE.toFixed(2) + '%', // Renovación
+                                porcentajeACBNE.toFixed(2) + '%'   // ACBN
+                            ];
+                            return porcentajes[opt.seriesIndex];
                         },
                         dropShadow: {
                             enabled: true,
@@ -329,7 +338,7 @@
                                         color: headingColor,
                                         label: 'Total',
                                         formatter: function (w) {
-                                            return totalVotos + ' votos';
+                                            return totalVotosE + ' votos';
                                         }
                                     }
                                 }
@@ -409,46 +418,46 @@
                         }
                     ]
                 };
-                const donutChart = new ApexCharts(donutChartEl, donutChartConfig);
-                donutChart.render();
+                const donutChartE = new ApexCharts(donutChartEl, donutChartConfigE);
+                donutChartE.render();
             }
 
             // Donut Chart 1
             // --------------------------------------------------------------------
-            const donutChartEl1 = document.querySelector('#donutChart1');
-            if (donutChartEl1 !== null) {
+            const donutChartD = document.querySelector('#donutChart1');
+            if (donutChartD !== null) {
 
-                const sumValidoD = parseInt(donutChartEl1.getAttribute('data-sum-valido-d'), 10);
-                const sumBlancoD = parseInt(donutChartEl1.getAttribute('data-sum-blanco-d'), 10);
-                const sumNuloD = parseInt(donutChartEl1.getAttribute('data-sum-nulo-d'), 10);
+                const sumValidoD = parseInt(donutChartD.getAttribute('data-sum-valido-d'), 10);
+                const sumBlancoD = parseInt(donutChartD.getAttribute('data-sum-blanco-d'), 10);
+                const sumNuloD = parseInt(donutChartD.getAttribute('data-sum-nulo-d'), 10);
+                const sumACBND = parseInt(donutChartD.getAttribute('data-sum-acbn-d'), 10); // Nuevo
 
-                const totalVotosD = sumValidoD + sumBlancoD + sumNuloD;
-
-                // console.log("sumValido:", sumValidoD);
-                // console.log("sumBlanco:", sumBlancoD);
-                // console.log("sumNulo:", sumNuloD);
+                const totalVotosD = sumValidoD + sumBlancoD + sumNuloD + sumACBND;
 
                 let porcentajeValidoD = 0;
                 let porcentajeBlancoD = 0;
                 let porcentajeNuloD = 0;
+                let porcentajeACBND = 0;
 
                 if (totalVotosD > 0) {
-                    porcentajeValidoD = (sumValidoD / totalVotosD) * 100;
-                    porcentajeBlancoD = (sumBlancoD / totalVotosD) * 100;
-                    porcentajeNuloD = (sumNuloD / totalVotosD) * 100;
+                    porcentajeValidoD = (sumValidoD / 98) * 100;
+                    porcentajeBlancoD = (sumBlancoD / 98) * 100;
+                    porcentajeNuloD = (sumNuloD / 98) * 100;
+                    porcentajeACBND = (sumACBND / 98) * 100;
                 }
 
-                const donutChartConfig1 = {
+                const donutChartConfigD = {
                     chart: {
                         height: 390,
                         type: 'donut'
                     },
-                    labels: ['Blancos', 'Nulos', 'Renovacion con ciencia'],
-                    series: [sumBlancoD, sumNuloD, sumValidoD],
+                    labels: ['Blancos', 'Nulos', 'Renovacion con ciencia', '100% ACBN'],
+                    series: [sumBlancoD, sumNuloD, sumValidoD, sumACBND],
                     colors: [
                         chartColors.donut.series1,
                         chartColors.donut.series3,
-                        chartColors.donut.series5
+                        chartColors.donut.series5,
+                        "#FF0000"
                     ],
                     stroke: {
                         show: false,
@@ -588,45 +597,45 @@
                         }
                     ]
                 };
-                const donutChart1 = new ApexCharts(donutChartEl1, donutChartConfig1);
-                donutChart1.render();
+                const donutChart2 = new ApexCharts(donutChartD, donutChartConfigD);
+                donutChart2.render();
             }
 
             // Donut Chart 2
             // --------------------------------------------------------------------
-            const donutChartEl2 = document.querySelector('#donutChart2');
-            if (donutChartEl2 !== null) {
-                const sumValidoT = parseInt(donutChartEl2.getAttribute('data-sum-valido-t'), 10);
-                const sumBlancoT = parseInt(donutChartEl2.getAttribute('data-sum-blanco-t'), 10);
-                const sumNuloT = parseInt(donutChartEl2.getAttribute('data-sum-nulo-t'), 10);
+            const donutChartT = document.querySelector('#donutChart2T');
+            if (donutChartT !== null) {
+                const sumValidoT = parseInt(donutChartT.getAttribute('data-sum-valido-t'), 10);
+                const sumBlancoT = parseInt(donutChartT.getAttribute('data-sum-blanco-t'), 10);
+                const sumNuloT = parseInt(donutChartT.getAttribute('data-sum-nulo-t'), 10);
+                const sumACBN_T = parseInt(donutChartT.getAttribute('data-sum-acbn-t'), 10);
 
-                const totalVotosT = sumValidoT + sumBlancoT + sumNuloT;
-
-                // console.log("sumValido:", sumValidoT);
-                // console.log("sumBlanco:", sumBlancoT);
-                // console.log("sumNulo:", sumNuloT);
+                const totalVotosT = sumValidoT + sumBlancoT + sumNuloT + sumACBN_T;
 
                 let porcentajeValidoT = 0;
                 let porcentajeBlancoT = 0;
                 let porcentajeNuloT = 0;
+                let porcentajeACBNT = 0;
 
                 if (totalVotosT > 0) {
-                    porcentajeValidoT = (sumValidoT / totalVotosT) * 100;
-                    porcentajeBlancoT = (sumBlancoT / totalVotosT) * 100;
-                    porcentajeNuloT = (sumNuloT / totalVotosT) * 100;
+                    porcentajeValidoT = (sumValidoT / 799) * 100;
+                    porcentajeBlancoT = (sumBlancoT / 799) * 100;
+                    porcentajeNuloT = (sumNuloT / 799) * 100;
+                    porcentajeACBNT = (sumACBN_T / 799) * 100;
                 }
 
-                const donutChartConfig2 = {
+                const donutChartConfigT = {
                     chart: {
                         height: 390,
                         type: 'donut'
                     },
-                    labels: ['Blancos', 'Nulos', 'Renovacion con ciencia'],
-                    series: [sumBlancoT, sumNuloT, sumValidoT],
+                    labels: ['Blancos', 'Nulos', 'Renovacion con ciencia', '100% ACBN'],
+                    series: [sumBlancoT, sumNuloT, sumValidoT, sumACBN_T],
                     colors: [
                         chartColors.donut.series1,
                         chartColors.donut.series3,
-                        chartColors.donut.series5
+                        chartColors.donut.series5,
+                        "#FF0000"
                     ],
                     stroke: {
                         show: false,
@@ -766,8 +775,8 @@
                         }
                     ]
                 };
-                const donutChart2 = new ApexCharts(donutChartEl2, donutChartConfig2);
-                donutChart2.render();
+                const donutChart3 = new ApexCharts(donutChartT, donutChartConfigT);
+                donutChart3.render();
             }
         }
 

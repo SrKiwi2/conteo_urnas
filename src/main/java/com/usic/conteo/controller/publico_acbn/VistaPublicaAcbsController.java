@@ -85,70 +85,88 @@ public class VistaPublicaAcbsController {
 
         List<Map<String, Object>> resultado_estudiante = consultasVistaVotos.listarVotosEstudiantesRenovacion(tipo_mesa, nomnre_frente);
         List<Map<String, Object>> resultado_docente = consultasVistaVotos.listarVotosEstudiantesRenovacion(tipo_mesa2, nomnre_frente);
-        List<Map<String, Object>> resultado_total = consultasVistaVotos.listarVotosTotal();
+        List<Map<String, Object>> resultado_total = consultasVistaVotos.listarVotosTotalACBN();
 
-        Long sumValido_E = 0L;
+        Long sumRenovacion_E = 0L;
+        Long sumACBN_E = 0L;
         Long sumBlanco_E = 0L;
         Long sumNulo_E = 0L;
 
         for (Map<String, Object> row : resultado_estudiante) {
-            String tipoVoto = (String) row.get("tipo_voto");
-            Long sum = ((Number) row.get("total_votos")).longValue();
-            
-            if ("VALIDO".equals(tipoVoto)) {
-                sumValido_E = sum;
-            } else if ("BLANCO".equals(tipoVoto)) {
-                sumBlanco_E = sum;
-            } else if ("NULO".equals(tipoVoto)) {
-                sumNulo_E = sum;
+            String tipoVoto = (String) row.get("tipo_voto_agrupado"); // usa el alias correcto
+            Object totalObj = row.get("total_votos");
+        
+            if (totalObj != null && tipoVoto != null) {
+                Long sum = ((Number) totalObj).longValue();
+        
+                switch (tipoVoto) {
+                    case "RENOVACION" -> sumRenovacion_E = sum;
+                    case "100% ACBN" -> sumACBN_E = sum;
+                    case "BLANCO" -> sumBlanco_E = sum;
+                    case "NULO" -> sumNulo_E = sum;
+                }
             }
         }
 
-        model.addAttribute("sumValido_E", sumValido_E);
+        model.addAttribute("sumRenovacion_E", sumRenovacion_E);
+        model.addAttribute("sumACBN_E", sumACBN_E);
         model.addAttribute("sumBlanco_E", sumBlanco_E);
         model.addAttribute("sumNulo_E", sumNulo_E);
 
-        Long sumValido_D = 0L;
+
+        Long sumRenovacion_D = 0L;
+        Long sumACBN_D = 0L;
         Long sumBlanco_D = 0L;
         Long sumNulo_D = 0L;
 
         for (Map<String, Object> row : resultado_docente) {
-            String tipoVoto = (String) row.get("tipo_voto");
-            Long sumD = ((Number) row.get("total_votos")).longValue();
-            
-            if ("VALIDO".equals(tipoVoto)) {
-                sumValido_D = sumD;
-            } else if ("BLANCO".equals(tipoVoto)) {
-                sumBlanco_D = sumD;
-            } else if ("NULO".equals(tipoVoto)) {
-                sumNulo_D = sumD;
+            String tipoVoto = (String) row.get("tipo_voto_agrupado"); // usa el alias correcto
+            Object totalObj = row.get("total_votos");
+        
+            if (totalObj != null && tipoVoto != null) {
+                Long sum = ((Number) totalObj).longValue();
+        
+                switch (tipoVoto) {
+                    case "RENOVACION" -> sumRenovacion_D = sum;
+                    case "100% ACBN" -> sumACBN_D = sum;
+                    case "BLANCO" -> sumBlanco_D = sum;
+                    case "NULO" -> sumNulo_D = sum;
+                }
             }
         }
 
-        model.addAttribute("sumValido_D", sumValido_D);
+        model.addAttribute("sumRenovacion_D", sumRenovacion_D);
+        model.addAttribute("sumACBN_D", sumACBN_D);
         model.addAttribute("sumBlanco_D", sumBlanco_D);
         model.addAttribute("sumNulo_D", sumNulo_D);
 
-        Long sumValido_T = 0L;
+        Long sumRenovacion_T = 0L;
+        Long sumACBN_T = 0L;
         Long sumBlanco_T = 0L;
         Long sumNulo_T = 0L;
 
         for (Map<String, Object> row : resultado_total) {
-            String tipoVoto = (String) row.get("tipo_voto");
-            Long sumD = ((Number) row.get("total_votos")).longValue();
-            
-            if ("VALIDO".equals(tipoVoto)) {
-                sumValido_T = sumD;
-            } else if ("BLANCO".equals(tipoVoto)) {
-                sumBlanco_T = sumD;
-            } else if ("NULO".equals(tipoVoto)) {
-                sumNulo_T = sumD;
+            String tipoVoto = (String) row.get("tipo_voto_agrupado");
+            Object totalObj = row.get("total_votos");
+        
+            if (totalObj != null && tipoVoto != null) {
+                Long sum = ((Number) totalObj).longValue();
+        
+                switch (tipoVoto) {
+                    case "RENOVACION" -> sumRenovacion_T = sum;
+                    case "100% ACBN" -> sumACBN_T = sum;
+                    case "BLANCO" -> sumBlanco_T = sum;
+                    case "NULO" -> sumNulo_T = sum;
+                }
             }
         }
-
-        model.addAttribute("sumValido_T", sumValido_T);
+        
+        model.addAttribute("sumRenovacion_T", sumRenovacion_T);
+        model.addAttribute("sumACBN_T", sumACBN_T);
         model.addAttribute("sumBlanco_T", sumBlanco_T);
         model.addAttribute("sumNulo_T", sumNulo_T);
+
+        System.out.println(sumRenovacion_T + " " + sumACBN_T + " " + sumBlanco_T + " " + sumNulo_T);
 
         return "publico_acbn/graficos";
     }

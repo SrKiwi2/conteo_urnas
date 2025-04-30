@@ -1,5 +1,6 @@
 package com.usic.conteo.model.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -153,23 +154,61 @@ public class ConsultasVistaVotos {
     }
 
     public List<Map<String, Object>> listarVotosEstudiantesRenovacion(String tipoMesa, String nombreFrente) {
-        String sql = "SELECT v.tipo_voto, SUM(CAST(v.cantidad AS INT)) AS total_votos " +
-                     "FROM voto v " +
-                     "INNER JOIN mesa m ON m.id_mesa = v.id_mesa " +
-                     "INNER JOIN frente f ON f.id_frente = v.id_frente " +
-                     "WHERE m.tipo_mesa = ? " +
-                     "AND f.nombre_frente = ? " +
-                     "AND m._estado = 'ACTIVO' " +
-                     "AND v._estado = 'ACTIVO' " +
-                     "GROUP BY v.tipo_voto " +
-                     "ORDER BY v.tipo_voto ASC";
-    
+        String sql = """
+            SELECT 
+                CASE 
+                    WHEN v.tipo_voto IN ('BLANCO', 'NULO') THEN v.tipo_voto
+                    WHEN v.tipo_voto = 'VALIDO' AND f.nombre_frente = ? THEN 'RENOVACION'
+                    WHEN v.tipo_voto = 'VALIDO' AND f.nombre_frente != ? THEN '100% ACBN'
+                END AS tipo_voto_agrupado,
+                SUM(CAST(v.cantidad AS INT)) AS total_votos
+            FROM voto v
+            INNER JOIN mesa m ON m.id_mesa = v.id_mesa
+            LEFT JOIN frente f ON f.id_frente = v.id_frente
+            WHERE m.tipo_mesa = ?
+            AND m._estado = 'ACTIVO'
+            AND v._estado = 'ACTIVO'
+            AND v.tipo_voto IN ('BLANCO', 'NULO', 'VALIDO')
+            GROUP BY tipo_voto_agrupado
+            ORDER BY tipo_voto_agrupado ASC
+            """;
+
         try {
-            return jdbcTemplate.queryForList(sql, tipoMesa, nombreFrente);
+            return jdbcTemplate.queryForList(sql, nombreFrente, nombreFrente, tipoMesa);
         } catch (EmptyResultDataAccessException e) {
-            return null; // mejor que null
+            return new ArrayList<>(); // Retorna lista vacía en lugar de null
         }
     }
+
+    public List<Map<String, Object>> listarVotosTotalACBN() {
+        String sql = """
+            SELECT 
+                CASE 
+                    WHEN v.tipo_voto IN ('BLANCO', 'NULO') THEN v.tipo_voto
+                    WHEN v.tipo_voto = 'VALIDO' AND f2.nombre_frente = ? THEN 'RENOVACION'
+                    WHEN v.tipo_voto = 'VALIDO' AND f2.nombre_frente != ? THEN '100% ACBN'
+                END AS tipo_voto_agrupado,
+                SUM(CAST(v.cantidad AS INT)) AS total_votos
+            FROM voto v
+            INNER JOIN mesa m ON m.id_mesa = v.id_mesa
+            LEFT JOIN frente f2 ON f2.id_frente = v.id_frente
+            WHERE m._estado = 'ACTIVO'
+            AND v._estado = 'ACTIVO'
+            AND v.tipo_voto IN ('VALIDO', 'BLANCO', 'NULO')
+            GROUP BY tipo_voto_agrupado
+            ORDER BY tipo_voto_agrupado ASC
+            """;
+    
+        String nombreFrente = "RENOVACION CON CIENCIA";
+    
+        try {
+            return jdbcTemplate.queryForList(sql, nombreFrente, nombreFrente);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+    
+    
     
     
 }
