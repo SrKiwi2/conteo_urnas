@@ -1,5 +1,7 @@
 package com.usic.conteo.controller.publico_acbn;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -113,6 +115,8 @@ public class VistaPublicaAcbsController {
         model.addAttribute("sumBlanco_E", sumBlanco_E);
         model.addAttribute("sumNulo_E", sumNulo_E);
 
+        System.out.println("renovacion: " + sumRenovacion_E + " ACBN: " + sumACBN_E + " Blancos " + sumBlanco_E + " Nulos " + sumBlanco_E);
+
 
         Long sumRenovacion_D = 0L;
         Long sumACBN_D = 0L;
@@ -140,33 +144,82 @@ public class VistaPublicaAcbsController {
         model.addAttribute("sumBlanco_D", sumBlanco_D);
         model.addAttribute("sumNulo_D", sumNulo_D);
 
-        Long sumRenovacion_T = 0L;
-        Long sumACBN_T = 0L;
-        Long sumBlanco_T = 0L;
-        Long sumNulo_T = 0L;
+        System.out.println("renovacion: " + sumRenovacion_D + " ACBN: " + sumACBN_D + " Blancos " + sumBlanco_D + " Nulos " + sumNulo_D);
+
+        BigDecimal sumEstudiantesRenovacion = BigDecimal.ZERO;
+        BigDecimal sumEstudiantesACBN = BigDecimal.ZERO;
+        BigDecimal sumEstudiantesBlanco = BigDecimal.ZERO;
+        BigDecimal sumEstudiantesNulo = BigDecimal.ZERO;
+
+        BigDecimal sumDocentesRenovacion = BigDecimal.ZERO;
+        BigDecimal sumDocentesACBN = BigDecimal.ZERO;
+        BigDecimal sumDocentesBlanco = BigDecimal.ZERO;
+        BigDecimal sumDocentesNulo = BigDecimal.ZERO;
+
+        BigDecimal totalEstudiantes = BigDecimal.ZERO;
+        BigDecimal totalDocentes = BigDecimal.ZERO;
 
         for (Map<String, Object> row : resultado_total) {
             String tipoVoto = (String) row.get("tipo_voto_agrupado");
+            String tipoMesa = (String) row.get("tipo_mesa");  // Obtener tipo de mesa (Estudiante o Docente)
             Object totalObj = row.get("total_votos");
-        
-            if (totalObj != null && tipoVoto != null) {
-                Long sum = ((Number) totalObj).longValue();
-        
-                switch (tipoVoto) {
-                    case "RENOVACION" -> sumRenovacion_T = sum;
-                    case "100% ACBN" -> sumACBN_T = sum;
-                    case "BLANCO" -> sumBlanco_T = sum;
-                    case "NULO" -> sumNulo_T = sum;
+            
+            if (totalObj != null && tipoVoto != null && tipoMesa != null) {
+                BigDecimal sum = new BigDecimal(((Number) totalObj).longValue());
+                
+                if (tipoMesa.equals("ESTUDIANTE")) {
+                    totalEstudiantes = totalEstudiantes.add(sum);  // Sumar votos de estudiantes
+                    switch (tipoVoto) {
+                        case "RENOVACION" -> sumEstudiantesRenovacion = sum;
+                        case "100% ACBN" -> sumEstudiantesACBN = sum;
+                        case "BLANCO" -> sumEstudiantesBlanco = sum;
+                        case "NULO" -> sumEstudiantesNulo = sum;
+                    }
+                } else if (tipoMesa.equals("DOCENTE")) {
+                    totalDocentes = totalDocentes.add(sum);  // Sumar votos de docentes
+                    switch (tipoVoto) {
+                        case "RENOVACION" -> sumDocentesRenovacion = sum;
+                        case "100% ACBN" -> sumDocentesACBN = sum;
+                        case "BLANCO" -> sumDocentesBlanco = sum;
+                        case "NULO" -> sumDocentesNulo = sum;
+                    }
                 }
             }
         }
+        System.out.println();
         
-        model.addAttribute("sumRenovacion_T", sumRenovacion_T);
-        model.addAttribute("sumACBN_T", sumACBN_T);
-        model.addAttribute("sumBlanco_T", sumBlanco_T);
-        model.addAttribute("sumNulo_T", sumNulo_T);
+        // Calcular la equivalencia de votos entre estudiantes y docentes
+        BigDecimal equivalenciaDocenteAEstudiante = totalEstudiantes.divide(totalDocentes, 8, RoundingMode.HALF_UP);  // Mantener 5 decimales
+        System.out.println("Voto docente euivalente a votos estudiantes: "+ equivalenciaDocenteAEstudiante);
 
-        System.out.println(sumRenovacion_T + " " + sumACBN_T + " " + sumBlanco_T + " " + sumNulo_T);
+        // Calcular los votos de docentes equivalentes a votos de estudiantes
+        BigDecimal votosDocentesRenovacionEquivalentes = sumDocentesRenovacion.multiply(equivalenciaDocenteAEstudiante);
+        System.out.println("Voto renovacion: "+ votosDocentesRenovacionEquivalentes);
+        BigDecimal votosDocentesACBNEquivalentes = sumDocentesACBN.multiply(equivalenciaDocenteAEstudiante);
+        System.out.println("Voto acbn: "+ votosDocentesACBNEquivalentes);
+        BigDecimal votosDocentesBlancoEquivalentes = sumDocentesBlanco.multiply(equivalenciaDocenteAEstudiante);
+        System.out.println("Voto blanco: "+ votosDocentesBlancoEquivalentes);
+        BigDecimal votosDocentesNuloEquivalentes = sumDocentesNulo.multiply(equivalenciaDocenteAEstudiante);
+        System.out.println("Voto nulo: "+ votosDocentesNuloEquivalentes);
+
+        System.out.println("voto estudinate renovacion: "+sumEstudiantesRenovacion);
+        System.out.println("voto estudinate acbn: "+sumEstudiantesACBN);
+        System.out.println("voto estudinate blanco: "+sumEstudiantesBlanco);
+        System.out.println("voto estudinate nulo: "+sumEstudiantesNulo);
+        
+        // Calcular los votos promedios entre docentes y estudiantes
+        BigDecimal promedioRenovacion = (sumEstudiantesRenovacion.add(votosDocentesRenovacionEquivalentes)).divide(new BigDecimal(2), 5, RoundingMode.HALF_UP);
+        BigDecimal promedioACBN = (sumEstudiantesACBN.add(votosDocentesACBNEquivalentes)).divide(new BigDecimal(2), 5, RoundingMode.HALF_UP);
+        BigDecimal promedioBlanco = (sumEstudiantesBlanco.add(votosDocentesBlancoEquivalentes)).divide(new BigDecimal(2), 5, RoundingMode.HALF_UP);
+        BigDecimal promedioNulo = (sumEstudiantesNulo.add(votosDocentesNuloEquivalentes)).divide(new BigDecimal(2), 5, RoundingMode.HALF_UP);
+
+        // Agregar atributos al modelo
+        model.addAttribute("sumRenovacion_T", promedioRenovacion);
+        model.addAttribute("sumACBN_T", promedioACBN);
+        model.addAttribute("sumBlanco_T", promedioBlanco);
+        model.addAttribute("sumNulo_T", promedioNulo);
+        model.addAttribute("total_estudiantes", totalEstudiantes);
+        System.out.println("renovacion: " + promedioRenovacion + " ACBN: " + promedioACBN + " Blancos " + promedioBlanco + " Nulos " + promedioNulo + "toTAL ESTUDINATE: " + totalEstudiantes);
 
         return "publico_acbn/graficos";
     }

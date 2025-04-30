@@ -188,14 +188,15 @@ public class ConsultasVistaVotos {
                     WHEN v.tipo_voto = 'VALIDO' AND f2.nombre_frente = ? THEN 'RENOVACION'
                     WHEN v.tipo_voto = 'VALIDO' AND f2.nombre_frente != ? THEN '100% ACBN'
                 END AS tipo_voto_agrupado,
-                SUM(CAST(v.cantidad AS INT)) AS total_votos
+                SUM(CAST(v.cantidad AS INT)) AS total_votos,
+                m.tipo_mesa  -- Aquí agregar el tipo de mesa (Estudiantes o Docentes)
             FROM voto v
             INNER JOIN mesa m ON m.id_mesa = v.id_mesa
             LEFT JOIN frente f2 ON f2.id_frente = v.id_frente
             WHERE m._estado = 'ACTIVO'
             AND v._estado = 'ACTIVO'
             AND v.tipo_voto IN ('VALIDO', 'BLANCO', 'NULO')
-            GROUP BY tipo_voto_agrupado
+            GROUP BY tipo_voto_agrupado, m.tipo_mesa  -- Agrupar por tipo de mesa
             ORDER BY tipo_voto_agrupado ASC
             """;
     

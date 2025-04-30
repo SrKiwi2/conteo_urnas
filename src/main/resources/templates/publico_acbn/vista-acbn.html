@@ -255,10 +255,10 @@
                 let porcentajeACBNE = 0;
 
                 if(totalVotosE > 0){
-                    porcentajeValidoE = (sumValidoE / 701) * 100;
-                    porcentajeBlancoE = (sumBlancoE / 701) * 100;
-                    porcentajeNuloE = (sumNuloE / 701) * 100;
-                    porcentajeACBNE = (sumACBNE / 701) * 100;
+                    porcentajeValidoE = (sumValidoE / totalVotosE) * 100;
+                    porcentajeBlancoE = (sumBlancoE / totalVotosE) * 100;
+                    porcentajeNuloE = (sumNuloE / totalVotosE) * 100;
+                    porcentajeACBNE = (sumACBNE / totalVotosE) * 100;
                 }
 
                 const donutChartConfigE = {
@@ -440,10 +440,10 @@
                 let porcentajeACBND = 0;
 
                 if (totalVotosD > 0) {
-                    porcentajeValidoD = (sumValidoD / 98) * 100;
-                    porcentajeBlancoD = (sumBlancoD / 98) * 100;
-                    porcentajeNuloD = (sumNuloD / 98) * 100;
-                    porcentajeACBND = (sumACBND / 98) * 100;
+                    porcentajeValidoD = (sumValidoD / totalVotosD) * 100;
+                    porcentajeBlancoD = (sumBlancoD / totalVotosD) * 100;
+                    porcentajeNuloD = (sumNuloD / totalVotosD) * 100;
+                    porcentajeACBND = (sumACBND / totalVotosD) * 100;
                 }
 
                 const donutChartConfigD = {
@@ -605,12 +605,19 @@
             // --------------------------------------------------------------------
             const donutChartT = document.querySelector('#donutChart2T');
             if (donutChartT !== null) {
-                const sumValidoT = parseInt(donutChartT.getAttribute('data-sum-valido-t'), 10);
-                const sumBlancoT = parseInt(donutChartT.getAttribute('data-sum-blanco-t'), 10);
-                const sumNuloT = parseInt(donutChartT.getAttribute('data-sum-nulo-t'), 10);
-                const sumACBN_T = parseInt(donutChartT.getAttribute('data-sum-acbn-t'), 10);
+                const sumValidoT = parseFloat(donutChartT.getAttribute('data-sum-valido-t'), 10);
+                const sumBlancoT = parseFloat(donutChartT.getAttribute('data-sum-blanco-t'), 10);
+                const sumNuloT = parseFloat(donutChartT.getAttribute('data-sum-nulo-t'), 10);
+                const sumACBN_T = parseFloat(donutChartT.getAttribute('data-sum-acbn-t'), 10);
+                const total_e = parseInt(donutChartT.getAttribute('data-sum-acbn-te'), 10);
 
                 const totalVotosT = sumValidoT + sumBlancoT + sumNuloT + sumACBN_T;
+
+                console.log(sumValidoT);
+                console.log(sumBlancoT);
+                console.log(sumNuloT);
+                console.log(sumACBN_T);
+                console.log(total_e)
 
                 let porcentajeValidoT = 0;
                 let porcentajeBlancoT = 0;
@@ -618,10 +625,11 @@
                 let porcentajeACBNT = 0;
 
                 if (totalVotosT > 0) {
-                    porcentajeValidoT = (sumValidoT / 799) * 100;
-                    porcentajeBlancoT = (sumBlancoT / 799) * 100;
-                    porcentajeNuloT = (sumNuloT / 799) * 100;
-                    porcentajeACBNT = (sumACBN_T / 799) * 100;
+                    porcentajeValidoT = (sumValidoT / total_e) * 100;
+                    console.log(porcentajeValidoT);
+                    porcentajeBlancoT = (sumBlancoT / total_e) * 100;
+                    porcentajeNuloT = (sumNuloT / total_e) * 100;
+                    porcentajeACBNT = (sumACBN_T / total_e) * 100;
                 }
 
                 const donutChartConfigT = {
@@ -644,7 +652,14 @@
                     dataLabels: {
                         enabled: true,
                         formatter: function (val, opt) {
-                            return val.toFixed(2) + '%';
+                            const label = opt.w.globals.labels[opt.seriesIndex];
+                            switch (label) {
+                                case 'Renovacion con ciencia': return porcentajeValidoT.toFixed(2) + '%';
+                                case 'Blancos': return porcentajeBlancoT.toFixed(2) + '%';
+                                case 'Nulos': return porcentajeNuloT.toFixed(2) + '%';
+                                case '100% ACBN': return porcentajeACBNT.toFixed(2) + '%';
+                                default: return val.toFixed(2) + '%';
+                            }
                         },
                         dropShadow: {
                             enabled: true,
@@ -687,15 +702,6 @@
                                             } else {
                                                 return val; // Si no es un número, devolver el valor tal como está
                                             }
-                                        }
-                                    },
-                                    total: {
-                                        show: true,
-                                        fontSize: '1.5rem',
-                                        color: headingColor,
-                                        label: 'Total',
-                                        formatter: function (w) {
-                                            return totalVotosT + ' votos';
                                         }
                                     }
                                 }
