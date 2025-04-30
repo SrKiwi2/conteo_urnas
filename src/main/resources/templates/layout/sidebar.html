@@ -36,55 +36,55 @@
                 <div>Administrar Usuarios</div>
             </a>
             <ul class="menu-sub">
-                <li class="menu-item" id="opcion_rol" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_rol" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Rol</div>
                     </a>
                 </li>
-                <li class="menu-item" id="opcion_persona" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_persona" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Persona</div>
                     </a>
                 </li>
-                <li class="menu-item" id="opcion_usuario" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_usuario" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Usuario</div>
                     </a>
                 </li>
-                <li class="menu-item" id="opcion_jurado" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_jurado" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Jurado</div>
                     </a>
                 </li>
-                <li class="menu-item" id="opcion_frente" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_frente" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Frente</div>
                     </a>
                 </li>
 
-                <li class="menu-item" id="opcion_mesa" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_mesa" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Mesa</div>
                     </a>
                 </li>
-                <li class="menu-item" id="opcion_voto">
+                <li class="menu-item" id="opcion_voto" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
                     <a class="menu-link">
                         <div>Voto</div>
                     </a>
                 </li>
 
-                <li class="menu-item" id="opcion_publicoMesa">
+                <li class="menu-item" id="opcion_publicoMesa" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Avences Mesa</div>
                     </a>
                 </li>
 
-                <li class="menu-item" id="opcion_facultad" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_facultad" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Facultad</div>
                     </a>
                 </li>
-                <li class="menu-item" id="opcion_carrera" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_carrera" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Carrera</div>
                     </a>

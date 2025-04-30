@@ -186,27 +186,24 @@ public class VistaPublicaAcbsController {
                 }
             }
         }
-        System.out.println();
         
         // Calcular la equivalencia de votos entre estudiantes y docentes
-        BigDecimal equivalenciaDocenteAEstudiante = totalEstudiantes.divide(totalDocentes, 8, RoundingMode.HALF_UP);  // Mantener 5 decimales
-        System.out.println("Voto docente euivalente a votos estudiantes: "+ equivalenciaDocenteAEstudiante);
+        BigDecimal equivalenciaDocenteAEstudiante = BigDecimal.ZERO;
+
+        if (totalDocentes.compareTo(BigDecimal.ZERO) != 0) {
+            equivalenciaDocenteAEstudiante = totalEstudiantes.divide(totalDocentes, 8, RoundingMode.HALF_UP);
+        } else {
+            // Puedes dejar equivalencia en 0 o poner un valor por defecto
+            equivalenciaDocenteAEstudiante = BigDecimal.ZERO;
+            System.out.println("Advertencia: totalDocentes es cero. Se evita división por cero.");
+        }
 
         // Calcular los votos de docentes equivalentes a votos de estudiantes
         BigDecimal votosDocentesRenovacionEquivalentes = sumDocentesRenovacion.multiply(equivalenciaDocenteAEstudiante);
-        System.out.println("Voto renovacion: "+ votosDocentesRenovacionEquivalentes);
         BigDecimal votosDocentesACBNEquivalentes = sumDocentesACBN.multiply(equivalenciaDocenteAEstudiante);
-        System.out.println("Voto acbn: "+ votosDocentesACBNEquivalentes);
         BigDecimal votosDocentesBlancoEquivalentes = sumDocentesBlanco.multiply(equivalenciaDocenteAEstudiante);
-        System.out.println("Voto blanco: "+ votosDocentesBlancoEquivalentes);
         BigDecimal votosDocentesNuloEquivalentes = sumDocentesNulo.multiply(equivalenciaDocenteAEstudiante);
-        System.out.println("Voto nulo: "+ votosDocentesNuloEquivalentes);
 
-        System.out.println("voto estudinate renovacion: "+sumEstudiantesRenovacion);
-        System.out.println("voto estudinate acbn: "+sumEstudiantesACBN);
-        System.out.println("voto estudinate blanco: "+sumEstudiantesBlanco);
-        System.out.println("voto estudinate nulo: "+sumEstudiantesNulo);
-        
         // Calcular los votos promedios entre docentes y estudiantes
         BigDecimal promedioRenovacion = (sumEstudiantesRenovacion.add(votosDocentesRenovacionEquivalentes)).divide(new BigDecimal(2), 5, RoundingMode.HALF_UP);
         BigDecimal promedioACBN = (sumEstudiantesACBN.add(votosDocentesACBNEquivalentes)).divide(new BigDecimal(2), 5, RoundingMode.HALF_UP);
@@ -219,7 +216,6 @@ public class VistaPublicaAcbsController {
         model.addAttribute("sumBlanco_T", promedioBlanco);
         model.addAttribute("sumNulo_T", promedioNulo);
         model.addAttribute("total_estudiantes", totalEstudiantes);
-        System.out.println("renovacion: " + promedioRenovacion + " ACBN: " + promedioACBN + " Blancos " + promedioBlanco + " Nulos " + promedioNulo + "toTAL ESTUDINATE: " + totalEstudiantes);
 
         return "publico_acbn/graficos";
     }
