@@ -181,6 +181,55 @@ public class VotoController {
         return ResponseEntity.ok("Se realizó el registro correctamente");
     }
 
+    /* cuando se vota para un solo frente */
+    @ValidarUsuarioAutenticado
+    @PostMapping("/registrar-voto-unico")
+    public ResponseEntity<String> registrarVotoUnFrente(HttpServletRequest request,
+            @RequestParam Long id_mesa,
+            @RequestParam Long frenteId,
+            @RequestParam Integer cantidad_frente,
+            @RequestParam Integer cantidad_blanco,
+            @RequestParam Integer cantidad_nulo) {
+
+        Mesa mesa = imesaService.findById(id_mesa);
+        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+        // Voto Frente Único
+        Voto votoFrente = new Voto();
+        votoFrente.setTipo_voto("VALIDO");
+        votoFrente.setCantidad(cantidad_frente.toString());
+        votoFrente.setMesa(mesa);
+        votoFrente.setFrente(iFrenteService.findById(frenteId));
+        votoFrente.setRegistroIdUsuario(usuario.getIdUsuario());
+        votoFrente.setEstado("ACTIVO");
+        iVotoService.save(votoFrente);
+
+        // Voto Blanco
+        Voto votoBlanco = new Voto();
+        votoBlanco.setTipo_voto("BLANCO");
+        votoBlanco.setCantidad(cantidad_blanco.toString());
+        votoBlanco.setMesa(mesa);
+        votoBlanco.setFrente(null); // Sin frente
+        votoBlanco.setRegistroIdUsuario(usuario.getIdUsuario());
+        votoBlanco.setEstado("ACTIVO");
+        iVotoService.save(votoBlanco);
+
+        // Voto Nulo
+        Voto votoNulo = new Voto();
+        votoNulo.setTipo_voto("NULO");
+        votoNulo.setCantidad(cantidad_nulo.toString());
+        votoNulo.setMesa(mesa);
+        votoNulo.setFrente(null); // Sin frente
+        votoNulo.setRegistroIdUsuario(usuario.getIdUsuario());
+        votoNulo.setEstado("ACTIVO");
+        iVotoService.save(votoNulo);
+
+        // Notificar actualización de gráficos
+        messagingTemplate.convertAndSend("/topic/actualizar-graficos", "actualizar");
+
+        return ResponseEntity.ok("Se realizó el registro correctamente");
+    }
+
 
     @PostMapping(value = "/modificar-voto")
     public ResponseEntity<String> modificar(HttpServletRequest request, Voto voto, RedirectAttributes redirectAttrs) {

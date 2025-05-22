@@ -79,24 +79,24 @@
     </div>
 </form> -->
 
-<form id="formularioVoto" method="post" th:action="@{/voto/registrar-voto}" novalidate>
+<form id="formularioVoto" method="post" th:action="@{/voto/registrar-voto-unico}" novalidate>
     <div class="modal-body">
         <div class="row">
             <!-- Votos Frente 1 -->
             <div class="col-md-6 mb-2">
-                <label class="form-label">VOTOS RENOVACION CON CIENCIA</label>
-                <select class="form-select" name="frente1">
+                <label class="form-label">VOTOS VALIDOS a: </label>
+                <select class="form-select" name="frenteId">
                     <option th:each="frente : ${listaFrentes}"
                             th:value="${frente.id_frente}"
                             th:text="${frente.nombre_frente}"
-                            th:selected="${frente.nombre_frente == 'RENOVACION CON CIENCIA'}">
+                            th:selected="${frente.nombre_frente == 'Tecno nos Une'}">
                     </option>
                 </select>
-                <input type="number" class="form-control mt-1" name="cantidad_frente1" placeholder="Cantidad votos Frente 1" required />
+                <input type="number" class="form-control mt-1" name="cantidad_frente" placeholder="Cantidad votos del frente" required />
             </div>
 
-            <!-- Votos Frente 2 -->
-            <div class="col-md-6 mb-2">
+            <!-- Votos Frente 2 cuando hay otro frente -->
+            <!-- <div class="col-md-6 mb-2">
                 <label class="form-label">100% ACBN</label>
                 <select class="form-select" name="frente2">
                     <option th:each="frente : ${listaFrentes}"
@@ -106,9 +106,12 @@
                     </option>
                 </select>
                 <input type="number" class="form-control mt-1" name="cantidad_frente2" placeholder="Cantidad votos Frente 2" required />
-            </div>
+            </div> -->
 
             <!-- Votos en Blanco -->
+            
+        </div>
+        <div class="row">
             <div class="col-md-6 mb-2">
                 <label class="form-label">Cantidad voto BLANCO</label>
                 <input type="number" name="cantidad_blanco" class="form-control" required placeholder="Introduce cantidad"/>

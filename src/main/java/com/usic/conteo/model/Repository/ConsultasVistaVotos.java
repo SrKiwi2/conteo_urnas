@@ -208,8 +208,82 @@ public class ConsultasVistaVotos {
             return new ArrayList<>();
         }
     }
+
+
+    /* Esto es cuanod hay un solo frente */
+
+    public List<Map<String, Object>> listarVotosEstudiantesUnFrente(String tipoMesa) {
+        String sql = """
+            SELECT 
+                CASE 
+                    WHEN v.tipo_voto IN ('BLANCO', 'NULO') THEN v.tipo_voto
+                    WHEN v.tipo_voto = 'VALIDO' THEN 'Tecno que Une'
+                END AS tipo_voto_agrupado,
+                SUM(CAST(v.cantidad AS INT)) AS total_votos
+            FROM voto v
+            INNER JOIN mesa m ON m.id_mesa = v.id_mesa
+            WHERE m.tipo_mesa = ?
+            AND m._estado = 'ACTIVO'
+            AND v._estado = 'ACTIVO'
+            AND v.tipo_voto IN ('BLANCO', 'NULO', 'VALIDO')
+            GROUP BY tipo_voto_agrupado
+            ORDER BY tipo_voto_agrupado ASC
+            """;
     
+        try {
+            return jdbcTemplate.queryForList(sql, tipoMesa);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Map<String, Object>> listarVotosDocentesUnFrente(String tipoMesa) {
+        String sql = """
+            SELECT 
+                CASE 
+                    WHEN v.tipo_voto IN ('BLANCO', 'NULO') THEN v.tipo_voto
+                    WHEN v.tipo_voto = 'VALIDO' THEN 'Tecno que Une'
+                END AS tipo_voto_agrupado,
+                SUM(CAST(v.cantidad AS INT)) AS total_votos
+            FROM voto v
+            INNER JOIN mesa m ON m.id_mesa = v.id_mesa
+            WHERE m.tipo_mesa = ?
+            AND m._estado = 'ACTIVO'
+            AND v._estado = 'ACTIVO'
+            AND v.tipo_voto IN ('BLANCO', 'NULO', 'VALIDO')
+            GROUP BY tipo_voto_agrupado
+            ORDER BY tipo_voto_agrupado ASC
+            """;
     
+        try {
+            return jdbcTemplate.queryForList(sql, tipoMesa);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<Map<String, Object>> listarVotosTotalesUnFrente() {
+        String sql = """
+            SELECT 
+                CASE 
+                    WHEN v.tipo_voto IN ('BLANCO', 'NULO') THEN v.tipo_voto
+                    WHEN v.tipo_voto = 'VALIDO' THEN 'Tecno que Une'
+                END AS tipo_voto_agrupado,
+                SUM(CAST(v.cantidad AS INT)) AS total_votos,
+                m.tipo_mesa
+            FROM voto v
+            INNER JOIN mesa m ON m.id_mesa = v.id_mesa
+            WHERE m._estado = 'ACTIVO'
+            AND v._estado = 'ACTIVO'
+            AND v.tipo_voto IN ('VALIDO', 'BLANCO', 'NULO')
+            GROUP BY tipo_voto_agrupado, m.tipo_mesa
+            ORDER BY m.tipo_mesa ASC, tipo_voto_agrupado ASC
+            """;
     
-    
+        try {
+            return jdbcTemplate.queryForList(sql);
+        } catch (EmptyResultDataAccessException e) {
+            return new ArrayList<>();
+        }
+    }
 }
