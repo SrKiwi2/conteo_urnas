@@ -28,9 +28,10 @@
     <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
     <style>
         body {
-            background-image: url('/assets/img/front-pages/backgrounds/fondo.png') !important;
-            background-size: cover !important;
+            /* background-image: url('/assets/img/front-pages/backgrounds/tecnoqueune.jpg') !important; */
+            background-size: auto !important;
             background-position: center center !important;
+            background-repeat: repeat;
             background-attachment: fixed !important;
             background-repeat: no-repeat !important;
         }
@@ -43,7 +44,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(216, 214, 214, 0.6);
+            /* background-color: rgba(216, 214, 214, 0.6); */
             /* Blanco translúcido */
             z-index: -1;
         }
@@ -57,17 +58,19 @@
 <body onload="console.log(getComputedStyle(document.body).backgroundImage)">
     <div class="container-xxl container-p-y">
         <div class="misc-wrapper">
+            <div class="me-3" style="width: 100px; height: 100px;">
+                <img src="../../assets/img/front-pages/backgrounds/logotecno.png" 
+                     alt="Logo Elecciones" 
+                     class="img-fluid h-100 w-100 object-fit-contain">
+            </div>
             <div class="text-center my-4 d-flex justify-content-center align-items-center">
                 <div>
-                    <h2 class="mb-1 text-dark fw-bold text-shadow">CONTEO RÁPIDO - ACyT</h2>
-                    <p class="mb-0 text-muted fs-3 text-shadow">ELECCIONES 2025 - 2029</p>
+                    <h2 class="mb-1 text-dark fw-bold text-shadow">CONTEO RÁPIDO 🗳</h2>
+                    <p class="mb-0 text-muted fs-3">Elecciones de Director del Área de Ciencia y Tecnología UAP 2025 - 2029</p>
                 </div>
-                <div class="me-3" style="width: 150px; height: 150px;">
-                    <img src="../../assets/img/front-pages/backgrounds/logo1.png" 
-                         alt="Logo Elecciones" 
-                         class="img-fluid h-100 w-100 object-fit-contain">
-                </div>
+                
             </div>
+            
 
             <div class="container-xxl flex-grow-1 container-p-y">
 
@@ -211,7 +214,7 @@
                     series2: '#3fd0bd',
                     series3: '#826bf8',
                     series4: '#2b9bf4',
-                    series5: '#90EE90'
+                    series5: '#46EBE4'
                 },
                 area: {
                     series1: '#29dac7',
