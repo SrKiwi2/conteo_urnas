@@ -1,0 +1,782 @@
+<!doctype html>
+<html lang="en" class="light-style layout-wide customizer-hide" dir="ltr" data-theme="theme-default"
+    data-assets-path="../../assets/" data-template="vertical-menu-template">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Conteo | Votos</title>
+
+    <meta name="description" content="" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../assets/img/front-pages/backgrounds/logo1.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&ampdisplay=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../../assets/vendor/fonts/fontawesome.css" />
+    <link rel="stylesheet" href="../../assets/vendor/fonts/tabler-icons.css" />
+    <link rel="stylesheet" href="../../assets/vendor/fonts/flag-icons.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/apex-charts/apex-charts.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css" />
+    <link rel="stylesheet" href="../../assets/vendor/css/pages/page-misc.css" />
+    <link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
+    <style>
+        body {
+            /* background-image: url('/assets/img/front-pages/backgrounds/tecnoqueune.jpg') !important; */
+            background-size: auto !important;
+            background-position: center center !important;
+            background-repeat: repeat;
+            background-attachment: fixed !important;
+            background-repeat: no-repeat !important;
+        }
+
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* background-color: rgba(216, 214, 214, 0.6); */
+            /* Blanco translúcido */
+            z-index: -1;
+        }
+
+        .text-shadow {
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body onload="console.log(getComputedStyle(document.body).backgroundImage)">
+    <div class="container-xxl container-p-y">
+        <div class="misc-wrapper">
+            <div class="me-3" style="width: 100px; height: 100px;">
+                <img src="../../assets/img/front-pages/backgrounds/logotecno.png" 
+                     alt="Logo Elecciones" 
+                     class="img-fluid h-100 w-100 object-fit-contain">
+            </div>
+            <div class="text-center my-4 d-flex justify-content-center align-items-center">
+                <div>
+                    <h2 class="mb-1 text-dark fw-bold text-shadow">CONTEO RÁPIDO 🗳</h2>
+                    <p class="mb-0 text-muted fs-3">Elecciones Comité Ejecutivo de la Federación Universitaria de Docentes 2025 - 2029</p>
+                </div>
+                
+            </div>
+            
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+
+                <!-- GRAFICOS -->
+                <div id="graficos_votos"> </div>
+
+                <!-- VOTOS POR MESA/CARRERA -->
+                <div class="card p-3">
+                    <h4 class="py-3 mb-4">
+                        <span class="text-muted fw-light">VOTOS POR</span> MESA
+                    </h4>
+
+                    <div class="d-inline-flex align-items-center gap-3 mb-3"><br>
+                        <label for="facultadSelect" class="form-label mb-0">SELECCIONA UNA CARRERA</label>
+                        <select id="facultadSelect" class="form-select form-select-sm w-auto">
+                            <option th:each="carrera : ${listaCarreras}" th:value="${carrera.id_carrera}"
+                                th:selected="${carrera.id_carrera == idPrimeraCarrera}"
+                                th:text="${carrera.nombre_carrera}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="container-fluid" id="contenido_tabla"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../assets/vendor/js/helpers.js"></script>
+    <script src="../../assets/vendor/js/template-customizer.js"></script>
+    <script src="../../assets/js/config.js"></script>
+    <script src="../../assets/vendor/js/fragment.js"></script>
+    <script src="../../assets/js/tables-datatables-extensions.js"></script>
+    <script src="../../assets/vendor/libs/jquery/jquery.js"></script>
+    <script src="../../assets/vendor/js/bootstrap.js"></script>
+    <script src="../../assets/js/main.js"></script>
+    <script src="../../assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js"></script>
+    <script src="../../assets/vendor/libs/apex-charts/apexcharts.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <script>
+
+        let stompClient = null;
+
+        function conectarWebSocket() {
+            const socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({}, function (frame) {
+                console.log('Conectado: ' + frame);
+                stompClient.subscribe('/topic/actualizar-graficos', function (message) {
+                    console.log("Mensaje recibido vía WebSocket: ", message.body);
+                    cargarGrafico();
+                });
+            });
+        }
+
+        $(document).ready(function () {
+            conectarWebSocket();
+        });
+
+
+        $(document).ready(function () {
+            let carreraInicial = $('#facultadSelect').val();
+            if (carreraInicial) {
+                cargarTablaCM(carreraInicial);
+            }
+
+            cargarGrafico();
+
+            $('#facultadSelect').on('change', function () {
+                var idCarrera = $(this).val();
+                if (idCarrera) {
+                    cargarTablaCM(idCarrera);
+                } else {
+                    $('#contenido_tabla').empty();
+                }
+            });
+        });
+
+        function cargarTablaCM(idCarrera) {
+            $.ajax({
+                url: '/acyt/tabla-mesa',
+                method: "GET",
+                data: { idCarrera: idCarrera },
+                success: function (data) {
+                    $("#contenido_tabla").html(data);
+                },
+                error: function (xhr) {
+                    console.error('Error en la solicitud:', xhr);
+                }
+            });
+        }
+
+        function cargarGrafico() {
+            $.ajax({
+                url: '/acyt/graficos',
+                method: "GET",
+                success: function (data) {
+                    $("#graficos_votos").html(data);
+                    setTimeout(() => {
+                        if (typeof renderDonutChart === 'function') {
+                            renderDonutChart();
+                        } else {
+                            console.error('renderDonutChart no está disponible');
+                        }
+                    }, 100);
+                },
+                error: function (xhr) {
+                    console.error('Error en la solicitud:', xhr);
+                }
+            });
+        }
+
+        function renderDonutChart() {
+            let cardColor, headingColor, labelColor, borderColor, legendColor;
+
+            if (isDarkStyle) {
+                cardColor = config.colors_dark.cardColor;
+                headingColor = config.colors_dark.headingColor;
+                labelColor = config.colors_dark.textMuted;
+                legendColor = config.colors_dark.bodyColor;
+                borderColor = config.colors_dark.borderColor;
+            } else {
+                cardColor = config.colors.cardColor;
+                headingColor = config.colors.headingColor;
+                labelColor = config.colors.textMuted;
+                legendColor = config.colors.bodyColor;
+                borderColor = config.colors.borderColor;
+            }
+            const chartColors = {
+                column: {
+                    series1: '#826af9',
+                    series2: '#d2b0ff',
+                    bg: '#f8d3ff'
+                },
+                donut: {
+                    series1: '#fee802',
+                    series2: '#3fd0bd',
+                    series3: '#826bf8',
+                    series4: '#2b9bf4',
+                    series5: '#46EBE4'
+                },
+                area: {
+                    series1: '#29dac7',
+                    series2: '#60f2ca',
+                    series3: '#a5f8cd'
+                }
+            };
+
+            function generateDataHeat(count, yrange) {
+                let i = 0;
+                let series = [];
+                while (i < count) {
+                    let x = 'w' + (i + 1).toString();
+                    let y = Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min;
+
+                    series.push({
+                        x: x,
+                        y: y
+                    });
+                    i++;
+                }
+                return series;
+            }
+
+            const donutChartEl = document.querySelector('#donutChart');
+            if (donutChartEl !== null) {
+                const sumValidoE = parseInt(donutChartEl.getAttribute('data-sum-valido'), 10);
+                const sumBlancoE = parseInt(donutChartEl.getAttribute('data-sum-blanco'), 10);
+                const sumNuloE = parseInt(donutChartEl.getAttribute('data-sum-nulo'), 10);
+
+                const totalVotosE = sumValidoE + sumBlancoE + sumNuloE;
+                
+                console.log("sumValido:", sumValidoE);
+                console.log("sumBlanco:", sumBlancoE);
+                console.log("sumNulo:", sumNuloE);
+
+                let porcentajeValidoE = 0;
+                let porcentajeBlancoE = 0;
+                let porcentajeNuloE = 0;
+
+                if(totalVotosE > 0){
+                    porcentajeValidoE = (sumValidoE / totalVotosE) * 100;
+                    porcentajeBlancoE = (sumBlancoE / totalVotosE) * 100;
+                    porcentajeNuloE = (sumNuloE / totalVotosE) * 100;
+                }
+
+                const donutChartConfigE = {
+                    chart: {
+                        height: 390,
+                        type: 'donut'
+                    },
+                    labels: ['Blancos', 'Nulos', 'Tecno que Une'],
+                    series: [sumBlancoE, sumNuloE, sumValidoE],
+                    colors: [
+                        chartColors.donut.series1,
+                        chartColors.donut.series3,
+                        chartColors.donut.series5,
+                    ],
+                    stroke: {
+                        show: false,
+                        curve: 'straight'
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val, opt) {
+                            const porcentajes = [
+                                porcentajeBlancoE.toFixed(2) + '%', // Blanco
+                                porcentajeNuloE.toFixed(2) + '%',   // Nulo
+                                porcentajeValidoE.toFixed(2) + '%', // Tecno que Une
+                            ];
+                            return porcentajes[opt.seriesIndex];
+                        },
+                        dropShadow: {
+                            enabled: true,
+                            top: 1,
+                            left: 1,
+                            blur: 3,
+                            opacity: 1,
+                            color: '#000'  // Color negro
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        markers: { offsetX: -3 },
+                        itemMargin: {
+                            vertical: 3,
+                            horizontal: 10
+                        },
+                        labels: {
+                            colors: legendColor,
+                            useSeriesColors: false
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                labels: {
+                                    show: true,
+                                    name: {
+                                        fontSize: '2rem',
+                                        fontFamily: 'Public Sans'
+                                    },
+                                    value: {
+                                        fontSize: '1.2rem',
+                                        color: legendColor,
+                                        fontFamily: 'Public Sans',
+                                        formatter: function (val) {
+                                            if (typeof val === 'number' && !isNaN(val)) {
+                                                return val.toFixed(2); // Redondear a 2 decimales
+                                            } else {
+                                                return val; // Si no es un número, devolver el valor tal como está
+                                            }
+                                        }
+                                    },
+                                    total: {
+                                        show: true,
+                                        fontSize: '1.5rem',
+                                        color: headingColor,
+                                        label: 'Total',
+                                        formatter: function (w) {
+                                            return totalVotosE + ' votos';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    responsive: [
+                        {
+                            breakpoint: 992,
+                            options: {
+                                chart: {
+                                    height: 380
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 576,
+                            options: {
+                                chart: {
+                                    height: 320
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        donut: {
+                                            labels: {
+                                                show: true,
+                                                name: {
+                                                    fontSize: '1.5rem'
+                                                },
+                                                value: {
+                                                    fontSize: '1rem'
+                                                },
+                                                total: {
+                                                    fontSize: '1.5rem'
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 420,
+                            options: {
+                                chart: {
+                                    height: 280
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 360,
+                            options: {
+                                chart: {
+                                    height: 250
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        }
+                    ]
+                };
+                const donutChartE = new ApexCharts(donutChartEl, donutChartConfigE);
+                donutChartE.render();
+            }
+
+            // Donut Chart 1
+            // --------------------------------------------------------------------
+            const donutChartD = document.querySelector('#donutChart1');
+            if (donutChartD !== null) {
+
+                const sumValidoD = parseInt(donutChartD.getAttribute('data-sum-valido-d'), 10);
+                const sumBlancoD = parseInt(donutChartD.getAttribute('data-sum-blanco-d'), 10);
+                const sumNuloD = parseInt(donutChartD.getAttribute('data-sum-nulo-d'), 10);
+
+                const totalVotosD = sumValidoD + sumBlancoD + sumNuloD;
+
+                let porcentajeValidoD = 0;
+                let porcentajeBlancoD = 0;
+                let porcentajeNuloD = 0;
+
+                if (totalVotosD > 0) {
+                    porcentajeValidoD = (sumValidoD / totalVotosD) * 100;
+                    porcentajeBlancoD = (sumBlancoD / totalVotosD) * 100;
+                    porcentajeNuloD = (sumNuloD / totalVotosD) * 100;
+                }
+
+                const donutChartConfigD = {
+                    chart: {
+                        height: 390,
+                        type: 'donut'
+                    },
+                    labels: ['Blancos', 'Nulos', 'Tecno que Une'],
+                    series: [sumBlancoD, sumNuloD, sumValidoD],
+                    colors: [
+                        chartColors.donut.series1,
+                        chartColors.donut.series3,
+                        chartColors.donut.series5,
+                    ],
+                    stroke: {
+                        show: false,
+                        curve: 'straight'
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val, opt) {
+                            return val.toFixed(2) + '%';
+                        },
+                        dropShadow: {
+                            enabled: true,
+                            top: 1,
+                            left: 1,
+                            blur: 3,
+                            opacity: 1,
+                            color: '#000'  // Color negro
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        markers: { offsetX: -3 },
+                        itemMargin: {
+                            vertical: 3,
+                            horizontal: 10
+                        },
+                        labels: {
+                            colors: legendColor,
+                            useSeriesColors: false
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                labels: {
+                                    show: true,
+                                    name: {
+                                        fontSize: '2rem',
+                                        fontFamily: 'Public Sans'
+                                    },
+                                    value: {
+                                        fontSize: '1.2rem',
+                                        color: legendColor,
+                                        fontFamily: 'Public Sans',
+                                        formatter: function (val) {
+                                            if (typeof val === 'number' && !isNaN(val)) {
+                                                return val.toFixed(2); // Redondear a 2 decimales
+                                            } else {
+                                                return val; // Si no es un número, devolver el valor tal como está
+                                            }
+                                        }
+                                    },
+                                    total: {
+                                        show: true,
+                                        fontSize: '1.5rem',
+                                        color: headingColor,
+                                        label: 'Total',
+                                        formatter: function (w) {
+                                            return totalVotosD + ' votos';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    responsive: [
+                        {
+                            breakpoint: 992,
+                            options: {
+                                chart: {
+                                    height: 380
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 576,
+                            options: {
+                                chart: {
+                                    height: 320
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        donut: {
+                                            labels: {
+                                                show: true,
+                                                name: {
+                                                    fontSize: '1.5rem'
+                                                },
+                                                value: {
+                                                    fontSize: '1rem'
+                                                },
+                                                total: {
+                                                    fontSize: '1.5rem'
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 420,
+                            options: {
+                                chart: {
+                                    height: 280
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 360,
+                            options: {
+                                chart: {
+                                    height: 250
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        }
+                    ]
+                };
+                const donutChart2 = new ApexCharts(donutChartD, donutChartConfigD);
+                donutChart2.render();
+            }
+
+            // Donut Chart 2
+            // --------------------------------------------------------------------
+            const donutChartT = document.querySelector('#donutChart2T');
+            if (donutChartT !== null) {
+                const sumValidoT = parseFloat(donutChartT.getAttribute('data-sum-valido-t'), 10);
+                const sumBlancoT = parseFloat(donutChartT.getAttribute('data-sum-blanco-t'), 10);
+                const sumNuloT = parseFloat(donutChartT.getAttribute('data-sum-nulo-t'), 10);
+                const total_e = parseInt(donutChartT.getAttribute('data-sum-acyt-te'), 10);
+
+                const totalVotosT = sumValidoT + sumBlancoT + sumNuloT;
+
+                console.log(sumValidoT);
+                console.log(sumBlancoT);
+                console.log(sumNuloT);
+                console.log(total_e)
+
+                let porcentajeValidoT = 0;
+                let porcentajeBlancoT = 0;
+                let porcentajeNuloT = 0;
+
+                if (totalVotosT > 0) {
+                    porcentajeValidoT = (sumValidoT / total_e) * 100;
+                    console.log(porcentajeValidoT);
+                    porcentajeBlancoT = (sumBlancoT / total_e) * 100;
+                    porcentajeNuloT = (sumNuloT / total_e) * 100;
+                }
+
+                const donutChartConfigT = {
+                    chart: {
+                        height: 390,
+                        type: 'donut'
+                    },
+                    labels: ['Blancos', 'Nulos', 'Tecno que Une'],
+                    series: [sumBlancoT, sumNuloT, sumValidoT],
+                    colors: [
+                        chartColors.donut.series1,
+                        chartColors.donut.series3,
+                        chartColors.donut.series5,
+                        "#ffc330"
+                    ],
+                    stroke: {
+                        show: false,
+                        curve: 'straight'
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function (val, opt) {
+                            const label = opt.w.globals.labels[opt.seriesIndex];
+                            switch (label) {
+                                case 'Tecno que Une': return porcentajeValidoT.toFixed(2) + '%';
+                                case 'Blancos': return porcentajeBlancoT.toFixed(2) + '%';
+                                case 'Nulos': return porcentajeNuloT.toFixed(2) + '%';
+                                default: return val.toFixed(2) + '%';
+                            }
+                        },
+                        dropShadow: {
+                            enabled: true,
+                            top: 1,
+                            left: 1,
+                            blur: 3,
+                            opacity: 1,
+                            color: '#000'  // Color negro
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        position: 'bottom',
+                        markers: { offsetX: -3 },
+                        itemMargin: {
+                            vertical: 3,
+                            horizontal: 10
+                        },
+                        labels: {
+                            colors: legendColor,
+                            useSeriesColors: false
+                        }
+                    },
+                    plotOptions: {
+                        pie: {
+                            donut: {
+                                labels: {
+                                    show: true,
+                                    name: {
+                                        fontSize: '2rem',
+                                        fontFamily: 'Public Sans'
+                                    },
+                                    value: {
+                                        fontSize: '1.2rem',
+                                        color: legendColor,
+                                        fontFamily: 'Public Sans',
+                                        formatter: function (val) {
+                                            if (typeof val === 'number' && !isNaN(val)) {
+                                                return val.toFixed(2); // Redondear a 2 decimales
+                                            } else {
+                                                return val; // Si no es un número, devolver el valor tal como está
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    responsive: [
+                        {
+                            breakpoint: 992,
+                            options: {
+                                chart: {
+                                    height: 380
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 576,
+                            options: {
+                                chart: {
+                                    height: 320
+                                },
+                                plotOptions: {
+                                    pie: {
+                                        donut: {
+                                            labels: {
+                                                show: true,
+                                                name: {
+                                                    fontSize: '1.5rem'
+                                                },
+                                                value: {
+                                                    fontSize: '1rem'
+                                                },
+                                                total: {
+                                                    fontSize: '1.5rem'
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        colors: legendColor,
+                                        useSeriesColors: false
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 420,
+                            options: {
+                                chart: {
+                                    height: 280
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        },
+                        {
+                            breakpoint: 360,
+                            options: {
+                                chart: {
+                                    height: 250
+                                },
+                                legend: {
+                                    show: false
+                                }
+                            }
+                        }
+                    ]
+                };
+                const donutChart3 = new ApexCharts(donutChartT, donutChartConfigT);
+                donutChart3.render();
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>

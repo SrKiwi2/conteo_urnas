@@ -1,0 +1,38 @@
+<div class="row">
+    <div class="col-md-4 col-12 mb-4">
+        <div class="card" style="opacity: 0.9;">
+            <div class="card-body">
+                <div class="card-body text-center">
+                    <h5>Total - Estudiantes</h5>
+                </div>
+                <div id="donutChart" th:data-sum-valido="${sumVoto_E}" th:data-sum-blanco="${sumBlanco_E}"
+                    th:data-sum-nulo="${sumNulo_E}"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-12 mb-4">
+        <div class="card" style="opacity: 0.9;">
+            <div class="card-body">
+                <div class="card-body text-center">
+                    <h5>Total - Docentes</h5>
+                </div>
+                <div id="donutChart1" th:data-sum-valido-d="${sumVoto_D}" th:data-sum-blanco-d="${sumBlanco_D}"
+                    th:data-sum-nulo-d="${sumNulo_D}">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-12 mb-4">
+        <div class="card" style="opacity: 0.9;">
+            <div class="card-body">
+                <div class="card-body text-center">
+                    <h5>Total - Generales</h5>
+                </div>
+                <div id="donutChart2T" th:data-sum-valido-t="${sumVoto_T}" th:data-sum-blanco-t="${sumBlanco_T}"
+                    th:data-sum-nulo-t="${sumNulo_T}" th:data-sum-acyt-te="${total_estudiantes}">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
