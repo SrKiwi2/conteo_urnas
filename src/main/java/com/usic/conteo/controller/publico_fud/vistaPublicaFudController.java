@@ -122,7 +122,7 @@ public class vistaPublicaFudController {
                 Long sum = ((Number) totalObj).longValue();
         
                 switch (tipoVoto) {
-                    case "Tecno que Une" -> sumVoto_D = sum;
+                    case "DIGNIDAD DOCENTE" -> sumVoto_D = sum;
                     case "BLANCO" -> sumBlanco_D = sum;
                     case "NULO" -> sumNulo_D = sum;
                 }
@@ -164,7 +164,7 @@ public class vistaPublicaFudController {
                 } else if (tipoMesa.equals("DOCENTE")) {
                     totalDocentes = totalDocentes.add(sum);  // Sumar votos de docentes
                     switch (tipoVoto) {
-                        case "Tecno que Une" -> sumDocentesRenovacion = sum;
+                        case "DIGNIDAD DOCENTE" -> sumDocentesRenovacion = sum;
                         case "BLANCO" -> sumDocentesBlanco = sum;
                         case "NULO" -> sumDocentesNulo = sum;
                     }

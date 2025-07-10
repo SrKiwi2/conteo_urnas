@@ -242,7 +242,7 @@ public class ConsultasVistaVotos {
             SELECT 
                 CASE 
                     WHEN v.tipo_voto IN ('BLANCO', 'NULO') THEN v.tipo_voto
-                    WHEN v.tipo_voto = 'VALIDO' THEN 'Tecno que Une'
+                    WHEN v.tipo_voto = 'VALIDO' THEN 'DIGNIDAD DOCENTE'
                 END AS tipo_voto_agrupado,
                 SUM(CAST(v.cantidad AS INT)) AS total_votos
             FROM voto v
