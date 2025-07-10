@@ -39,7 +39,7 @@ public class vistaPublicaFudController {
 
         model.addAttribute("listaFacultades", facultadService.listarFacultades());
         model.addAttribute("listaCarreras", carreraService.listarCarreras());
-        return "publico_fud/vista-fud";
+        return "publico_fud/vista_fud";
     }
 
     @GetMapping("/tabla-mesa")
