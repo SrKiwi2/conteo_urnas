@@ -10,58 +10,58 @@
 
 <script>
 
-    function refrescarMesasSelect() {
+    // ÚNICA función global para: 1) recargar opciones desde /pendientes y 2) (re)inicializar Select2
+    window.actualizarYActivarSelectMesa = function actualizarYActivarSelectMesa() {
         const $sel = $('#idMesa');
-        if (!$sel.length) return; // El formulario aún no fue cargado
+        if (!$sel.length) return; // El formulario aún no fue inyectado
 
         const $modal = $('#modalFormularioVotog');
-        const estabaSelect2 = $sel.hasClass('select2-hidden-accessible');
-        const valorActual = $sel.val();
 
-        // Si estaba select2, lo destruimos temporalmente
-        if (estabaSelect2) $sel.select2('destroy');
+        // Si ya estaba con Select2, destruir antes de tocar opciones
+        if ($sel.hasClass('select2-hidden-accessible')) {
+            $sel.select2('destroy');
+        }
+
+        const valorActual = $sel.val();
 
         $.getJSON('/votog/mesag/pendientes', function (data) {
             $sel.empty().append(new Option('-- Seleccione --', '', true, false));
-
             data.forEach(m => {
                 $sel.append(new Option(`${m.recintoNombre} - Mesa ${m.numeroMesa}`, m.id, false, false));
             });
 
-            // Restaura valor si aún existe
+            // Restaurar valor si sigue existiendo
             if (valorActual && data.some(x => String(x.id) === String(valorActual))) {
                 $sel.val(valorActual);
             } else {
                 $sel.val('');
             }
 
-            // Re-inicializa Select2 si estaba activo
-            if (estabaSelect2) {
-                $sel.select2({
-                    placeholder: '-- Seleccione --',
-                    allowClear: true,
-                    width: '100%',
-                    dropdownParent: $modal,
-                    language: {
-                        noResults: () => 'Sin resultados',
-                        searching: () => 'Buscando…'
-                    }
-                });
-            }
+            // ¡SIEMPRE! inicializar Select2 (con o sin que antes estuviera)
+            $sel.select2({
+                // theme: 'bootstrap-5', // habilita si tienes el tema cargado
+                placeholder: '-- Seleccione --',
+                allowClear: true,
+                width: '100%',
+                dropdownParent: $modal,
+                language: {
+                    noResults: () => 'Sin resultados',
+                    searching: () => 'Buscando…'
+                }
+            });
         });
-    }
+    };
 
     $(document).ready(function () {
         cargarTabla();
 
-        // Suscripción SSE (ya lo tenías)
+        // Suscripción SSE
         const evt = new EventSource('/votog/stream');
-
         evt.addEventListener('mesa-registrada', function (e) {
             try {
                 const data = JSON.parse(e.data);
                 cargarTabla();
-                refrescarMesasSelect(); // <<-- ahora sí, global y siempre disponible
+                actualizarYActivarSelectMesa(); // <- nombre correcto ahora
 
                 const $sel = $('#idMesa');
                 if ($sel.length && $sel.val() === String(data.idMesa)) {
@@ -72,27 +72,14 @@
             } catch (err) { console.warn(err); }
         });
 
-        // Al abrir el modal, refrescamos el select y luego (re)inicializamos Select2
+        // Al abrir el modal, asegura que el formulario ya esté y luego actualiza + activa Select2
         $('#modalFormularioVotog')
-            .off('shown.bs.modal.refresco') // evita listeners duplicados
+            .off('shown.bs.modal.refresco')
             .on('shown.bs.modal.refresco', function () {
-                // Espera un tick para asegurar que el HTML del formulario ya se inyectó
-                setTimeout(() => {
-                    refrescarMesasSelect();
-                    const $sel = $('#idMesa');
-                    if ($sel.length && !$sel.hasClass('select2-hidden-accessible')) {
-                        $sel.select2({
-                            placeholder: '-- Seleccione --',
-                            allowClear: true,
-                            width: '100%',
-                            dropdownParent: $('#modalFormularioVotog'),
-                            language: {
-                                noResults: () => 'Sin resultados',
-                                searching: () => 'Buscando…'
-                            }
-                        });
-                    }
-                }, 0);
+                // 1) intenta ya
+                actualizarYActivarSelectMesa();
+                // 2) reintento rápido por si el fragmento se inyectó milisegundos después
+                setTimeout(actualizarYActivarSelectMesa, 120);
             });
     });
 
