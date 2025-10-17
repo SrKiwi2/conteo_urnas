@@ -9,7 +9,92 @@
 </div>
 
 <script>
-    $(document).ready(function () {cargarTabla();});
+
+    function refrescarMesasSelect() {
+        const $sel = $('#idMesa');
+        if (!$sel.length) return; // El formulario aún no fue cargado
+
+        const $modal = $('#modalFormularioVotog');
+        const estabaSelect2 = $sel.hasClass('select2-hidden-accessible');
+        const valorActual = $sel.val();
+
+        // Si estaba select2, lo destruimos temporalmente
+        if (estabaSelect2) $sel.select2('destroy');
+
+        $.getJSON('/votog/mesag/pendientes', function (data) {
+            $sel.empty().append(new Option('-- Seleccione --', '', true, false));
+
+            data.forEach(m => {
+                $sel.append(new Option(`${m.recintoNombre} - Mesa ${m.numeroMesa}`, m.id, false, false));
+            });
+
+            // Restaura valor si aún existe
+            if (valorActual && data.some(x => String(x.id) === String(valorActual))) {
+                $sel.val(valorActual);
+            } else {
+                $sel.val('');
+            }
+
+            // Re-inicializa Select2 si estaba activo
+            if (estabaSelect2) {
+                $sel.select2({
+                    placeholder: '-- Seleccione --',
+                    allowClear: true,
+                    width: '100%',
+                    dropdownParent: $modal,
+                    language: {
+                        noResults: () => 'Sin resultados',
+                        searching: () => 'Buscando…'
+                    }
+                });
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        cargarTabla();
+
+        // Suscripción SSE (ya lo tenías)
+        const evt = new EventSource('/votog/stream');
+
+        evt.addEventListener('mesa-registrada', function (e) {
+            try {
+                const data = JSON.parse(e.data);
+                cargarTabla();
+                refrescarMesasSelect(); // <<-- ahora sí, global y siempre disponible
+
+                const $sel = $('#idMesa');
+                if ($sel.length && $sel.val() === String(data.idMesa)) {
+                    $sel.val(null).trigger('change');
+                    $('#pdc, #libre, #nulo, #blanco').val(0);
+                }
+                if (window.toastr) toastr.info('Se actualizó el estado de mesas');
+            } catch (err) { console.warn(err); }
+        });
+
+        // Al abrir el modal, refrescamos el select y luego (re)inicializamos Select2
+        $('#modalFormularioVotog')
+            .off('shown.bs.modal.refresco') // evita listeners duplicados
+            .on('shown.bs.modal.refresco', function () {
+                // Espera un tick para asegurar que el HTML del formulario ya se inyectó
+                setTimeout(() => {
+                    refrescarMesasSelect();
+                    const $sel = $('#idMesa');
+                    if ($sel.length && !$sel.hasClass('select2-hidden-accessible')) {
+                        $sel.select2({
+                            placeholder: '-- Seleccione --',
+                            allowClear: true,
+                            width: '100%',
+                            dropdownParent: $('#modalFormularioVotog'),
+                            language: {
+                                noResults: () => 'Sin resultados',
+                                searching: () => 'Buscando…'
+                            }
+                        });
+                    }
+                }, 0);
+            });
+    });
 
     function cargarTabla() {
         $.ajax({
@@ -29,6 +114,6 @@
         cargarFormularioEditAlert(id, "/votog/formulario-edit", "#contenidoModalVotog", "#formularioVotog");
     }
 
-    function eliminar(nombre, id) {eliminarRegistroAlert(nombre, id, "/votog/eliminar", cargarTabla);}
+    function eliminar(nombre, id) { eliminarRegistroAlert(nombre, id, "/votog/eliminar", cargarTabla); }
 
 </script>

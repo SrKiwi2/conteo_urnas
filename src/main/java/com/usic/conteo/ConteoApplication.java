@@ -6,6 +6,8 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.usic.conteo.model.IService.IPersonaService;
 import com.usic.conteo.model.IService.IRolService;
@@ -17,13 +19,19 @@ import com.usic.conteo.model.entity.Usuario;
 @SpringBootApplication
 public class ConteoApplication {
 
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // 10–12 es razonable; 12 si tu server aguanta
+        return new BCryptPasswordEncoder(12);
+    }
+
 	private static final Logger logger = LoggerFactory.getLogger(ConteoApplication.class);
 	public static void main(String[] args) {
 		SpringApplication.run(ConteoApplication.class, args);
 	}
 
 	@Bean
-    ApplicationRunner init(IUsuarioService usuarioService, IPersonaService personaService, IRolService rolService) {
+    ApplicationRunner init(IUsuarioService usuarioService, IPersonaService personaService, IRolService rolService, PasswordEncoder encoder) {
         return args -> {
             logger.info("SISTEMA CONTEO DE URNAS INICIADO....");
             // Verificar y crear roles si no existen
@@ -63,7 +71,7 @@ public class ConteoApplication {
                 if (usuario == null) {
                     usuario = new Usuario();
                     usuario.setNombre(usuarios[i]);
-                    usuario.setPassword(password[i]);
+                    usuario.setPassword(encoder.encode(password[i]));
                     usuario.setPersona(persona); // Asociar la persona con el usuario
                     usuario.setRol(rolObjects[i % roles.length]); // Asignar el rol correspondiente
 					usuario.setEstado("ACTIVO");

@@ -11,4 +11,5 @@ public interface IMesaGeneralService extends IServiceGenerico<MesaGeneral, Long>
     List<MesaGeneral> listarMesaGeneral();
     boolean existsByNumeroMesaAndRecinto(String numeroMesa, Long idRecinto);
     boolean existsByNumeroMesaAndRecintoExcludingId(String numeroMesa, Long idRecinto, Long idMesaGeneral);
+    List<MesaGeneral> listarMesasSinResultados();
 }

@@ -35,8 +35,4 @@ public class Usuario extends AuditoriaConfig{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_rol")
     private Rol rol;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_jurado")
-    private Jurado jurado;
 }

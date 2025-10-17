@@ -2,6 +2,7 @@ package com.usic.conteo.controller.ElecionesGenerales;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
+import com.usic.conteo.componet.SseBroadcaster;
 import com.usic.conteo.config.Encriptar;
 import com.usic.conteo.model.IService.IDetalleVotoService;
 import com.usic.conteo.model.IService.IMesaGeneralService;
@@ -32,6 +35,7 @@ public class VotoDetalleController {
     private final IMesaGeneralService mesaGeneralService;
     private final IVotoGeneralService votoGeneralService;
     private final IDetalleVotoService detalleVotoService;
+    private final SseBroadcaster sse;
 
     @ValidarUsuarioAutenticado
     @GetMapping("/vista")
@@ -59,7 +63,7 @@ public class VotoDetalleController {
     @PostMapping("/formulario")
     public String formulario(Model model) {
         model.addAttribute("detalleVoto", new DetalleVoto());
-        model.addAttribute("listaMesas", mesaGeneralService.listarMesaGeneral()); // mesas para el select
+        model.addAttribute("listaMesas", mesaGeneralService.listarMesasSinResultados()); // mesas para el select
         model.addAttribute("listaVotosGenerales", votoGeneralService.listarVotoGeneral()); // votoGeneral para el select
         return "eleccion_general/voto/formulario";
     }
@@ -77,6 +81,11 @@ public class VotoDetalleController {
         return "eleccion_general/voto/formulario";
     }
 
+    @GetMapping("/stream")
+    public SseEmitter stream() {
+        return sse.subscribe();
+    }
+
     @ValidarUsuarioAutenticado
     @PostMapping("/guardar-resultados-mesa")
     public ResponseEntity<?> guardarResultadosMesa(
@@ -88,60 +97,29 @@ public class VotoDetalleController {
 
         var dto = new ResultadosMesaGuardarDto(idMesa, pdc, libre, nulo, blanco);
         resultadoVotoService.guardarResultadosMesa(dto);
+
+        // Notifica a todos los clientes: mesa cerrada y tabla cambió
+        Map<String, Object> payload = Map.of(
+            "idMesa", idMesa,
+            "tipo", "MESA_REGISTRADA",
+            "ts", System.currentTimeMillis()
+        );
+        sse.sendEvent("mesa-registrada", payload);
+        
         return ResponseEntity.ok().build();
     }
 
-    // @ValidarUsuarioAutenticado
-    // @PostMapping("/registrar-voto")
-    // @Transactional
-    // public ResponseEntity<String> registrar(HttpServletRequest request,
-    // @Validated @ModelAttribute DetalleVoto voto) {
+    @GetMapping("/mesag/pendientes")
+    public ResponseEntity<List<MesaGeneralDto>> mesasPendientes() {
+        var data = mesaGeneralService.listarMesasSinResultados().stream()
+            .map(m -> new MesaGeneralDto(
+                m.getIdMesaGeneral(),
+                m.getNumeroMesa(),
+                m.getRecinto().getNombre()
+            ))
+            .toList();
+        return ResponseEntity.ok(data);
+    }
 
-    // String numero = voto.getNumeroMesa() != null ? voto.getNumeroMesa().trim() :
-    // "";
-    // Long idRecinto = (voto.getRecinto() != null) ?
-    // voto.getRecinto().getIdRecinto() : null;
-
-    // if (idRecinto == null || numero.isEmpty()) {
-    // return ResponseEntity.badRequest().body("Datos incompletos.");
-    // }
-
-    // if (mesaGeneralService.existsByNumeroMesaAndRecinto(numero, idRecinto)) {
-    // return ResponseEntity.ok("Ya existe una mesa con ese número en el recinto
-    // seleccionado");
-    // }
-
-    // Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-    // voto.setNumeroMesa(numero);
-    // voto.setRegistroIdUsuario(usuario.getIdUsuario());
-    // voto.setEstado("ACTIVO");
-    // Recinto rec = recintoService.findById(idRecinto);
-    // voto.setRecinto(rec);
-    // mesaGeneralService.save(voto);
-
-    // return ResponseEntity.ok("Se realizó el registro correctamente");
-    // }
-
-    // @PostMapping("/modificar-voto")
-    // public ResponseEntity<String> modificar(HttpServletRequest request,
-    // DetalleVoto voto, RedirectAttributes redirectAttributes) {
-
-    // Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
-    // voto.setRegistroIdUsuario(usuario.getIdUsuario());
-    // voto.setEstado("ACTIVO");
-    // mesaGeneralService.save(voto);
-    // return ResponseEntity.ok("Se modifico correctament");
-    // }
-
-    // @ValidarUsuarioAutenticado
-    // @PostMapping("/eliminar/{idMesaGeneral}")
-    // public ResponseEntity<String> eliminar(@PathVariable("idMesaGeneral") String
-    // idMesaGeneral) throws Exception {
-
-    // Long id = Long.parseLong(Encriptar.decrypt(idMesaGeneral));
-    // DetalleVoto voto = mesaGeneralService.findById(id);
-    // voto.setEstado("ELIMINADO");
-    // mesaGeneralService.save(voto);
-    // return ResponseEntity.ok("Registro Eliminado");
-    // }
+    public record MesaGeneralDto(Long id, String numeroMesa, String recintoNombre) {}
 }

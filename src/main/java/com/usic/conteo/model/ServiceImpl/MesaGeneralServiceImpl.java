@@ -50,4 +50,9 @@ public class MesaGeneralServiceImpl implements IMesaGeneralService {
     public boolean existsByNumeroMesaAndRecintoExcludingId(String numeroMesa, Long idRecinto, Long idMesaGeneral) {
         return dao.existsByNumeroMesaIgnoreCaseAndRecinto_IdRecintoAndIdMesaGeneralNot(numeroMesa, idRecinto, idMesaGeneral);
     }
+
+    @Override
+    public List<MesaGeneral> listarMesasSinResultados() {
+        return dao.listarMesasSinResultados();
+    }
 }

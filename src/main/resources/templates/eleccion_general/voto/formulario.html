@@ -1,3 +1,9 @@
+<style>
+    .select2-container .select2-dropdown {
+        z-index: 2000;
+    }
+</style>
+
 <div class="modal-header">
     <h4 class="modal-title" th:text="${edit}? 'Modificar Voto' : 'Registrar Voto'"></h4>
     <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
@@ -7,32 +13,33 @@
 
     <div class="modal-body">
         <div class="row">
-
-            <div class="col-12 col-md-4 mb-2">
+            <div class="col-12 col-md-8 mb-2">
                 <label class="form-label">Mesa</label>
                 <select class="form-select" id="idMesa" required>
                     <option value="">-- Seleccione --</option>
                     <option th:each="m : ${listaMesas}" th:value="${m.idMesaGeneral}"
-                        th:text="'Mesa '+ ${m.numeroMesa} +' - '+ ${m.recinto.nombre} ">
+                        th:text="${m.recinto.municipio.nombre} + ' - ' + ${m.recinto.nombre} +' - '+ ' Mesa '+ ${m.numeroMesa}">
                     </option>
                 </select>
                 <div class="invalid-feedback">Seleccione una mesa.</div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-6 col-md-2">
                 <label class="form-label">PDC</label>
-                <input type="number" min="0" id="pdc" class="form-control" value="0">
+                <input type="number" min="0" step="1" id="pdc" class="form-control" value="0">
             </div>
             <div class="col-6 col-md-2">
                 <label class="form-label">LIBRE</label>
-                <input type="number" min="0" id="libre" class="form-control" value="0">
+                <input type="number" min="0" step="1" id="libre" class="form-control" value="0">
             </div>
             <div class="col-6 col-md-2">
                 <label class="form-label">NULO</label>
-                <input type="number" min="0" id="nulo" class="form-control" value="0">
+                <input type="number" min="0" step="1" id="nulo" class="form-control" value="0">
             </div>
             <div class="col-6 col-md-2">
                 <label class="form-label">BLANCO</label>
-                <input type="number" min="0" id="blanco" class="form-control" value="0">
+                <input type="number" min="0" step="1" id="blanco" class="form-control" value="0">
             </div>
         </div>
     </div>
@@ -44,7 +51,7 @@
 
 
 <script>
-    manejarEnvioFormulario('#formularioVoto');
+    manejarEnvioFormulario('#formularioDetalleVoto');
 
     function enviarResultados() {
         const payload = {
@@ -58,19 +65,29 @@
         if (!payload.idMesa) { alert('Seleccione una mesa'); return; }
 
         $.ajax({
-        url: '/votog/guardar-resultados-mesa',
-        type: 'POST',
-        data: {
-            idMesa:  $('#idMesa').val(),     // <select> con el id de la mesa
-            pdc:     $('#pdc').val() || 0,
-            libre:   $('#libre').val() || 0,
-            nulo:    $('#nulo').val() || 0,
-            blanco:  $('#blanco').val() || 0
-        }
+            url: '/votog/guardar-resultados-mesa',
+            type: 'POST',
+            data: {
+                idMesa: $('#idMesa').val(),     // <select> con el id de la mesa
+                pdc: $('#pdc').val() || 0,
+                libre: $('#libre').val() || 0,
+                nulo: $('#nulo').val() || 0,
+                blanco: $('#blanco').val() || 0
+            }
         }).done(function () {
-            // refresca tu tabla, cierra modal, etc.
-          cargarTabla();
-           bootstrap.Modal.getInstance(document.getElementById('modalFormularioVotog')).hide();
+            cargarTabla();
+            refrescarMesasSelect();
+
+            const $sel = $('#idMesa');
+            $('#pdc, #libre, #nulo, #blanco').val(0);
+
+            if ($sel.hasClass('select2-hidden-accessible')) {
+                $sel.val(null).trigger('change'); // limpia visualmente Select2
+            } else {
+                $sel.val('');
+            }
+
+            bootstrap.Modal.getInstance(document.getElementById('modalFormularioVotog')).hide();
         }).fail(function (xhr) {
             alert('Error al guardar: ' + (xhr.responseText || xhr.status));
         });

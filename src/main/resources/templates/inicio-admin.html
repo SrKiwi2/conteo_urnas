@@ -9,243 +9,250 @@
     <style>
         .swal2-container {
             z-index: 9999 !important;
-            /* Asegúrate de que sea mayor que cualquier otro elemento */
+        }
+
+        /* ===== Sidebar Elecciones ===== */
+        .sidebar-elecciones {
+            width: 260px;
+            background: linear-gradient(180deg, #0d111b 0%, #0b1526 100%);
+            color: #e9eef6;
+            border-right: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, .4);
+        }
+
+        .sidebar-elecciones .sidebar-header {
+            background: linear-gradient(90deg, #e53935, #f6c90e, #2e7d32);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: header-gradient 6s linear infinite;
+        }
+
+        .sidebar-elecciones .menu-section {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            color: #7a8599;
+            margin: 1rem 1.25rem .5rem;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255, 255, 255, .06);
+            padding-bottom: 3px;
+        }
+
+        .sidebar-elecciones .menu-item {
+            list-style: none;
+        }
+
+        .sidebar-elecciones .menu-link {
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            padding: .55rem 1.25rem;
+            color: #cfd8e3;
+            text-decoration: none;
+            transition: all .25s ease;
+            font-weight: 500;
+        }
+
+        .sidebar-elecciones .menu-link:hover,
+        .sidebar-elecciones .menu-link.active {
+            background: rgba(255, 255, 255, .08);
+            color: #fff;
+            border-left: 3px solid #f6c90e;
+        }
+
+        .sidebar-elecciones .menu-icon {
+            font-size: 1.2rem;
+            color: #f6c90e;
+            transition: transform .25s ease;
+        }
+
+        .sidebar-elecciones .menu-link:hover .menu-icon {
+            transform: scale(1.15);
+        }
+
+        .sidebar-elecciones .menu-sub {
+            margin-left: .75rem;
+            border-left: 1px dashed rgba(255, 255, 255, .08);
+        }
+
+        .sidebar-elecciones .menu-sub .menu-link {
+            font-size: .9rem;
+            padding: .4rem 1.5rem;
+            color: #9da7bc;
+        }
+
+        .sidebar-elecciones .menu-sub .menu-link:hover {
+            color: #fff;
+        }
+
+        /* Animaciones */
+        @keyframes header-gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
         }
     </style>
-    <!-- Layout wrapper -->
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
-            <!-- Menu -->
             <aside th:replace="~{layout/sidebar :: sidebar}"></aside>
-            <!-- / Menu -->
-
-            <!-- Layout container -->
             <div class="layout-page">
-                <!-- Navbar -->
                 <nav th:replace="~{layout/topbar :: topbar}"></nav>
-                <!-- / Navbar -->
-
-                <!-- Content wrapper -->
                 <div class="content-wrapper">
-                    <!-- Content -->
-
-                    <div class="container-xxl flex-grow-1 container-p-y" id="contenido">
-                    </div>
-                    <!-- / Content -->
-
-                    <!-- Footer -->
+                    <div class="container-xxl flex-grow-1 container-p-y" id="contenido"></div>
                     <footer th:replace="~{layout/footer :: footer}"></footer>
-                    <!-- / Footer -->
                 </div>
-                <!-- Content wrapper -->
             </div>
-            <!-- / Layout page -->
         </div>
     </div>
-    <!-- / Layout wrapper -->
     <div th:replace="~{layout/script :: script}"></div>
     <script>
         var botonPulsado;
         $(document).ready(function () {
 
-            // ventana por defecto al iniciar sesión
             cargarContenido("/adm/vista-administrador");
             botonPulsado = document.getElementById("opcion_admin");
             botonPulsado.classList.add("active");
 
-            // menú de rol
             $("#opcion_rol").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/rol/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_rol");
-
                 botonPulsado.classList.add("active");
-
             });
 
-            // menú de usuario
             $("#opcion_usuario").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/usuario/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_usuario");
-
                 botonPulsado.classList.add("active");
-
             });
 
-            // menú de persona
             $("#opcion_persona").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/persona/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_persona");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_jurado").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/jurado/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_jurado");
-
                 botonPulsado.classList.add("active");
-
             });
+
             $("#opcion_frente").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/frente/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_frente");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_mesa").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/mesa/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_mesa");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_voto").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/votog/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_voto");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_facultad").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/facultad/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_facultad");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_distrito").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/distrito/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_distrito");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_recinto").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/recinto/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_recinto");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_mesag").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/mesag/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_mesag");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_carrera").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/carrera/vista");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_carrera");
-
                 botonPulsado.classList.add("active");
-
             });
 
             $("#opcion_publicoMesa").click(function (e) {
                 e.preventDefault();
                 cargarContenido("/publico/tabla-mesa");
-
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
-
                 botonPulsado = document.getElementById("opcion_publicoMesa");
-
                 botonPulsado.classList.add("active");
-
             });
 
-            
-            // Función para cargar el contenido de la opción seleccionada
             function cargarContenido(url) {
-                // Verifica si la sesión está activa antes de cargar el contenido
                 $.ajax({
                     url: "/adm/cargar-datos",
                     method: "GET",
                     success: function () {
-                        // Si la sesión es válida, carga el contenido solicitado
                         $("#contenido").html(`
                             <div class="d-flex justify-content-center">
                                 <div class="spinner-border m-5 text-secondary" role="status">
@@ -257,7 +264,7 @@
                             url: url,
                             method: "GET",
                             success: function (data) {
-                                $("#contenido").html(data); // Carga el contenido si todo está bien
+                                $("#contenido").html(data);
                             },
                             error: function (xhr) {
                                 console.error('Error en la solicitud:', xhr);
@@ -266,7 +273,6 @@
                     },
                     error: function (xhr) {
                         if (xhr.status === 401) {
-                            // Si la sesión ha expirado, muestra una alerta con SweetAlert2
                             Swal.fire({
                                 title: 'Sesión expirada',
                                 text: 'Tu sesión ha expirado. Por favor, inicia sesión nuevamente.',
@@ -274,14 +280,13 @@
                                 confirmButtonText: 'Ir al login'
                             }).then((result) => {
                                 if (result.isConfirmed) {
-                                    window.location.href = '/form-login'; // Redirige a la página de login
+                                    window.location.href = '/form-login';
                                 }
                             });
                         }
                     }
                 });
             }
-
         });
     </script>
 </body>

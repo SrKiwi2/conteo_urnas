@@ -26,5 +26,4 @@ public class Provincia extends AuditoriaConfig {
     @ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "id_departamento")
     private Departamento departamento;
-    
 }

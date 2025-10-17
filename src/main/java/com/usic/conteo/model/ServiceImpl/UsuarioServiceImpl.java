@@ -3,18 +3,22 @@ package com.usic.conteo.model.ServiceImpl;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.usic.conteo.model.IService.IUsuarioService;
 import com.usic.conteo.model.dao.IUsuarioDao;
 import com.usic.conteo.model.entity.Usuario;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class UsuarioServiceImpl implements IUsuarioService{
 
-    @Autowired
-    private IUsuarioDao usuarioDao;
+    private final IUsuarioDao usuarioDao;
+
+    private final PasswordEncoder encoder;
 
     @Override
     public List<Usuario> findAll() {
@@ -56,5 +60,22 @@ public class UsuarioServiceImpl implements IUsuarioService{
         return usuarioDao.findByPersona_IdPersona(idPersona);
     }
 
+    @Override
+    public Usuario autenticar(String username, String rawPassword) {
+        var u = usuarioDao.buscarUsuarioPorNombre(username);
+        if (u == null) return null;
 
+        // Soporte migración: si coincide texto plano, re-hash y guarda
+        String stored = u.getPassword();
+        if (stored != null && !stored.startsWith("$2")) {
+        if (stored.equals(rawPassword)) {
+            u.setPassword(encoder.encode(rawPassword));
+            usuarioDao.save(u);
+            return u;
+        }
+        return null;
+        }
+        // Normal: verificar BCrypt
+        return encoder.matches(rawPassword, stored) ? u : null;
+    }
 }

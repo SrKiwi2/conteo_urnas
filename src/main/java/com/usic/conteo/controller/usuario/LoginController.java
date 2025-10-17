@@ -33,7 +33,6 @@ public class LoginController {
 
     @GetMapping(value = "/form-login")
     public String formLogin() {
-
         return "usuario/login";
     }
 
@@ -41,10 +40,7 @@ public class LoginController {
     public String iniciarSesion(@RequestParam(value = "usuario") String user,
             @RequestParam(value = "contrasena") String contrasena, Model model, HttpServletRequest request,
             RedirectAttributes flash) {
-
-        // los dos parametros de usuario, contraseña vienen del formulario html
-        Usuario usuario = usuarioService.UsuarioyContraseña(user, contrasena);
-
+        Usuario usuario = usuarioService.autenticar(user, contrasena);
         if (usuario != null) {
             if (usuario.getEstado().equals("INACTIVO")) {
                 return "redirect:/form-login";
@@ -53,15 +49,11 @@ public class LoginController {
             sessionAdministrador.setAttribute("usuario", usuario);
             sessionAdministrador.setAttribute("persona", usuario.getPersona());
             sessionAdministrador.setAttribute("nombre_rol", usuario.getRol().getNombre());
-
             flash.addAttribute("success", usuario.getPersona().getNombre());
-
             return "redirect:/adm/inicio";
-
         } else {
             return "redirect:/form-login";
         }
-
     }
 
     @ValidarUsuarioAutenticado
@@ -73,7 +65,6 @@ public class LoginController {
             sessionAdministrador.invalidate();
             flash.addAttribute("validado", "Se cerro sesion con exito");
             logger.info("Usuario cerro sesión: {}", usuarioLogueado.getPersona().getNombre());
-            
         }
         return "redirect:/form-login";
     }

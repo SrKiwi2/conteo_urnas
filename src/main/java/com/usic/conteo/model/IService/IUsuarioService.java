@@ -16,4 +16,6 @@ public interface IUsuarioService extends IServiceGenerico <Usuario, Long>{
     List<Usuario> listarUsuarios();
 
     Optional<Usuario> findByPersona_IdPersona(Long idPersona);
+
+    Usuario autenticar(String username, String rawPassword);
 }

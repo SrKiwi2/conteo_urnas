@@ -11,6 +11,7 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th>Municipio</th>
                     <th>Recinto</th>
                     <th>N° Mesa</th>
                     <th>Voto</th>
@@ -20,6 +21,7 @@
             <tbody class="animate__animated animate__bounceInDown">
                 <tr th:each="vots, index: ${listaVotos}">
                     <th th:text="${index.index+1}"></th>
+                    <th th:text="${vots.mesaGeneral.recinto.municipio.nombre}"></th>
                     <th th:text="${vots.mesaGeneral.recinto.nombre}"></th>
                     <th th:text="${vots.mesaGeneral.numeroMesa}"></th>
                     <th th:text="${vots.votoGeneral.voto}"></th>
