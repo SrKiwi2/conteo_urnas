@@ -1,0 +1,30 @@
+package com.usic.conteo.model.entityGeneral;
+
+import com.usic.conteo.config.AuditoriaConfig;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+
+@Entity
+@Table(name = "recinto")
+@Setter @Getter
+public class Recinto extends AuditoriaConfig {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idRecinto;
+
+    private String nombre;
+    private String habilitados;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "id_municipio")
+    private Municipio municipio;
+}

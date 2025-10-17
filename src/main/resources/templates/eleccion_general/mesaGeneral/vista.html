@@ -1,0 +1,36 @@
+<h4 class="py-3 mb-4"><span class="text-muted fw-light">Menú /</span> Mesa</h4>
+
+<div id="tablaRegistro"></div>
+
+<div class="modal fade" id="modalFormularioMesaGeneral" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="contenidoModalMesaGeneral"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {cargarTabla();});
+
+    function cargarTabla() {
+        $.ajax({
+            type: 'POST',
+            url: "/mesag/tabla-registro",
+            success: function (response) {
+                $("#tablaRegistro").html(response);
+            }
+        });
+    }
+
+    function cargarFormulario() {
+        cargarFormularioAlert("/mesag/formulario", "#contenidoModalMesaGeneral", "#formularioMesaGeneral");
+    }
+
+    function cargarFormularioEdit(id) {
+        cargarFormularioEditAlert(id, "/mesag/formulario-edit", "#contenidoModalMesaGeneral", "#formularioMesaGeneral");
+    }
+
+    function eliminar(nombre, id) {
+        eliminarRegistroAlert(nombre, id, "/mesag/eliminar",cargarTabla);
+    }
+
+</script>

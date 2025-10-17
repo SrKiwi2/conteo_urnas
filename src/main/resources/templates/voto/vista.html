@@ -9,18 +9,14 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-        
-        cargarTabla();
-
-    });
+    $(document).ready(function () {cargarTabla();});
 
     function cargarTabla() {
         $.ajax({
             type: 'POST',
-            url: "/voto/tabla-registros",  // Ruta del metodo del controlador en Spring Boot
+            url: "/voto/tabla-registros",
             success: function (response) {
-                $("#tablaRegistro").html(response);  // Actualiza el contenido del div con la respuesta del servidor
+                $("#tablaRegistro").html(response);
             }
         });
     }
@@ -33,10 +29,6 @@
         cargarFormularioEditAlert(id, "/voto/formulario-edit", "#contenidoModalVoto", "#formularioVoto");
     }
 
-    function eliminar(nombre, id) {
-        eliminarRegistroAlert(nombre, id, "/voto/eliminar", cargarTabla);
-    }
-
-    
+    function eliminar(nombre, id) {eliminarRegistroAlert(nombre, id, "/voto/eliminar", cargarTabla);}
 
 </script>

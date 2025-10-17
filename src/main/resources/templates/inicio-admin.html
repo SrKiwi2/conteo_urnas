@@ -62,7 +62,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_rol");;
+                botonPulsado = document.getElementById("opcion_rol");
 
                 botonPulsado.classList.add("active");
 
@@ -77,7 +77,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_usuario");;
+                botonPulsado = document.getElementById("opcion_usuario");
 
                 botonPulsado.classList.add("active");
 
@@ -92,7 +92,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_persona");;
+                botonPulsado = document.getElementById("opcion_persona");
 
                 botonPulsado.classList.add("active");
 
@@ -106,7 +106,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_jurado");;
+                botonPulsado = document.getElementById("opcion_jurado");
 
                 botonPulsado.classList.add("active");
 
@@ -119,7 +119,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_frente");;
+                botonPulsado = document.getElementById("opcion_frente");
 
                 botonPulsado.classList.add("active");
 
@@ -133,7 +133,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_mesa");;
+                botonPulsado = document.getElementById("opcion_mesa");
 
                 botonPulsado.classList.add("active");
 
@@ -141,13 +141,13 @@
 
             $("#opcion_voto").click(function (e) {
                 e.preventDefault();
-                cargarContenido("/voto/vista");
+                cargarContenido("/votog/vista");
 
                 if (botonPulsado.classList.contains("active")) {
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_voto");;
+                botonPulsado = document.getElementById("opcion_voto");
 
                 botonPulsado.classList.add("active");
 
@@ -161,7 +161,49 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_facultad");;
+                botonPulsado = document.getElementById("opcion_facultad");
+
+                botonPulsado.classList.add("active");
+
+            });
+
+            $("#opcion_distrito").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/distrito/vista");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_distrito");
+
+                botonPulsado.classList.add("active");
+
+            });
+
+            $("#opcion_recinto").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/recinto/vista");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_recinto");
+
+                botonPulsado.classList.add("active");
+
+            });
+
+            $("#opcion_mesag").click(function (e) {
+                e.preventDefault();
+                cargarContenido("/mesag/vista");
+
+                if (botonPulsado.classList.contains("active")) {
+                    botonPulsado.classList.remove("active");
+                }
+
+                botonPulsado = document.getElementById("opcion_mesag");
 
                 botonPulsado.classList.add("active");
 
@@ -175,7 +217,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_carrera");;
+                botonPulsado = document.getElementById("opcion_carrera");
 
                 botonPulsado.classList.add("active");
 
@@ -189,7 +231,7 @@
                     botonPulsado.classList.remove("active");
                 }
 
-                botonPulsado = document.getElementById("opcion_publicoMesa");;
+                botonPulsado = document.getElementById("opcion_publicoMesa");
 
                 botonPulsado.classList.add("active");
 

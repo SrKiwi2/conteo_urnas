@@ -1,0 +1,42 @@
+<div class="modal-header">
+    <h4 class="modal-title" th:text="${edit}? 'Modificar Mesa' : 'Registrar Mesa'"></h4>
+    <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
+</div>
+
+<form id="formularioMesaGeneral" method="post"
+    th:action="${edit}? @{/mesag/modificar-mesaGeneral} : @{/mesag/registrar-mesaGeneral}" th:object="${mesaGeneral}" novalidate>
+    <input type="hidden" th:if="${edit != null}" th:field="${mesaGeneral.idMesaGeneral}">
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12 col-md-6 mb-2">
+                <label class="form-label" for="modalEditUserLastName">N° de Mesa</label>
+                <input type="text" th:field="${mesaGeneral.numeroMesa}" class="form-control" required />
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Porfavor Introduzca un numero.</div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="select2Basic2" class="form-label">Recinto</label>
+                <select id="select2Basic2" class="select2 form-select form-select-lg" data-allow-clear="true"
+                    th:field="*{recinto.idRecinto}">
+                    <option th:each="recinto : ${listaRecintos}" th:value="${recinto.idRecinto}"
+                        th:text="${recinto.nombre}">
+                    </option>
+                </select>
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="row">
+            <div class="col-12">
+                <a type="submit" class="btn btn-secondary" style="color: white;" data-bs-dismiss="modal">Cancelar</a>
+                <input type="submit" class="btn btn-success" th:value="${edit}? 'Guardar Cambios': 'Guardar Registro'">
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    manejarEnvioFormulario('#formularioMesaGeneral');
+</script>

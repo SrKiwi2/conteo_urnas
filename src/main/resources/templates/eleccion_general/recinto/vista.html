@@ -1,0 +1,39 @@
+<h4 class="py-3 mb-4"><span class="text-muted fw-light">Menú /</span> Recinto </h4>
+<form action="/recinto/importar" method="post" enctype="multipart/form-data">
+  <label class="form-label">Excel (.xlsx / .xls)</label>
+  <input type="file" name="file" accept=".xlsx,.xls" required class="form-control mb-2">
+  <button type="submit" class="btn btn-primary">Importar</button>
+</form>
+
+<div id="tablaRegistro"></div>
+
+<div class="modal fade" id="modalFormularioRecinto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="contenidoModalRecinto"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {cargarTabla();});
+
+    function cargarTabla() {
+        $.ajax({
+            type: 'POST',
+            url: "/recinto/tabla-registro",
+            success: function (response) {
+                $("#tablaRegistro").html(response);
+            }
+        });
+    }
+
+    function cargarFormulario() {
+        cargarFormularioAlert("/recinto/formulario", "#contenidoModalRecinto", "#formularioRecinto");
+    }
+
+    function cargarFormularioEdit(id) {
+        cargarFormularioEditAlert(id, "/recinto/formulario-edit", "#contenidoModalRecinto", "#formularioRecinto");
+    }
+
+    function eliminar(nombre, id) {eliminarRegistroAlert(nombre, id, "/recinto/eliminar", cargarTabla);}
+
+</script>

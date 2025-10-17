@@ -1,0 +1,41 @@
+<div class="modal-header">
+    <h4 class="modal-title" th:text="${edit}? 'Modificar Recinto' : 'Registrar Recinto'"></h4>
+    <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
+</div>
+
+<form id="formularioRecinto" method="post" th:action="@{/recinto/registrar-recinto}" th:object="${recinto}" novalidate>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-12 col-md-8 mb-2">
+                <label class="form-label" for="modalEditUserLastName">Recinto</label>
+                <input type="text" th:field="${recinto.nombre}" class="form-control" placeholder="Introduzca nombre del recinto" required />
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Porfavor Introduzca la recinto.</div>
+            </div>
+            <div class="col-12 col-md-4 mb-2">
+                <label class="form-label" for="modalEditUserLastName">Habilitados</label>
+                <input type="text" th:field="${recinto.habilitados}" class="form-control" placeholder="Introduzca nombre del recinto" required />
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Porfavor Introduzca la recinto.</div>
+            </div>
+            <div class="col-12 col-md-6">
+                <label for="select2Basic" class="form-label">Municipio</label>
+                <select id="select2Basic" class="select2 form-select form-select-lg" data-allow-clear="true" th:field="*{municipio.idDistrito}">
+                    <option th:each="municipio : ${listaDistritos}" 
+                        th:value="${municipio.idDistrito}"
+                        th:text="${municipio.nombre}">
+                    </option>
+                </select>
+                <div class="valid-feedback">Correcto!</div>
+                <div class="invalid-feedback">Debe seleccionar a un municipio.</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-success" value="Guardar registro">
+    </div>
+</form>
+
+<script>
+    manejarEnvioFormulario('#formularioRecinto');
+</script>

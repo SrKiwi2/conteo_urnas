@@ -47,12 +47,12 @@ public class vistaPublicaFudController {
 
         List<Mesa> listaMesas = iMesaService.findByCarrera(idCarrera);
 
-        for (Mesa mesa : listaMesas) {
-            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
-                mesa.setRestante((Long) resultado[0]);
-                mesa.setRegistrado((Long) resultado[1]);
-            }
-        }
+        // for (Mesa mesa : listaMesas) {
+        //     for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+        //         mesa.setRestante((Long) resultado[0]);
+        //         mesa.setRegistrado((Long) resultado[1]);
+        //     }
+        // }
 
         List<String> encryptedIds = new ArrayList<>();
         for (Mesa mesas : listaMesas) {
@@ -225,18 +225,18 @@ public class vistaPublicaFudController {
         
         Carrera carrera = carreraService.findById(idCarrera);
         
-        List<Mesa> listaMesas = iMesaService.findByCarrera(idCarrera);
-        for (Mesa mesa : listaMesas) {
-            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
-                mesa.setRestante((Long) resultado[0]);
-                mesa.setRegistrado((Long) resultado[1]);
-            }
-        }
+        // List<Mesa> listaMesas = iMesaService.findByCarrera(idCarrera);
+        // for (Mesa mesa : listaMesas) {
+        //     for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+        //         mesa.setRestante((Long) resultado[0]);
+        //         mesa.setRegistrado((Long) resultado[1]);
+        //     }
+        // }
         List<String> encryptedIds = new ArrayList<>();
-        for (Mesa mesas : listaMesas) {
-            String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
-            encryptedIds.add(id_encryptado);
-        }
+        // for (Mesa mesas : listaMesas) {
+        //     String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));
+        //     encryptedIds.add(id_encryptado);
+        // }
 
         Long sumMesasValidoE = 0L;
         Long sumMesasNuloE = 0L;
@@ -291,7 +291,7 @@ public class vistaPublicaFudController {
         System.out.println(sumMesasVacioD);
         System.out.println(sumMesasNuloD);
 
-        model.addAttribute("listaMesas", listaMesas );
+        // model.addAttribute("listaMesas", listaMesas );
 
         return "publico_fud/mesa-carrera-acyt";
     }

@@ -56,37 +56,62 @@
                         <div>Jurado</div>
                     </a>
                 </li>
+                
+            </ul>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span class="menu-header-text">ELECCIONES GENERALES</span>
+        </li>
+        <li class="menu-item" id="opcion_admin">
+            <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div>General</div>
+            </a>
+            <ul class="menu-sub">
                 <li class="menu-item" id="opcion_frente" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Frente</div>
                     </a>
                 </li>
-
-                <li class="menu-item" id="opcion_mesa" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
+                <li class="menu-item" id="opcion_mesag" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
                         <div>Mesa</div>
                     </a>
                 </li>
-                <li class="menu-item" id="opcion_voto" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
+                <li class="menu-item" id="opcion_distrito" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
-                        <div>Voto</div>
+                        <div>Municipio</div>
                     </a>
                 </li>
-
+                <li class="menu-item" id="opcion_recinto" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
+                    <a class="menu-link">
+                        <div>Recinto</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="menu-item" id="opcion_admin">
+            <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div>Reportes</div>
+            </a>
+            <ul class="menu-sub">
                 <li class="menu-item" id="opcion_publicoMesa" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
                     <a class="menu-link">
-                        <div>Avences Mesa</div>
+                        <div>Avances por mesa</div>
                     </a>
                 </li>
-
-                <li class="menu-item" id="opcion_facultad" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
+            </ul>
+        </li>
+        <li class="menu-item" id="opcion_admin">
+            <a href="#" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-users"></i>
+                <div>Registro</div>
+            </a>
+            <ul class="menu-sub">
+                <li class="menu-item" id="opcion_voto" th:if="${session.nombre_rol == 'ADMINISTRADOR' or session.nombre_rol == 'SUPER USUARIO'}">
                     <a class="menu-link">
-                        <div>Facultad</div>
-                    </a>
-                </li>
-                <li class="menu-item" id="opcion_carrera" th:if="${session.nombre_rol == 'ADMINISTRADOR'}">
-                    <a class="menu-link">
-                        <div>Carrera</div>
+                        <div>Registro votos</div>
                     </a>
                 </li>
             </ul>

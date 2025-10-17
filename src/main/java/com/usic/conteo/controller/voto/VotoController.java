@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usic.conteo.anotaciones.ValidarUsuarioAutenticado;
 import com.usic.conteo.config.Encriptar;
+import com.usic.conteo.model.IService.ICarreraService;
 import com.usic.conteo.model.IService.IFrenteService;
 import com.usic.conteo.model.IService.IMesaService;
 import com.usic.conteo.model.IService.IVotoService;
@@ -31,12 +32,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class VotoController {
     
+    private final ICarreraService carreraService;
     private final IVotoService iVotoService;
-
     private final IFrenteService iFrenteService;
-
     private final IMesaService imesaService;
-
     private final SimpMessagingTemplate messagingTemplate;
 
     @ValidarUsuarioAutenticado
@@ -63,6 +62,7 @@ public class VotoController {
     @PostMapping("/formulario")
     public String formulario(Model model, Voto voto, HttpServletRequest request) {
         model.addAttribute("listaFrentes", iFrenteService.listarFrentes());
+        model.addAttribute("resintos", carreraService.listarCarreras());
         model.addAttribute("listarMesa", imesaService.listarMesas());
         return "voto/formulario";
     }
@@ -76,110 +76,110 @@ public class VotoController {
         return "voto/formulario";
     }
 
-    // @ValidarUsuarioAutenticado
-    // @PostMapping("/registrar-voto")
-    // public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto, 
-    //     @RequestParam(value = "tipoVoto", required = false) Integer tipoVoto, 
-    //     @RequestParam(value = "cantidad_valido") Integer cantidad_valido,
-    //     @RequestParam(value = "cantidad_blanco") Integer cantidad_blanco,
-    //     @RequestParam(value = "cantidad_nulo") Integer cantidad_null) {
-
-    //     Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
-
-    //     if (cantidad_valido > 0) {
-    //         voto.setTipo_voto("VALIDO");
-    //         voto.setEstado("ACTIVO");
-    //         voto.setMesa(voto.getMesa());
-    //         voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
-    //         voto.setCantidad(Integer.toString(cantidad_valido));
-    //         iVotoService.save(voto);
-    //     }
-
-    //     if (cantidad_valido > 0) {
-    //         Voto voto2 = new Voto();
-
-    //         voto2.setTipo_voto("NULO");
-    //         voto2.setEstado("ACTIVO");
-    //         voto2.setMesa(voto.getMesa());
-    //         voto2.setFrente(null);
-    //         voto2.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
-    //         voto2.setCantidad(Integer.toString(cantidad_null));
-    //         iVotoService.save(voto2);
-    //     }
-
-    //     if (cantidad_valido > 0) {
-    //         Voto voto3 = new Voto();
-    //         voto3.setTipo_voto("BLANCO");
-    //         voto3.setFrente(null);
-    //         voto3.setEstado("ACTIVO");
-    //         voto3.setMesa(voto.getMesa());
-    //         voto3.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
-    //         voto3.setCantidad(Integer.toString(cantidad_blanco));
-    //         iVotoService.save(voto3);
-    //     }
-
-    //     messagingTemplate.convertAndSend("/topic/actualizar-graficos", "actualizar");
-    //     return ResponseEntity.ok("Se realizó el registro correctamente");
-    // }
-
     @ValidarUsuarioAutenticado
     @PostMapping("/registrar-voto")
-    public ResponseEntity<String> registrarVotoMultiple(HttpServletRequest request,
-            @RequestParam Long id_mesa,
-            @RequestParam Long frente1,
-            @RequestParam Integer cantidad_frente1,
-            @RequestParam Long frente2,
-            @RequestParam Integer cantidad_frente2,
-            @RequestParam Integer cantidad_blanco,
-            @RequestParam Integer cantidad_nulo) {
+    public ResponseEntity<String> registrar(HttpServletRequest request, @Validated Voto voto, 
+        @RequestParam(value = "tipoVoto", required = false) Integer tipoVoto, 
+        @RequestParam(value = "cantidad_valido") Integer cantidad_valido,
+        @RequestParam(value = "cantidad_blanco") Integer cantidad_blanco,
+        @RequestParam(value = "cantidad_nulo") Integer cantidad_null) {
 
-        Mesa mesa = imesaService.findById(id_mesa);
-        Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+        Usuario usuarioLogueado = (Usuario) request.getSession().getAttribute("usuario");
 
-        // Voto Frente 1
-        Voto voto1 = new Voto();
-        voto1.setTipo_voto("VALIDO");
-        voto1.setCantidad(cantidad_frente1.toString());
-        voto1.setMesa(mesa);
-        voto1.setFrente(iFrenteService.findById(frente1));
-        voto1.setRegistroIdUsuario(usuario.getIdUsuario());
-        voto1.setEstado("ACTIVO");
-        iVotoService.save(voto1);
+        if (cantidad_valido > 0) {
+            voto.setTipo_voto("VALIDO");
+            voto.setEstado("ACTIVO");
+            voto.setMesa(voto.getMesa());
+            voto.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
+            voto.setCantidad(Integer.toString(cantidad_valido));
+            iVotoService.save(voto);
+        }
 
-        // Voto Frente 2
-        Voto voto2 = new Voto();
-        voto2.setTipo_voto("VALIDO");
-        voto2.setCantidad(cantidad_frente2.toString());
-        voto2.setMesa(mesa);
-        voto2.setFrente(iFrenteService.findById(frente2));
-        voto2.setRegistroIdUsuario(usuario.getIdUsuario());
-        voto2.setEstado("ACTIVO");
-        iVotoService.save(voto2);
+        if (cantidad_valido > 0) {
+            Voto voto2 = new Voto();
 
-        // Voto Blanco
-        Voto votoBlanco = new Voto();
-        votoBlanco.setTipo_voto("BLANCO");
-        votoBlanco.setCantidad(cantidad_blanco.toString());
-        votoBlanco.setMesa(mesa);
-        votoBlanco.setFrente(null);
-        votoBlanco.setRegistroIdUsuario(usuario.getIdUsuario());
-        votoBlanco.setEstado("ACTIVO");
-        iVotoService.save(votoBlanco);
+            voto2.setTipo_voto("NULO");
+            voto2.setEstado("ACTIVO");
+            voto2.setMesa(voto.getMesa());
+            voto2.setFrente(null);
+            voto2.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
+            voto2.setCantidad(Integer.toString(cantidad_null));
+            iVotoService.save(voto2);
+        }
 
-        // Voto Nulo
-        Voto votoNulo = new Voto();
-        votoNulo.setTipo_voto("NULO");
-        votoNulo.setCantidad(cantidad_nulo.toString());
-        votoNulo.setMesa(mesa);
-        votoNulo.setFrente(null);
-        votoNulo.setRegistroIdUsuario(usuario.getIdUsuario());
-        votoNulo.setEstado("ACTIVO");
-        iVotoService.save(votoNulo);
+        if (cantidad_valido > 0) {
+            Voto voto3 = new Voto();
+            voto3.setTipo_voto("BLANCO");
+            voto3.setFrente(null);
+            voto3.setEstado("ACTIVO");
+            voto3.setMesa(voto.getMesa());
+            voto3.setRegistroIdUsuario(usuarioLogueado.getIdUsuario());
+            voto3.setCantidad(Integer.toString(cantidad_blanco));
+            iVotoService.save(voto3);
+        }
 
         messagingTemplate.convertAndSend("/topic/actualizar-graficos", "actualizar");
-
         return ResponseEntity.ok("Se realizó el registro correctamente");
     }
+
+    // @ValidarUsuarioAutenticado
+    // @PostMapping("/registrar-voto")
+    // public ResponseEntity<String> registrarVotoMultiple(HttpServletRequest request,
+    //         @RequestParam Long id_mesa,
+    //         @RequestParam Long frente1,
+    //         @RequestParam Integer cantidad_frente1,
+    //         @RequestParam Long frente2,
+    //         @RequestParam Integer cantidad_frente2,
+    //         @RequestParam Integer cantidad_blanco,
+    //         @RequestParam Integer cantidad_nulo) {
+
+    //     Mesa mesa = imesaService.findById(id_mesa);
+    //     Usuario usuario = (Usuario) request.getSession().getAttribute("usuario");
+
+    //     // Voto Frente 1
+    //     Voto voto1 = new Voto();
+    //     voto1.setTipo_voto("VALIDO");
+    //     voto1.setCantidad(cantidad_frente1.toString());
+    //     voto1.setMesa(mesa);
+    //     voto1.setFrente(iFrenteService.findById(frente1));
+    //     voto1.setRegistroIdUsuario(usuario.getIdUsuario());
+    //     voto1.setEstado("ACTIVO");
+    //     iVotoService.save(voto1);
+
+    //     // Voto Frente 2
+    //     Voto voto2 = new Voto();
+    //     voto2.setTipo_voto("VALIDO");
+    //     voto2.setCantidad(cantidad_frente2.toString());
+    //     voto2.setMesa(mesa);
+    //     voto2.setFrente(iFrenteService.findById(frente2));
+    //     voto2.setRegistroIdUsuario(usuario.getIdUsuario());
+    //     voto2.setEstado("ACTIVO");
+    //     iVotoService.save(voto2);
+
+    //     // Voto Blanco
+    //     Voto votoBlanco = new Voto();
+    //     votoBlanco.setTipo_voto("BLANCO");
+    //     votoBlanco.setCantidad(cantidad_blanco.toString());
+    //     votoBlanco.setMesa(mesa);
+    //     votoBlanco.setFrente(null);
+    //     votoBlanco.setRegistroIdUsuario(usuario.getIdUsuario());
+    //     votoBlanco.setEstado("ACTIVO");
+    //     iVotoService.save(votoBlanco);
+
+    //     // Voto Nulo
+    //     Voto votoNulo = new Voto();
+    //     votoNulo.setTipo_voto("NULO");
+    //     votoNulo.setCantidad(cantidad_nulo.toString());
+    //     votoNulo.setMesa(mesa);
+    //     votoNulo.setFrente(null);
+    //     votoNulo.setRegistroIdUsuario(usuario.getIdUsuario());
+    //     votoNulo.setEstado("ACTIVO");
+    //     iVotoService.save(votoNulo);
+
+    //     messagingTemplate.convertAndSend("/topic/actualizar-graficos", "actualizar");
+
+    //     return ResponseEntity.ok("Se realizó el registro correctamente");
+    // }
 
     /* cuando se vota para un solo frente */
     @ValidarUsuarioAutenticado

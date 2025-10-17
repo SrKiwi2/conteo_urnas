@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" data-theme="theme-default" data-template="vertical-menu-template"
+    data-assets-path="/assets/">
+
+<meta charset="utf-8">
+<title>Resultados en Vivo</title>
+
+<!-- CSS del tema (usa rutas absolutas) -->
+<link rel="stylesheet" th:href="@{/assets/vendor/fonts/fontawesome.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/fonts/tabler-icons.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/fonts/flag-icons.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/libs/apex-charts/apex-charts.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/css/pages/page-misc.css}">
+<link rel="stylesheet" th:href="@{/assets/vendor/libs/select2/select2.css}">
+
+<style>
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+    }
+
+    .kpi-card {
+        border: 1px solid var(--bs-border-color, #e5e7eb);
+        border-radius: 14px;
+        padding: 12px 14px;
+        background: var(--bs-body-bg, #fff);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .05);
+    }
+
+    .kpi-label {
+        font-size: .85rem;
+        color: #6b7280;
+        margin-bottom: 2px;
+    }
+
+    .kpi-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        line-height: 1.1;
+    }
+
+    .kpi-sub {
+        font-size: .8rem;
+        opacity: .8;
+        margin-top: 2px;
+    }
+
+    .chart-box {
+        position: relative;
+        height: 320px;
+        width: 100%;
+    }
+
+    .chart-box>canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    @keyframes glow {
+
+        0%,
+        100% {
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0)
+        }
+
+        50% {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .18)
+        }
+    }
+
+    .kpi-card[data-kind] {
+        position: relative;
+        overflow: hidden
+    }
+
+    .kpi-card[data-kind]::after {
+        content: '';
+        position: absolute;
+        inset: auto auto 0 0;
+        height: 4px;
+        width: 100%;
+    }
+
+    .kpi-card[data-kind="PDC"]::after {
+        background: #2563eb
+    }
+
+    .kpi-card[data-kind="LIBRE"]::after {
+        background: #16a34a
+    }
+
+    .kpi-card[data-kind="NULO"]::after {
+        background: #f59e0b
+    }
+
+    .kpi-card[data-kind="BLANCO"]::after {
+        background: #9ca3af
+    }
+
+    /* Encabezado grande, responsivo y sin contornos */
+    .hero-headline {
+        margin: 0 0 6px 0;
+        text-align: center;
+        font-weight: 900;
+        line-height: 1.05;
+        /* Tamaño fluido: min 28px, ideal con viewport, max 56px */
+        font-size: clamp(28px, 5.2vw, 56px);
+
+        /* Texto con degradado animado (sin caja de fondo) */
+        background: linear-gradient(90deg, #0ea5e9, #22c55e, #f59e0b, #ef4444, #0ea5e9);
+        background-size: 300% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: headlineShift 8s ease-in-out infinite;
+        letter-spacing: .3px;
+    }
+
+    /* Barra-acento con la tricolor, sutil y moderna */
+    .hero-accent {
+        height: 6px;
+        width: min(560px, 80%);
+        margin: 8px auto 18px;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #d32f2f 0%, #d32f2f 33.33%, #fdd835 33.33%, #fdd835 66.66%, #2e7d32 66.66%, #2e7d32 100%);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, .12);
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Luz que recorre la barra (detalle dinámico) */
+    .hero-accent::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .4), transparent);
+        transform: translateX(-100%);
+        animation: accentSweep 2.8s ease-in-out infinite;
+    }
+
+    /* Animaciones */
+    @keyframes headlineShift {
+
+        0%,
+        100% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+    }
+
+    @keyframes accentSweep {
+        0% {
+            transform: translateX(-120%);
+        }
+
+        60% {
+            transform: translateX(120%);
+        }
+
+        100% {
+            transform: translateX(120%);
+        }
+    }
+
+    /* Accesibilidad: reduce movimiento si el usuario lo prefiere */
+    @media (prefers-reduced-motion: reduce) {
+
+        .hero-headline,
+        .hero-accent::after {
+            animation: none;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+    <div class="container-xxl py-3">
+        <h1 class="hero-headline">ELECCIONES PRESIDENCIALES BOLIVIA 2025–2030</h1>
+        <div class="hero-accent"></div>
+
+
+        <h4 class="mb-3">Resultados de Elecciones — En vivo</h4>
+
+        <!-- KPIs -->
+        <!-- Reemplaza el bloque de KPIs por este -->
+        <div class="card p-3 mb-3">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Total votos</div>
+                    <div class="kpi-value" id="kpi-total">0</div>
+                    <div class="kpi-sub" id="kpi-updated">—</div>
+                </div>
+
+                <div class="kpi-card" data-kind="PDC">
+                    <div class="kpi-label">PDC</div>
+                    <div class="kpi-value" id="kpi-pdc">0</div>
+                </div>
+
+                <div class="kpi-card" data-kind="LIBRE">
+                    <div class="kpi-label">LIBRE</div>
+                    <div class="kpi-value" id="kpi-libre">0</div>
+                </div>
+
+                <div class="kpi-card" data-kind="NULO">
+                    <div class="kpi-label">Nulo</div>
+                    <div class="kpi-value" id="kpi-nulo">0</div>
+                </div>
+
+                <div class="kpi-card" data-kind="BLANCO">
+                    <div class="kpi-label">Blanco</div>
+                    <div class="kpi-value" id="kpi-blanco">0</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card p-3 mb-3">
+            <h6 class="mb-3">Distribución (%)</h6>
+            <div class="chart-box"><canvas id="chartTorta"></canvas></div>
+        </div>
+
+        <div class="card p-3">
+            <h6 class="mb-3">Distribución de votos</h6>
+            <div class="chart-box"><canvas id="chartVotos"></canvas></div>
+        </div>
+
+        <div class="card p-3 mt-3">
+            <h6 class="mb-3">Evolución (total acumulado)</h6>
+            <div class="chart-box"><canvas id="chartLinea"></canvas></div>
+        </div>
+
+    </div>
+
+    <!-- ORDEN CORRECTO DE JS -->
+    <!-- 1) Helpers y core del tema -->
+    <script th:src="@{/assets/vendor/js/helpers.js}"></script>
+    <script th:src="@{/assets/vendor/js/template-customizer.js}"></script>
+    <script th:src="@{/assets/js/config.js}"></script>
+
+    <!-- 2) jQuery ANTES de scripts que usan $ -->
+    <script th:src="@{/assets/vendor/libs/jquery/jquery.js}"></script>
+
+    <!-- 3) Bootstrap (bundle del tema) -->
+    <script th:src="@{/assets/vendor/js/bootstrap.js}"></script>
+
+    <!-- 4) Otros del tema que dependen de lo anterior -->
+    <script th:src="@{/assets/js/main.js}"></script>
+    <script th:src="@{/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js}"></script>
+    <script th:src="@{/assets/vendor/libs/apex-charts/apexcharts.js}"></script>
+
+    <!-- 5) Chart.js (antes de tu script que crea gráficos) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+
+    <!-- 6) Tu script -->
+    <script>
+        Chart.register(ChartDataLabels);
+        (function () {
+            let lastTotal = 0;
+            let lineT = [];
+            let lineY = [];
+
+            // Asegura que los canvas existan
+            const cv = document.getElementById('chartVotos');
+            const cl = document.getElementById('chartLinea');
+            if (!cv || !cl || typeof Chart === 'undefined') {
+                console.error('Chart.js o canvas no disponibles.');
+                return;
+            }
+
+            // Colores fijos por tipo
+            const COLORS = {
+                PDC: '#2563eb', // azul
+                LIBRE: '#16a34a', // verde
+                NULO: '#f59e0b', // amarillo
+                BLANCO: '#9ca3af'  // gris
+            };
+            const labelsTipos = ['PDC', 'LIBRE', 'NULO', 'BLANCO'];
+            const bgColors = labelsTipos.map(l => COLORS[l]);
+
+            const chartVotos = new Chart(cv.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: labelsTipos,
+                    datasets: [{
+                        label: 'Votos',
+                        data: [0, 0, 0, 0],
+                        backgroundColor: bgColors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 300 },
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            formatter: (value) => value || '',
+                            anchor: 'end',
+                            align: 'end',
+                            offset: 4,
+                            color: '#111827',
+                            backgroundColor: '#ffffff',
+                            borderRadius: 6,
+                            padding: { top: 2, bottom: 2, left: 6, right: 6 },
+                            font: { weight: 700, size: 11 },
+                            clamp: true
+                        }
+                    }
+                }
+            });
+
+
+            const chartLinea = new Chart(cl.getContext('2d'), {
+                type: 'line',
+                data: { labels: lineT, datasets: [{ label: 'Total acumulado', data: lineY, tension: 0.3, fill: false }] },
+                options: {
+                    animation: { duration: 250 },
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                }
+            });
+
+            // DOUGHNUT
+            const ctxT = document.getElementById('chartTorta').getContext('2d');
+            const chartTorta = new Chart(ctxT, {
+                type: 'doughnut',
+                data: {
+                    labels: ['PDC', 'LIBRE', 'NULO', 'BLANCO'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: bgColors,
+                        borderColor: '#ffffff',
+                        borderWidth: 2// sin colores fijos; Chart.js pondrá una paleta por defecto
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',            // dona más “fina”
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        datalabels: {
+                            formatter: (value, ctx) => {
+                                const data = ctx.chart.data.datasets[0].data;
+                                const total = data.reduce((a, b) => a + b, 0) || 1;
+                                const pct = (value * 100 / total).toFixed(1);
+                                return value ? `${value} (${pct}%)` : '';
+                            },
+                            color: '#111827',
+                            backgroundColor: '#ffffff',
+                            borderRadius: 6,
+                            padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                            font: { weight: 700, size: 11 },
+                            anchor: 'end',
+                            align: 'end',
+                            offset: 8,
+                            clamp: true
+                        }
+                    }
+                }
+            });
+
+
+            function renderResumen(r) {
+                document.getElementById('kpi-total').textContent = r.total ?? 0;
+                document.getElementById('kpi-pdc').textContent = r.pdc ?? 0;
+                document.getElementById('kpi-libre').textContent = r.libre ?? 0;
+                document.getElementById('kpi-nulo').textContent = r.nulo ?? 0;
+                document.getElementById('kpi-blanco').textContent = r.blanco ?? 0;
+                document.getElementById('kpi-updated').textContent = 'Actualizado: ' + (r.updatedAt || '—');
+
+                const vals = [r.pdc || 0, r.libre || 0, r.nulo || 0, r.blanco || 0];
+                chartTorta.data.datasets[0].data = vals;
+                chartTorta.update('active');
+
+                chartVotos.data.datasets[0].data = vals;
+                chartVotos.update('active');
+
+                if ((r.total || 0) !== lastTotal) {
+                    lastTotal = r.total || 0;
+                    const label = new Date().toLocaleTimeString();
+                    lineT.push(label);
+                    lineY.push(lastTotal);
+                    if (lineT.length > 60) { lineT.shift(); lineY.shift(); }
+                    chartLinea.update('active');
+                }
+
+
+            }
+
+            let ticker = null;
+            function startPolling() {
+                if (ticker) return;
+                ticker = setInterval(() => {
+                    if (document.hidden) return;
+                    fetch('/votol/api/resumen', { cache: 'no-store' })
+                        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+                        .then(renderResumen)
+                        .catch(() => { });
+                }, 2000);
+            }
+            function stopPolling() { if (ticker) { clearInterval(ticker); ticker = null; } }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) stopPolling(); else startPolling();
+            });
+
+            fetch('/votol/api/resumen', { cache: 'no-store' })
+                .then(r => r.json()).then(r => { renderResumen(r); startPolling(); })
+                .catch(() => startPolling());
+        })();
+    </script>
+</body>
+
+</html>

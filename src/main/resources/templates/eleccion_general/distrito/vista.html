@@ -1,0 +1,34 @@
+<h4 class="py-3 mb-4"><span class="text-muted fw-light">Menú /</span> DISTRITO </h4>
+
+<div id="tablaRegistro"></div>
+
+<div class="modal fade" id="modalFormularioDistrito" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" id="contenidoModalDistrito"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {cargarTabla();});
+
+    function cargarTabla() {
+        $.ajax({
+            type: 'POST',
+            url: "/distrito/tabla-registro",
+            success: function (response) {
+                $("#tablaRegistro").html(response);
+            }
+        });
+    }
+
+    function cargarFormulario() {
+        cargarFormularioAlert("/distrito/formulario", "#contenidoModalDistrito", "#formularioDistrito");
+    }
+
+    function cargarFormularioEdit(id) {
+        cargarFormularioEditAlert(id, "/distrito/formulario-edit", "#contenidoModalDistrito", "#formularioDistrito");
+    }
+
+    function eliminar(nombre, id) {eliminarRegistroAlert(nombre, id, "/distrito/eliminar", cargarTabla);}
+
+</script>

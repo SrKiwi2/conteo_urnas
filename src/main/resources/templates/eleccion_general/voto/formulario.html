@@ -1,0 +1,78 @@
+<div class="modal-header">
+    <h4 class="modal-title" th:text="${edit}? 'Modificar Voto' : 'Registrar Voto'"></h4>
+    <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
+</div>
+
+<form id="formularioDetalleVoto" method="post" th:action="@{/votog/guardar}" th:object="${detalleVoto}" novalidate>
+
+    <div class="modal-body">
+        <div class="row">
+
+            <div class="col-12 col-md-4 mb-2">
+                <label class="form-label">Mesa</label>
+                <select class="form-select" id="idMesa" required>
+                    <option value="">-- Seleccione --</option>
+                    <option th:each="m : ${listaMesas}" th:value="${m.idMesaGeneral}"
+                        th:text="'Mesa '+ ${m.numeroMesa} +' - '+ ${m.recinto.nombre} ">
+                    </option>
+                </select>
+                <div class="invalid-feedback">Seleccione una mesa.</div>
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label">PDC</label>
+                <input type="number" min="0" id="pdc" class="form-control" value="0">
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label">LIBRE</label>
+                <input type="number" min="0" id="libre" class="form-control" value="0">
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label">NULO</label>
+                <input type="number" min="0" id="nulo" class="form-control" value="0">
+            </div>
+            <div class="col-6 col-md-2">
+                <label class="form-label">BLANCO</label>
+                <input type="number" min="0" id="blanco" class="form-control" value="0">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" onclick="enviarResultados()" class="btn btn-success">Guardar</button>
+    </div>
+</form>
+
+
+<script>
+    manejarEnvioFormulario('#formularioVoto');
+
+    function enviarResultados() {
+        const payload = {
+            idMesa: document.getElementById('idMesa').value ? parseInt(document.getElementById('idMesa').value) : null,
+            pdc: parseInt(document.getElementById('pdc').value || '0'),
+            libre: parseInt(document.getElementById('libre').value || '0'),
+            nulo: parseInt(document.getElementById('nulo').value || '0'),
+            blanco: parseInt(document.getElementById('blanco').value || '0')
+        };
+
+        if (!payload.idMesa) { alert('Seleccione una mesa'); return; }
+
+        $.ajax({
+        url: '/votog/guardar-resultados-mesa',
+        type: 'POST',
+        data: {
+            idMesa:  $('#idMesa').val(),     // <select> con el id de la mesa
+            pdc:     $('#pdc').val() || 0,
+            libre:   $('#libre').val() || 0,
+            nulo:    $('#nulo').val() || 0,
+            blanco:  $('#blanco').val() || 0
+        }
+        }).done(function () {
+            // refresca tu tabla, cierra modal, etc.
+          cargarTabla();
+           bootstrap.Modal.getInstance(document.getElementById('modalFormularioVotog')).hide();
+        }).fail(function (xhr) {
+            alert('Error al guardar: ' + (xhr.responseText || xhr.status));
+        });
+    }
+</script>

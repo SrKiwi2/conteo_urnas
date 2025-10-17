@@ -3,7 +3,6 @@ package com.usic.conteo.controller.publico_acbn;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,10 +20,8 @@ import com.usic.conteo.model.IService.IFacultadService;
 import com.usic.conteo.model.IService.IMesaService;
 import com.usic.conteo.model.Repository.ConsultasVistaVotos;
 import com.usic.conteo.model.entity.Carrera;
-import com.usic.conteo.model.entity.Facultad;
 import com.usic.conteo.model.entity.Mesa;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -51,12 +47,12 @@ public class VistaPublicaAcbsController {
 
         List<Mesa> listaMesas = iMesaService.findByCarrera(idCarrera);
 
-        for (Mesa mesa : listaMesas) {
-            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
-                mesa.setRestante((Long) resultado[0]);
-                mesa.setRegistrado((Long) resultado[1]);
-            }
-        }
+        // for (Mesa mesa : listaMesas) {
+        //     for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+        //         mesa.setRestante((Long) resultado[0]);
+        //         mesa.setRegistrado((Long) resultado[1]);
+        //     }
+        // }
 
         List<String> encryptedIds = new ArrayList<>();
         for (Mesa mesas : listaMesas) {
@@ -244,12 +240,12 @@ public class VistaPublicaAcbsController {
         Carrera carrera = carreraService.findById(idCarrera);
         
         List<Mesa> listaMesas = iMesaService.findByCarrera(idCarrera);
-        for (Mesa mesa : listaMesas) {
-            for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
-                mesa.setRestante((Long) resultado[0]);
-                mesa.setRegistrado((Long) resultado[1]);
-            }
-        }
+        // for (Mesa mesa : listaMesas) {
+        //     for (Object[] resultado : iMesaService.findMesasWithRestantes(mesa.getId_mesa())) {
+        //         mesa.setRestante((Long) resultado[0]);
+        //         mesa.setRegistrado((Long) resultado[1]);
+        //     }
+        // }
         List<String> encryptedIds = new ArrayList<>();
         for (Mesa mesas : listaMesas) {
             String id_encryptado = Encriptar.encrypt(Long.toString(mesas.getId_mesa()));

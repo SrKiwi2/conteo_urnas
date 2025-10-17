@@ -2,130 +2,39 @@
     <h4 class="modal-title" th:text="${edit}? 'Modificar Voto' : 'Registrar Voto'"></h4>
     <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
 </div>
-<!-- <form id="formularioVoto" method="post"
-    th:action="${edit}? @{/voto/modificar-voto} : @{/voto/registrar-voto}" novalidate>
-    <input type="hidden" th:if="${edit != null}" th:field="${voto.id_voto}">
-    <div class="modal-body">
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-warning d-flex align-items-center" role="alert">
-                    <div class="row">
-                        <div class="col-12">
-                            <span class="alert-icon text-warning me-2"><i class="ti ti-bell ti-xs"></i></span>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <b class="px-1">!ADVERTENCIA¡</b> Despues de registrar el voto no se podra <b class="px-2"> EDITAR </b> ni <b class="px-2"> ELIMINAR </b>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col- col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserLastName">Cantidad voto VALIDO</label>
-                <input type="number" name="cantidad_valido" class="form-control" required placeholder="Introduce una cantidad"/>
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
-            </div>
-            <div class="col-12 col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserLastName">Cantidad voto BLANCO</label>
-                <input type="number" name="cantidad_blanco" class="form-control" required placeholder="Introduce una cantidad"/>
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
-            </div>
-            <div class="col-12 col-md-4 mb-2">
-                <label class="form-label" for="modalEditUserLastName">Cantidad voto NULO</label>
-                <input type="number" name="cantidad_nulo" class="form-control" required placeholder="Introduce una cantidad"/>
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Porfavor Introduzca el Dato.</div>
-            </div>
-
-            <div class="col-12 col-md-6">
-                <label for="select2Basic" class="form-label">Mesa</label>
-                <select class="select2 form-select" th:field="${voto.mesa}">
-                    <option th:each="mesa : ${listarMesa}" 
-                        th:value="${mesa.id_mesa}" 
-                        th:selected="${mesa == voto.mesa}"
-                        th:text="${mesa.nombre_mesa}">
-                    </option>
-                </select>
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Debe seleccionar a una Mesa.</div>
-            </div>
-            
-            <div class="col-12 col-md-6">
-                <label for="select2Basic" class="form-label">Frente</label>
-                <select id="select2Basic" class="select2 form-select" th:field="${voto.frente}">
-                    <option th:each="frente : ${listaFrentes}" 
-                        th:value="${frente.id_frente}" 
-                        th:selected="${frente == voto.frente}"
-                        th:text="${frente.nombre_frente}">
-                    </option>
-                </select>
-                <div class="valid-feedback">Correcto!</div>
-                <div class="invalid-feedback">Debe seleccionar a un Jurado.</div>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <div class="row">
-            <div class="col-12">
-                <a type="submit" class="btn btn-secondary" style="color: white;" data-bs-dismiss="modal">Cancelar</a>
-                <input type="submit" class="btn btn-success" th:value="${edit}? 'Guardar Cambios': 'Guardar Registro'">
-            </div>
-        </div>
-    </div>
-</form> -->
 
 <form id="formularioVoto" method="post" th:action="@{/voto/registrar-voto-unico}" novalidate>
     <div class="modal-body">
         <div class="row">
-            <!-- Votos Frente 1 -->
             <div class="col-md-6 mb-2">
-                <label class="form-label">VOTOS VALIDOS a: </label>
-                <select class="form-select" name="frenteId">
-                    <option th:each="frente : ${listaFrentes}"
-                            th:value="${frente.id_frente}"
-                            th:text="${frente.nombre_frente}"
-                            th:selected="${frente.nombre_frente == 'Tecno nos Une'}">
-                    </option>
-                </select>
-                <input type="number" class="form-control mt-1" name="cantidad_frente" placeholder="Cantidad votos del frente" required />
+                <label class="form-label">VOTOS A PDC</label>
+                <input type="number" name="cantidad_nulo" class="form-control" required placeholder="Introduce cantidad"/>
             </div>
-
-            <!-- Votos Frente 2 cuando hay otro frente -->
-            <!-- <div class="col-md-6 mb-2">
-                <label class="form-label">100% ACBN</label>
-                <select class="form-select" name="frente2">
-                    <option th:each="frente : ${listaFrentes}"
-                            th:value="${frente.id_frente}"
-                            th:text="${frente.nombre_frente}"
-                            th:selected="${frente.nombre_frente == '100% ACBN'}">
-                    </option>
-                </select>
-                <input type="number" class="form-control mt-1" name="cantidad_frente2" placeholder="Cantidad votos Frente 2" required />
-            </div> -->
-
-            <!-- Votos en Blanco -->
-            
+            <div class="col-md-6 mb-2">
+                <label class="form-label">VOTOS A LIBRE</label>
+                <input type="number" name="cantidad_nulo" class="form-control" required placeholder="Introduce cantidad"/>
+            </div>
         </div>
         <div class="row">
             <div class="col-md-6 mb-2">
-                <label class="form-label">Cantidad voto BLANCO</label>
+                <label class="form-label">VOTOS BLANCO</label>
                 <input type="number" name="cantidad_blanco" class="form-control" required placeholder="Introduce cantidad"/>
             </div>
-
-            <!-- Votos Nulos -->
             <div class="col-md-6 mb-2">
-                <label class="form-label">Cantidad voto NULO</label>
+                <label class="form-label">VOTOS NULO</label>
                 <input type="number" name="cantidad_nulo" class="form-control" required placeholder="Introduce cantidad"/>
             </div>
-
-            <!-- Mesa -->
-            <div class="col-md-12 mb-2">
-                <label class="form-label">Mesa</label>
+            <div class="col-md-6 mb-2">
+                <label class="form-label">RECINTO</label>
+                <select class="form-select" name="id_facultad" required>
+                    <option th:each="res : ${resintos}"
+                            th:value="${res.id_carrera}"
+                            th:text="${res.nombre_carrera}">
+                    </option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-2">
+                <label class="form-label">N° MESA</label>
                 <select class="form-select" name="id_mesa" required>
                     <option th:each="mesa : ${listarMesa}"
                             th:value="${mesa.id_mesa}"
@@ -140,11 +49,6 @@
     </div>
 </form>
 
-
 <script>
-     $('.select2').select2({
-        // Especificar el parent para el dropdown
-    });
     manejarEnvioFormulario('#formularioVoto');
-   
 </script>

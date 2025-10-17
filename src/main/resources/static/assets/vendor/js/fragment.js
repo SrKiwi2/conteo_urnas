@@ -10,7 +10,6 @@ function cargarFormularioAlert(urlFormulario, idContenedorModal, idFormulario) {
                 type: 'POST',
                 url: urlFormulario,  // Ruta del método del controlador en Spring Boot para cargar el formulario
                 success: function (response) {
-                    console.log(response);
                     $(idContenedorModal).html(response);  // Actualiza el contenido del modal con la respuesta del servidor
                     localStorage.setItem("actualizarGraficos", "true");
                     // Inicializa select2 en los elementos con la clase .select2 dentro del formulario
@@ -53,7 +52,6 @@ function mostrarDatosFacultdad(urlFormulario, idContenedorModal, idFormulario) {
                 type: 'POST',
                 url: urlFormulario,  // Ruta del método del controlador en Spring Boot para cargar el formulario
                 success: function (response) {
-                    console.log(response);
                     $(idContenedorModal).html(response);  // Actualiza el contenido del modal con la respuesta del servidor
                     
                     // Inicializa select2 en los elementos con la clase .select2 dentro del formulario
