@@ -9,7 +9,7 @@
     <a type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></a>
 </div>
 
-<form id="formularioDetalleVoto" method="post" th:action="@{/votog/guardar}" th:object="${detalleVoto}" novalidate>
+<form id="formularioVotog" method="post" th:action="@{/votog/guardar}" th:object="${detalleVoto}" novalidate>
 
     <div class="modal-body">
         <div class="row">
@@ -51,7 +51,7 @@
 
 
 <script>
-    manejarEnvioFormulario('#formularioDetalleVoto');
+    manejarEnvioFormulario('#formularioVotog');
 
     function enviarResultados() {
         const payload = {
