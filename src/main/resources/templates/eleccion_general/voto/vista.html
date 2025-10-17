@@ -10,59 +10,100 @@
 
 <script>
 
-    // ÚNICA función global para: 1) recargar opciones desde /pendientes y 2) (re)inicializar Select2
-    window.actualizarYActivarSelectMesa = function actualizarYActivarSelectMesa() {
+    // --- Estado global anti-tormenta ---
+    let _mesaXHR = null;            // jqXHR actual (para abortar)
+    let _mesaLock = false;          // evita reentradas
+    let _mesaDebounce = null;       // timer
+    let _mesaObserver = null;       // MutationObserver
+
+    function modalAbierto() {
+        return $('#modalFormularioVotog').hasClass('show');
+    }
+
+    // Refresca opciones y (re)activa Select2, pero con control de concurrencia
+    function actualizarYActivarSelectMesa(opts = { force: false }) {
+        // Si no hay form aún o el modal no está visible, sal (a menos que sea force).
         const $sel = $('#idMesa');
-        if (!$sel.length) return; // El formulario aún no fue inyectado
+        if (!$sel.length || (!modalAbierto() && !opts.force)) return;
 
-        const $modal = $('#modalFormularioVotog');
+        // Debounce: agrupa múltiples llamadas rapiditas
+        clearTimeout(_mesaDebounce);
+        _mesaDebounce = setTimeout(() => {
+            if (_mesaLock) return;      // ya hay una en curso
 
-        // Si ya estaba con Select2, destruir antes de tocar opciones
-        if ($sel.hasClass('select2-hidden-accessible')) {
-            $sel.select2('destroy');
-        }
+            _mesaLock = true;
 
-        const valorActual = $sel.val();
+            const $modal = $('#modalFormularioVotog');
 
-        $.getJSON('/votog/mesag/pendientes', function (data) {
-            $sel.empty().append(new Option('-- Seleccione --', '', true, false));
-            data.forEach(m => {
-                $sel.append(new Option(`${m.recintoNombre} - Mesa ${m.numeroMesa}`, m.id, false, false));
-            });
-
-            // Restaurar valor si sigue existiendo
-            if (valorActual && data.some(x => String(x.id) === String(valorActual))) {
-                $sel.val(valorActual);
-            } else {
-                $sel.val('');
+            // Abortamos una previa si existe (evita colas)
+            if (_mesaXHR && _mesaXHR.readyState !== 4) {
+                try { _mesaXHR.abort(); } catch (_) { }
             }
 
-            // ¡SIEMPRE! inicializar Select2 (con o sin que antes estuviera)
-            $sel.select2({
-                // theme: 'bootstrap-5', // habilita si tienes el tema cargado
-                placeholder: '-- Seleccione --',
-                allowClear: true,
-                width: '100%',
-                dropdownParent: $modal,
-                language: {
-                    noResults: () => 'Sin resultados',
-                    searching: () => 'Buscando…'
-                }
-            });
-        });
-    };
+            // Destruye Select2 antes de tocar opciones
+            if ($sel.hasClass('select2-hidden-accessible')) {
+                $sel.select2('destroy');
+            }
+
+            const valorActual = $sel.val();
+
+            _mesaXHR = $.getJSON('/votog/mesag/pendientes')
+                .done(function (data) {
+                    $sel.empty().append(new Option('-- Seleccione --', '', true, false));
+
+                    // 3 campos: municipio - recinto - mesa (verifica que el DTO tenga municipioNombre)
+                    data.forEach(m => {
+                        const municipio = m.municipioNombre ?? '';
+                        const recinto = m.recintoNombre ?? '';
+                        const mesaNum = m.numeroMesa ?? '';
+                        const label = `${municipio} - ${recinto} - Mesa ${mesaNum}`.replace(/\s+-\s+-\s+/g, ' - ');
+                        $sel.append(new Option(label, m.id, false, false));
+                    });
+
+                    // Restaura selección si aún existe
+                    if (valorActual && data.some(x => String(x.id) === String(valorActual))) {
+                        $sel.val(valorActual);
+                    } else {
+                        $sel.val('');
+                    }
+
+                    // Inicializa SIEMPRE Select2
+                    $sel.select2({
+                        // theme: 'bootstrap-5', // descomenta si tienes el CSS del tema
+                        placeholder: '-- Seleccione --',
+                        allowClear: true,
+                        width: '100%',
+                        dropdownParent: $modal,
+                        minimumResultsForSearch: 0,
+                        language: {
+                            noResults: () => 'Sin resultados',
+                            searching: () => 'Buscando…'
+                        }
+                    });
+                })
+                .fail(function (xhr, status) {
+                    // Si fue abort, no es error real
+                    if (status !== 'abort') {
+                        console.warn('Fallo /mesag/pendientes:', status);
+                    }
+                })
+                .always(function () {
+                    _mesaLock = false;
+                });
+
+        }, 120); // pequeño delay para agrupar triggers
+    }
 
     $(document).ready(function () {
         cargarTabla();
 
-        // Suscripción SSE
+        // SSE: refresca tabla SIEMPRE, y el select solo si el modal está abierto
         const evt = new EventSource('/votog/stream');
         evt.addEventListener('mesa-registrada', function (e) {
             try {
                 const data = JSON.parse(e.data);
                 cargarTabla();
-                actualizarYActivarSelectMesa(); // <- nombre correcto ahora
-
+                if (modalAbierto()) actualizarYActivarSelectMesa();
                 const $sel = $('#idMesa');
                 if ($sel.length && $sel.val() === String(data.idMesa)) {
                     $sel.val(null).trigger('change');
@@ -72,14 +113,50 @@
             } catch (err) { console.warn(err); }
         });
 
-        // Al abrir el modal, asegura que el formulario ya esté y luego actualiza + activa Select2
+        // Cuando se muestra el modal:
         $('#modalFormularioVotog')
-            .off('shown.bs.modal.refresco')
-            .on('shown.bs.modal.refresco', function () {
-                // 1) intenta ya
-                actualizarYActivarSelectMesa();
-                // 2) reintento rápido por si el fragmento se inyectó milisegundos después
-                setTimeout(actualizarYActivarSelectMesa, 120);
+            .off('shown.bs.modal.select')
+            .on('shown.bs.modal.select', function () {
+                // Observa SOLO hasta que aparezca #idMesa
+                const cont = document.getElementById('contenidoModalVotog');
+                if (_mesaObserver) { try { _mesaObserver.disconnect(); } catch (_) { } }
+
+                _mesaObserver = new MutationObserver(() => {
+                    if (document.getElementById('idMesa')) {
+                        actualizarYActivarSelectMesa({ force: true });
+                        // desconecta para que no dispare infinitamente
+                        try { _mesaObserver.disconnect(); } catch (_) { }
+                        _mesaObserver = null;
+                    }
+                });
+                _mesaObserver.observe(cont, { childList: true, subtree: true });
+
+                // Además, intenta una vez por si ya está
+                actualizarYActivarSelectMesa({ force: true });
+            });
+
+        // Al cerrar modal: limpiar recursos
+        $('#modalFormularioVotog')
+            .off('hidden.bs.modal.select')
+            .on('hidden.bs.modal.select', function () {
+                // Aborta petición pendiente
+                if (_mesaXHR && _mesaXHR.readyState !== 4) {
+                    try { _mesaXHR.abort(); } catch (_) { }
+                }
+                _mesaLock = false;
+                clearTimeout(_mesaDebounce);
+
+                // Detén observer
+                if (_mesaObserver) {
+                    try { _mesaObserver.disconnect(); } catch (_) { }
+                    _mesaObserver = null;
+                }
+
+                // Destruye Select2 para dejar el DOM limpio
+                const $sel = $('#idMesa');
+                if ($sel.length && $sel.hasClass('select2-hidden-accessible')) {
+                    $sel.select2('destroy');
+                }
             });
     });
 

@@ -2,6 +2,7 @@
     .select2-container .select2-dropdown {
         z-index: 2000;
     }
+    .select2-container--open { z-index: 2000; }
 </style>
 
 <div class="modal-header">
@@ -18,7 +19,7 @@
                 <select class="form-select" id="idMesa" required>
                     <option value="">-- Seleccione --</option>
                     <option th:each="m : ${listaMesas}" th:value="${m.idMesaGeneral}"
-                        th:text="${m.recinto.municipio.nombre} + ' - ' + ${m.recinto.nombre} +' - '+ ' Mesa '+ ${m.numeroMesa}">
+                        th:text="|${m.recinto.municipio.nombre} - ${m.recinto.nombre} - Mesa ${m.numeroMesa}|">
                     </option>
                 </select>
                 <div class="invalid-feedback">Seleccione una mesa.</div>

@@ -115,11 +115,12 @@ public class VotoDetalleController {
             .map(m -> new MesaGeneralDto(
                 m.getIdMesaGeneral(),
                 m.getNumeroMesa(),
-                m.getRecinto().getNombre()
+                m.getRecinto().getNombre(),
+                m.getRecinto().getMunicipio().getNombre()
             ))
             .toList();
         return ResponseEntity.ok(data);
     }
 
-    public record MesaGeneralDto(Long id, String numeroMesa, String recintoNombre) {}
+    public record MesaGeneralDto(Long id, String numeroMesa, String recintoNombre, String municipioNombre) {}
 }

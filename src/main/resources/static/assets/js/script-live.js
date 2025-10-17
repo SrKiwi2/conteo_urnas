@@ -184,6 +184,127 @@ Chart.register(ChartDataLabels);
         }
     }
 
+    /*LISTAR RECINTOS*/
+      let REC_ALL = [];     // fuente completa (del backend)
+  let REC_FILT = [];    // filtrada + ordenada para pintar
+  // Virtualización
+  const ROW_H = 44;     // alto aproximado de cada fila (ajústalo si cambias estilos)
+  let startIdx = 0, endIdx = 0;
+
+  function prepararRecintos(raw){
+    // normaliza y calcula % con seguridad
+    return raw.map(x => {
+      const hab = Number(x.habilitados || 0);
+      const tot = Number(x.total || 0);
+      const pct = hab > 0 ? (tot / hab) * 100 : 0;
+      return {
+        recinto: String(x.recinto || ''),
+        municipio: String(x.municipio || ''),
+        provincia: String(x.provincia || ''),
+        habilitados: hab,
+        total: tot,
+        participacionpct: pct
+      };
+    });
+  }
+
+  function filtrarYOrdenar(){
+    const q = (document.getElementById('rec-buscar').value || '').toLowerCase().trim();
+    const solo = document.getElementById('rec-solo-con-datos').checked;
+    const orden = document.getElementById('rec-orden').value;
+
+    let arr = REC_ALL.slice();
+
+    if (solo){
+      arr = arr.filter(r => r.total > 0 || r.participacionpct > 0);
+    }
+    if (q){
+      arr = arr.filter(r => 
+        r.recinto.toLowerCase().includes(q) ||
+        r.municipio.toLowerCase().includes(q) ||
+        r.provincia.toLowerCase().includes(q)
+      );
+    }
+
+    switch(orden){
+      case 'participacion-desc': arr.sort((a,b)=>b.participacionpct-a.participacionpct); break;
+      case 'participacion-asc':  arr.sort((a,b)=>a.participacionpct-b.participacionpct); break;
+      case 'total-desc':         arr.sort((a,b)=>b.total-a.total); break;
+      case 'total-asc':          arr.sort((a,b)=>a.total-b.total); break;
+      case 'nombre-asc':         arr.sort((a,b)=>a.recinto.localeCompare(b.recinto, 'es')); break;
+    }
+    REC_FILT = arr;
+  }
+
+  // Virtual render: pinta solo los visibles
+  function renderVirtual(){
+    const vp = document.getElementById('recintos-viewport');
+    const list = document.getElementById('recintos-list');
+    const top = document.getElementById('recintos-spacer-top');
+    const bot = document.getElementById('recintos-spacer-bot');
+    if (!vp) return;
+
+    const vpH = vp.clientHeight;
+    const scrollTop = vp.scrollTop;
+
+    const total = REC_FILT.length;
+    const visibleCount = Math.ceil(vpH / ROW_H) + 6; // margen de seguridad
+    startIdx = Math.max(0, Math.floor(scrollTop / ROW_H) - 3);
+    endIdx = Math.min(total, startIdx + visibleCount);
+
+    // Espaciadores
+    const topH = startIdx * ROW_H;
+    const botH = (total - endIdx) * ROW_H;
+    top.style.height = topH + 'px';
+    bot.style.height = botH + 'px';
+
+    // Fragment para minimizar reflows
+    const frag = document.createDocumentFragment();
+    list.innerHTML = '';
+    for (let i = startIdx; i < endIdx; i++){
+      const x = REC_FILT[i];
+      const pct = Math.min(100, Math.max(0, x.participacionpct || 0));
+      const color = pct >= 70 ? '#16a34a' : (pct >= 40 ? '#f59e0b' : '#9ca3af');
+
+      const row = document.createElement('div');
+      row.className = 'progress-row';
+      row.style.height = ROW_H + 'px';
+      row.innerHTML = `
+        <div>
+          <strong>${escapeHtml(x.recinto)}</strong>
+          <div class="badge-soft text-muted">${escapeHtml(x.municipio)} · ${escapeHtml(x.provincia)}</div>
+        </div>
+        <div class="progress-wrap"><div class="progress-inner" style="width:${pct.toFixed(1)}%;background:${color}"></div></div>
+        <div style="text-align:right">${x.total}/${x.habilitados} · ${pct.toFixed(1)}%</div>
+      `;
+      frag.appendChild(row);
+    }
+    list.appendChild(frag);
+  }
+
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  }
+
+  // Eventos de controles
+  function wireRecintosUI(){
+    const vp = document.getElementById('recintos-viewport');
+    ['rec-buscar','rec-orden','rec-solo-con-datos'].forEach(id=>{
+      const el = document.getElementById(id);
+      if (!el) return;
+      const evt = id==='rec-buscar' ? 'input' : 'change';
+      el.addEventListener(evt, ()=>{
+        filtrarYOrdenar();
+        // reajusta espaciadores y vuelve a pintar
+        renderVirtual();
+      });
+    });
+    if (vp){
+      vp.addEventListener('scroll', renderVirtual, {passive:true});
+      window.addEventListener('resize', renderVirtual);
+    }
+  }
+
     function renderDashboard(d) {
 
         // Provincia (stacked)
@@ -202,27 +323,12 @@ Chart.register(ChartDataLabels);
         chartMun.data.datasets[0].data = d.topMunicipios.map(x => Number(x.total || 0));
         chartMun.update('active');
 
-        // Lista recintos: participación con barra
-        const cont = document.getElementById('listRecintos');
-        if (cont) {
-            cont.innerHTML = '';
-            // ordena por menor→mayor o al gusto
-            const data = d.porRecinto.slice().sort((a, b) => Number(b.participacionpct || 0) - Number(a.participacionpct || 0));
-            data.forEach(x => {
-                const pct = Number(x.participacionpct || 0);
-                const tot = Number(x.total || 0);
-                const hab = Number(x.habilitados || 0);
-                const row = document.createElement('div');
-                row.className = 'progress-row';
-                row.innerHTML = `
-                            <div style="min-width:180px"><strong>${x.recinto}</strong><div class="badge-soft badge-gray">${x.municipio} · ${x.provincia}</div></div>
-                            <div class="progress-wrap"><div class="progress-inner" style="width:${Math.min(pct, 100)}%; background:${pct >= 70 ? '#16a34a' : pct >= 40 ? '#f59e0b' : '#9ca3af'}"></div></div>
-                            <div style="min-width:120px; text-align:right">${tot}/${hab} · ${pct.toFixed(1)}%</div>
-                        `;
-                cont.appendChild(row);
-            });
+        // ===== NUEVO: RECINTOS =====
+        REC_ALL = prepararRecintos(d.porRecinto || []);
+            filtrarYOrdenar();
+            wireRecintosUI();     // solo hace bindings si no existen
+            renderVirtual();      // pinta lo visible
         }
-    }
 
     // polling ligero (puedes unificar con tu intervalo existente)
     (function () {
