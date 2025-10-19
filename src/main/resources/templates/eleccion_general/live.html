@@ -99,6 +99,23 @@
                     <label class="form-check-label" for="rec-solo-con-datos">Solo con datos</label>
                 </div>
             </div>
+<div class="card p-3 mt-3">
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <h6 class="mb-0 me-auto">Actas computadas por Municipio</h6>
+
+    <!-- input escribible con datalist (versión corta) -->
+    <input list="dl-mun-actas"
+           id="inp-mun-actas"
+           class="form-control form-control-sm"
+           placeholder="Buscar municipio…">
+
+    <datalist id="dl-mun-actas"></datalist>
+
+    <!-- KPI grande -->
+    <span id="kpi-actas-mun" class="kpi-chip" title="Mesas con detalle">—</span>
+  </div>
+</div>
+
 
             <!-- Contenedor virtualizado -->
             <div class="card p-3 mt-3">

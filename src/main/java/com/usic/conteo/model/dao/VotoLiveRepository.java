@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.usic.conteo.model.dto.RecintoAgg;
 import com.usic.conteo.model.entityGeneral.Recinto;
@@ -89,4 +90,35 @@ public interface VotoLiveRepository extends JpaRepository<Recinto, Long> {
   ORDER BY p.nombre, m.nombre, r.nombre
 """, nativeQuery = true)
 List<RecintoAgg> findRecintoAgg();
+
+
+
+  @Query(value = """
+      SELECT 
+          m.id_municipio        AS idMunicipio,
+          m.nombre              AS municipio,
+          COUNT(DISTINCT dv.id_mesa_general) AS totalMesas
+      FROM municipio m
+      JOIN recinto r        ON r.id_municipio = m.id_municipio
+      JOIN mesa_general mg  ON mg.id_recinto  = r.id_recinto
+      JOIN detalle_voto dv  ON dv.id_mesa_general = mg.id_mesa_general
+      GROUP BY m.id_municipio, m.nombre
+      ORDER BY m.nombre
+      """, nativeQuery = true)
+  List<Map<String, Object>> actasPorMunicipio();
+
+  @Query(value = """
+      SELECT 
+          m.id_municipio        AS idMunicipio,
+          m.nombre              AS municipio,
+          COUNT(DISTINCT dv.id_mesa_general) AS totalMesas
+      FROM municipio m
+      JOIN recinto r        ON r.id_municipio = m.id_municipio
+      JOIN mesa_general mg  ON mg.id_recinto  = r.id_recinto
+      JOIN detalle_voto dv  ON dv.id_mesa_general = mg.id_mesa_general
+      WHERE m.id_municipio = :idMunicipio
+      GROUP BY m.id_municipio, m.nombre
+      """, nativeQuery = true)
+  Map<String, Object> actasPorMunicipio(@Param("idMunicipio") Long idMunicipio);
+
 }

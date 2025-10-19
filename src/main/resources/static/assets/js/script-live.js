@@ -1,5 +1,6 @@
 Chart.register(ChartDataLabels);
 (function () {
+
     let lastTotal = 0;
     let lineT = [];
     let lineY = [];
@@ -491,6 +492,86 @@ if (keyToShow) {
   updateRecintoPieByKey(keyToShow);
 }
 }
+
+// === ACTAS POR MUNICIPIO (selector escribible) ===
+(function initActasPorMunicipio() {
+  const inp = document.getElementById('inp-mun-actas');
+  const dl  = document.getElementById('dl-mun-actas');
+  const kpi = document.getElementById('kpi-actas-mun');
+
+  // Si los elementos no existen aún, no hacemos nada.
+  if (!inp || !dl || !kpi) {
+    console.warn('[actas] Elementos no encontrados en el DOM');
+    return;
+  }
+
+  let MUN_DATA = []; // { id, text, total }
+
+  // util: quitar tildes para búsqueda flexible
+  const norm = s => (s || '')
+    .toString()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+
+  function cargarMunicipios() {
+    fetch('/votol/api/actas/por-municipio', { cache: 'no-store' })
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(list => {
+        // normalizamos claves que pueden venir como idmunicipio/idMunicipio/…
+        MUN_DATA = list.map(x => ({
+          id: Number(x.idmunicipio ?? x.idMunicipio ?? x.id),
+          text: String(x.municipio ?? x.nombre ?? '').trim(),
+          total: Number(x.totalmesas ?? x.totalMesas ?? 0)
+        }));
+
+        // llena el datalist
+        dl.innerHTML = '';
+        for (const m of MUN_DATA.sort((a,b)=>a.text.localeCompare(b.text,'es'))) {
+          const opt = document.createElement('option');
+          opt.value = m.text;
+          // (opcional) etiqueta visible en algunos navegadores
+          opt.label = `${m.text} — ${m.total} acta${m.total===1?'':'s'}`;
+          dl.appendChild(opt);
+        }
+
+        // si el usuario ya escribió algo, intenta mostrar su KPI
+        if (inp.value) mostrarKpi(inp.value);
+      })
+      .catch(err => {
+        console.error('[actas] Error cargando municipios:', err);
+        kpi.textContent = '—';
+      });
+  }
+
+  function mostrarKpi(nombre) {
+    const txt = norm(nombre);
+    if (!txt) { kpi.textContent = '—'; return; }
+
+    // match exacto o por prefijo/contiene (más amigable)
+    let found = MUN_DATA.find(m => norm(m.text) === txt);
+    if (!found) found = MUN_DATA.find(m => norm(m.text).startsWith(txt));
+    if (!found) found = MUN_DATA.find(m => norm(m.text).includes(txt));
+
+    kpi.textContent = found ? found.total.toLocaleString() : '—';
+  }
+
+  // cuando el usuario cambia o escribe, actualizamos KPI
+  inp.addEventListener('change',   () => mostrarKpi(inp.value));
+  inp.addEventListener('input',    () => mostrarKpi(inp.value)); // en vivo
+
+  // carga inicial
+  cargarMunicipios();
+
+  // si tus actas cambian con el tiempo, puedes recargar cada cierto tiempo:
+  // setInterval(cargarMunicipios, 10000);
+})();
+
+
 
 
 })();
