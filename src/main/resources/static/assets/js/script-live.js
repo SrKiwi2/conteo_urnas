@@ -3,6 +3,7 @@ Chart.register(ChartDataLabels);
     let lastTotal = 0;
     let lineT = [];
     let lineY = [];
+    
 
     const cv = document.getElementById('chartVotos');
     const cl = document.getElementById('chartLinea');
@@ -17,6 +18,10 @@ Chart.register(ChartDataLabels);
         NULO: '#f59e0b',
         BLANCO: '#9ca3af'
     };
+
+    // Usamos tu misma paleta:
+const PIE_COLORS = [COLORS.PDC, COLORS.LIBRE, COLORS.NULO, COLORS.BLANCO];
+
     const labelsTipos = ['PDC', 'LIBRE', 'NULO', 'BLANCO'];
     const bgColors = labelsTipos.map(l => COLORS[l]);
 
@@ -309,6 +314,8 @@ Chart.register(ChartDataLabels);
 
         // Provincia (stacked)
         ensureCharts();
+        renderRecintoPieWidget(d);
+
         const provLabels = d.porProvincia.map(x => x.provincia);
         const sum = key => d.porProvincia.map(x => Number(x[key] || 0));
         chartProv.data.labels = provLabels;
@@ -341,5 +348,149 @@ Chart.register(ChartDataLabels);
         tick();
         setInterval(() => { if (!document.hidden) tick(); }, 3000);
     })();
+
+    const CATS = ['PDC', 'LIBRE', 'NULO', 'BLANCO'];
+    const num = v => Number(v || 0);
+const sumArr = a => a.reduce((s,n)=>s+num(n),0);
+
+let PIE_REC = null;     // instancia de Chart
+let REC_DATA = [];
+let REC_SELECTED_KEY = null;     // índice seleccionado actualmente
+let REC_USER_SELECTED = false;      // copia de d.porRecinto normalizada
+
+function ensureRecintoPie() {
+  if (PIE_REC) return;
+  const ctx = document.getElementById('recinto-pie');
+  PIE_REC = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: CATS,
+      datasets: [{
+        data: [0,0,0,0],
+        backgroundColor: PIE_COLORS,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,.06)'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      plugins: {
+        legend: { position: 'right' },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => {
+              const val = num(ctx.parsed);
+              const total = sumArr(ctx.dataset.data);
+              const pct = total ? (val*100/total) : 0;
+              return ` ${ctx.label}: ${val.toLocaleString()} (${pct.toFixed(1)}%)`;
+            }
+          }
+        }
+      },
+      cutout: '60%'
+    }
+  });
+}
+
+function fillRecintoSelect(data) {
+  const sel = document.getElementById('recinto-select');
+  const prev = sel.value;           // preserva la selección visual si coincide
+  sel.innerHTML = '';
+  data.forEach(r => {
+    const opt = document.createElement('option');
+    opt.value = r.key;
+    opt.textContent = `${r.recinto} — ${r.municipio} · ${r.provincia}`;
+    sel.appendChild(opt);
+  });
+  // intenta mantener selección visible si sigue existiendo
+  if (prev && data.some(x => x.key === prev)) sel.value = prev;
+}
+
+function findIndexByKey(key) {
+  if (!key) return -1;
+  for (let i = 0; i < REC_DATA.length; i++) if (REC_DATA[i].key === key) return i;
+  return -1;
+}
+
+function updateRecintoPieByKey(key) {
+  const idx = findIndexByKey(key);
+  if (!PIE_REC || idx < 0) return;
+  const r = REC_DATA[idx];
+  const vals = [num(r.pdc), num(r.libre), num(r.nulo), num(r.blanco)];
+  PIE_REC.data.datasets[0].data = vals;
+  PIE_REC.update(); // sin modo
+
+  const total = vals.reduce((a,b)=>a+b,0);
+  const ul = document.getElementById('recinto-stats');
+  ul.innerHTML = `
+    <li><span><span class="badge-dot" style="background:${PIE_COLORS[0]}"></span>PDC</span><strong>${vals[0].toLocaleString()}</strong></li>
+    <li><span><span class="badge-dot" style="background:${PIE_COLORS[1]}"></span>LIBRE</span><strong>${vals[1].toLocaleString()}</strong></li>
+    <li><span><span class="badge-dot" style="background:${PIE_COLORS[2]}"></span>NULO</span><strong>${vals[2].toLocaleString()}</strong></li>
+    <li><span><span class="badge-dot" style="background:${PIE_COLORS[3]}"></span>BLANCO</span><strong>${vals[3].toLocaleString()}</strong></li>
+    <li class="mt-2"><span>Total votos</span><strong>${total.toLocaleString()}</strong></li>
+  `;
+}
+
+function wireRecintoSelect() {
+  const sel = document.getElementById('recinto-select');
+  if (!sel._wired) {
+    sel.addEventListener('change', () => {
+      REC_SELECTED_KEY = sel.value;   // guarda la clave
+      REC_USER_SELECTED = true;
+      updateRecintoPieByKey(REC_SELECTED_KEY);
+    });
+    sel._wired = true;
+  }
+}
+
+// ======== Integra con tu renderDashboard(d) ========
+// Llama estas 5 líneas dentro de TU renderDashboard(d) después de recibir datos.
+function renderRecintoPieWidget(d) {
+  // normaliza
+REC_DATA = (d.porRecinto || []).map(r => {
+  const rec = String(r.recinto || '');
+  const mun = String(r.municipio || '');
+  const pro = String(r.provincia || '');
+  return {
+    key: `${rec}|${mun}|${pro}`,   // clave estable
+    recinto: rec,
+    municipio: mun,
+    provincia: pro,
+    pdc: num(r.pdc), libre: num(r.libre), nulo: num(r.nulo), blanco: num(r.blanco)
+  };
+});
+
+  ensureRecintoPie();
+
+const prevKey = REC_SELECTED_KEY;
+fillRecintoSelect(REC_DATA);
+wireRecintoSelect();
+
+// Determinar qué mostrar
+let keyToShow = null;
+
+if (REC_USER_SELECTED && prevKey && REC_DATA.some(x => x.key === prevKey)) {
+  keyToShow = prevKey;                           // respeta la elección del usuario
+} else {
+  // auto-selección: el de mayor total
+  let max = -1, best = null;
+  for (const r of REC_DATA) {
+    const t = num(r.pdc) + num(r.libre) + num(r.nulo) + num(r.blanco);
+    if (t > max) { max = t; best = r.key; }
+  }
+  keyToShow = best || (REC_DATA[0] && REC_DATA[0].key) || null;
+  REC_SELECTED_KEY = keyToShow;
+  // no marcar REC_USER_SELECTED aquí
+}
+
+// pinta y sincroniza select visual
+const sel = document.getElementById('recinto-select');
+if (keyToShow) {
+  sel.value = keyToShow;
+  updateRecintoPieByKey(keyToShow);
+}
+}
+
 
 })();

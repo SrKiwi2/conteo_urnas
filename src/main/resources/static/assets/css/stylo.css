@@ -221,3 +221,13 @@
     height: 100%;
     border-radius: 999px;
 }
+
+#recinto-stats li{
+  display:flex; justify-content:space-between; gap:.75rem;
+  border-bottom: 1px dashed rgba(0,0,0,.08); padding:.4rem 0;
+}
+#recinto-stats li:last-child{ border-bottom: 0; }
+.badge-dot{
+  display:inline-block; width:.75rem; height:.75rem; border-radius:999px; margin-right:.5rem;
+  vertical-align:middle;
+}

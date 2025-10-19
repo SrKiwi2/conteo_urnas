@@ -1,5 +1,7 @@
 package com.usic.conteo.model.service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.PageRequest;
@@ -17,18 +19,33 @@ public class LiveDashboardService {
     private final EntityManager em;
 
     public Map<String, Object> loadDashboard() {
-        var porRecinto = repo.findAllAggRaw();
+        //var porRecinto = repo.findRecintoAgg();
         var porProvincia = repo.sumByProvincia();
         var topMun = repo.topMunicipios(PageRequest.of(0, 10));
+
+        var porRecintoAgg = repo.findRecintoAgg();
+
+        List<Map<String,Object>> porRecinto = porRecintoAgg.stream().map(r -> {
+            Map<String,Object> m = new HashMap<>();
+            m.put("recinto",     r.getRecinto());
+            m.put("municipio",   r.getMunicipio());
+            m.put("provincia",   r.getProvincia());
+            m.put("pdc",         safeLong(r.getPdc()));
+            m.put("libre",       safeLong(r.getLibre()));
+            m.put("nulo",        safeLong(r.getNulo()));
+            m.put("blanco",      safeLong(r.getBlanco()));
+            m.put("total",       safeLong(r.getTotal()));
+            m.put("habilitados", safeLong(r.getHabilitados()));
+            return m;
+        }).toList();
 
         // KPIs globales
         long totalHabil = 0, totalVotos = 0, recintosConVoto = 0, mesasConVoto = mesasConVotos();
         for (var r : porRecinto) {
-            totalHabil += ((Number) r.getOrDefault("habilitados", 0)).longValue();
-            int tv = ((Number) r.getOrDefault("total", 0)).intValue();
+            totalHabil += num(r.get("habilitados"));
+            long tv = num(r.get("total"));
             totalVotos += tv;
-            if (tv > 0)
-                recintosConVoto++;
+            if (tv > 0) recintosConVoto++;
         }
 
         Map<String, Object> kpis = Map.of(
@@ -54,4 +71,8 @@ public class LiveDashboardService {
                 """);
         return ((Number) q.getSingleResult()).longValue();
     }
+
+        private static long num(Object o) { return o == null ? 0L : ((Number)o).longValue(); }
+
+    private static long safeLong(Long v) { return v == null ? 0L : v; }
 }

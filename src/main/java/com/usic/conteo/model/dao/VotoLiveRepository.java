@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import com.usic.conteo.model.dto.RecintoAgg;
 import com.usic.conteo.model.entityGeneral.Recinto;
 
 public interface VotoLiveRepository extends JpaRepository<Recinto, Long> {
@@ -52,4 +53,40 @@ public interface VotoLiveRepository extends JpaRepository<Recinto, Long> {
             FROM vw_votos_recinto
             """, nativeQuery = true)
     List<Map<String, Object>> topMunicipios(Pageable pageable);
+
+
+      @Query(value = """
+  SELECT
+    r.nombre AS recinto,
+    m.nombre AS municipio,
+    p.nombre AS provincia,
+
+    COALESCE(SUM(CASE WHEN vg.voto = 'PDC'    THEN dv.cantidad ELSE 0 END), 0) AS pdc,
+    COALESCE(SUM(CASE WHEN vg.voto = 'LIBRE'  THEN dv.cantidad ELSE 0 END), 0) AS libre,
+    COALESCE(SUM(CASE WHEN vg.voto = 'NULO'   THEN dv.cantidad ELSE 0 END), 0) AS nulo,
+    COALESCE(SUM(CASE WHEN vg.voto = 'BLANCO' THEN dv.cantidad ELSE 0 END), 0) AS blanco,
+
+    COALESCE(SUM(dv.cantidad), 0) AS total,
+
+    /* habilitados viene de RECINTO (String):
+       - si hay valores no numéricos, usa regexp_replace para limpiar
+       - usamos MAX para no multiplicarlo por el join */
+    MAX(
+      COALESCE(
+        NULLIF(regexp_replace(r.habilitados, '\\D', '', 'g'), '')::int,
+        0
+      )
+    ) AS habilitados
+
+  FROM recinto r
+  JOIN municipio m  ON m.id_municipio = r.id_municipio
+  JOIN provincia p  ON p.id_provincia = m.id_provincia
+  LEFT JOIN mesa_general  mg ON mg.id_recinto     = r.id_recinto
+  LEFT JOIN detalle_voto dv ON dv.id_mesa_general = mg.id_mesa_general
+  LEFT JOIN voto_general  vg ON vg.id_voto_general = dv.id_voto_general
+
+  GROUP BY r.nombre, m.nombre, p.nombre
+  ORDER BY p.nombre, m.nombre, r.nombre
+""", nativeQuery = true)
+List<RecintoAgg> findRecintoAgg();
 }
