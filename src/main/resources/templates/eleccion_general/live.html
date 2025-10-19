@@ -84,7 +84,7 @@
         <div class="card p-3 mt-3">
             <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
                 <h6 class="mb-0 me-auto">Participación por Recinto</h6>
-                
+
                 <input id="rec-buscar" type="search" class="form-control form-control-sm"
                     placeholder="Buscar recinto/municipio…" style="max-width: 240px;">
                 <select id="rec-orden" class="form-select form-select-sm" style="max-width: 200px;">
@@ -99,22 +99,20 @@
                     <label class="form-check-label" for="rec-solo-con-datos">Solo con datos</label>
                 </div>
             </div>
-<div class="card p-3 mt-3">
-  <div class="d-flex flex-wrap align-items-center gap-2">
-    <h6 class="mb-0 me-auto">Actas computadas por Municipio</h6>
+            <div class="card p-3 mt-3">
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                    <h6 class="mb-0 me-auto">Actas computadas por Municipio</h6>
 
-    <!-- input escribible con datalist (versión corta) -->
-    <input list="dl-mun-actas"
-           id="inp-mun-actas"
-           class="form-control form-control-sm"
-           placeholder="Buscar municipio…">
+                    <!-- input escribible con datalist (versión corta) -->
+                    <input list="dl-mun-actas" id="inp-mun-actas" class="form-control form-control-sm"
+                        placeholder="Buscar municipio…">
 
-    <datalist id="dl-mun-actas"></datalist>
+                    <datalist id="dl-mun-actas"></datalist>
 
-    <!-- KPI grande -->
-    <span id="kpi-actas-mun" class="kpi-chip" title="Mesas con detalle">—</span>
-  </div>
-</div>
+                    <!-- KPI grande -->
+                    <span id="kpi-actas-mun" class="kpi-chip" title="Mesas con detalle">—</span>
+                </div>
+            </div>
 
 
             <!-- Contenedor virtualizado -->
@@ -122,46 +120,93 @@
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <h6 class="mb-0 me-auto">Votos por Recinto</h6>
                     <select id="recinto-select" class="form-select form-select-sm" style="max-width: 360px;">
-                    <!-- opciones se llenan por JS -->
+                        <!-- opciones se llenan por JS -->
                     </select>
                 </div>
 
                 <div class="row g-3 align-items-center">
                     <div class="col-12 col-lg-6">
-                    <div class="ratio ratio-1x1">
-                        <canvas id="recinto-pie"></canvas>
-                    </div>
+                        <div class="ratio ratio-1x1">
+                            <canvas id="recinto-pie"></canvas>
+                        </div>
                     </div>
                     <div class="col-12 col-lg-6">
-                    <ul id="recinto-stats" class="list-unstyled small mb-0">
-                        <!-- resumen se llena por JS -->
-                    </ul>
+                        <ul id="recinto-stats" class="list-unstyled small mb-0">
+                            <!-- resumen se llena por JS -->
+                        </ul>
                     </div>
                 </div>
             </div>
 
             <div id="recintos-viewport" style="height:420px; overflow:auto;">
-  <div id="recintos-spacer-top"></div>
-  <div id="recintos-list"></div>
-  <div id="recintos-spacer-bot"></div>
+                <div id="recintos-spacer-top"></div>
+                <div id="recintos-list"></div>
+                <div id="recintos-spacer-bot"></div>
+            </div>
+
+            <div class="card p-3 mt-3">
+  <div class="d-flex flex-wrap align-items-center gap-2">
+    <h6 class="mb-0 me-auto">VOTOS POR MUNICIPIO - BUSQUEDA POR ESCRITO</h6>
+
+    <!-- Select escribible con datalist -->
+
+    <input list="dl-mun-votos"
+           id="inp-mun-votos"
+           class="form-control form-control-sm"
+           placeholder="Buscar municipio…">
+    <datalist id="dl-mun-votos"></datalist>
+
+    <!-- KPI total de votos del municipio -->
+    <span id="kpi-votos-mun" class="kpi-chip" title="Total de votos">—</span>
+  </div>
+
+  <div class="row g-3 mt-2">
+    <div class="col-12 col-lg-6">
+      <div class="ratio ratio-1x1">
+        <canvas id="mun-pie"></canvas>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <ul id="mun-stats" class="list-unstyled small mb-0"></ul>
+    </div>
+  </div>
 </div>
 
-<style>
-  .progress-row {
-    display:grid;
-    grid-template-columns: 1fr 2fr auto;
-    gap:12px;
-    align-items:center;
-    padding:6px 8px;
-    border-bottom:1px dashed rgba(0,0,0,.06);
-  }
-  .progress-wrap {
-    width:100%; height:10px; background:rgba(0,0,0,.06); border-radius:999px; overflow:hidden;
-  }
-  .progress-inner { height:100%; }
-  .badge-soft { font-size:.78rem; }
-  .badge-dot { display:inline-block; width:.75rem; height:.75rem; border-radius:999px; margin-right:.4rem; vertical-align:middle; }
-</style>
+            <style>
+                .progress-row {
+                    display: grid;
+                    grid-template-columns: 1fr 2fr auto;
+                    gap: 12px;
+                    align-items: center;
+                    padding: 6px 8px;
+                    border-bottom: 1px dashed rgba(0, 0, 0, .06);
+                }
+
+                .progress-wrap {
+                    width: 100%;
+                    height: 10px;
+                    background: rgba(0, 0, 0, .06);
+                    border-radius: 999px;
+                    overflow: hidden;
+                }
+
+                .progress-inner {
+                    height: 100%;
+                }
+
+                .badge-soft {
+                    font-size: .78rem;
+                }
+
+                .badge-dot {
+                    display: inline-block;
+                    width: .75rem;
+                    height: .75rem;
+                    border-radius: 999px;
+                    margin-right: .4rem;
+                    vertical-align: middle;
+                }
+            </style>
 
 
         </div>

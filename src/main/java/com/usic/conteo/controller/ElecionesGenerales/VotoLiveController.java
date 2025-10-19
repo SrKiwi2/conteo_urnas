@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.usic.conteo.model.service.ActasService;
 import com.usic.conteo.model.service.LiveDashboardService;
+import com.usic.conteo.model.service.MunicipioVotosService;
 import com.usic.conteo.model.service.ResumenVotoService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class VotoLiveController {
     private final ResumenVotoService resumenVotoService;
     private final LiveDashboardService service;
+    private final MunicipioVotosService municipioVotosService;
 
     @ResponseBody
     @GetMapping(value = "/api/resumen", produces="application/json")
@@ -53,5 +55,17 @@ public class VotoLiveController {
   @GetMapping(value = "/api/actas/por-municipio/{id}", produces = "application/json")
   public Map<String,Object> actasPorMunicipio(@PathVariable Long id) {
     return actasService.actasDeMunicipio(id);
+  }
+
+  @ResponseBody
+  @GetMapping(value = "/api/votos/por-municipio", produces = "application/json")
+  public List<Map<String,Object>> votosPorMunicipio() {
+    return municipioVotosService.listar();
+  }
+
+  @ResponseBody
+  @GetMapping(value = "/api/votos/por-municipio/{id}", produces = "application/json")
+  public Map<String,Object> votosPorMunicipio(@PathVariable Long id) {
+    return municipioVotosService.uno(id);
   }
 }

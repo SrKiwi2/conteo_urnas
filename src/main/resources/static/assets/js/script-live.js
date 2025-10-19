@@ -571,6 +571,116 @@ if (keyToShow) {
   // setInterval(cargarMunicipios, 10000);
 })();
 
+// === VOTOS POR MUNICIPIO ===
+(function initVotosPorMunicipio(){
+  const inp = document.getElementById('inp-mun-votos');
+  const dl  = document.getElementById('dl-mun-votos');
+  const kpi = document.getElementById('kpi-votos-mun');
+  const ul  = document.getElementById('mun-stats');
+  const ctx = document.getElementById('mun-pie');
+
+  if (!inp || !dl || !kpi || !ul || !ctx) {
+    console.warn('[mun-votos] Falta algún elemento en el DOM');
+    return;
+  }
+
+  const norm = s => (s||'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+  const num  = v => Number(v || 0);
+
+  let MUN_VOTOS = []; // { id, text, pdc, libre, nulo, blanco, total }
+
+  // Pie por municipio
+  let PIE_MUN = null;
+  function ensurePie(){
+    if (PIE_MUN) return;
+    PIE_MUN = new Chart(ctx.getContext('2d'), {
+      type: 'doughnut',
+      data: { labels: CATS, datasets: [{ data: [0,0,0,0], backgroundColor: PIE_COLORS, borderWidth: 1, borderColor:'rgba(0,0,0,.06)' }] },
+      options: {
+        responsive:true, maintainAspectRatio:true, cutout:'60%',
+        plugins:{
+          legend:{ position:'right' },
+          tooltip:{ callbacks:{ label:(c)=> {
+            const val = num(c.parsed);
+            const tt  = (PIE_MUN.data.datasets[0].data||[]).reduce((a,b)=>a+num(b),0);
+            const pct = tt? (val*100/tt):0;
+            return ` ${c.label}: ${val.toLocaleString()} (${pct.toFixed(1)}%)`;
+          }}}
+        }
+      }
+    });
+  }
+
+  function renderStats(vals){
+    ul.innerHTML = `
+      <li><span><span class="badge-dot" style="background:${PIE_COLORS[0]}"></span>PDC</span><strong>${vals[0].toLocaleString()}</strong></li>
+      <li><span><span class="badge-dot" style="background:${PIE_COLORS[1]}"></span>LIBRE</span><strong>${vals[1].toLocaleString()}</strong></li>
+      <li><span><span class="badge-dot" style="background:${PIE_COLORS[2]}"></span>NULO</span><strong>${vals[2].toLocaleString()}</strong></li>
+      <li><span><span class="badge-dot" style="background:${PIE_COLORS[3]}"></span>BLANCO</span><strong>${vals[3].toLocaleString()}</strong></li>
+    `;
+  }
+
+  function pintarMunicipio(m){
+    ensurePie();
+    const vals = [num(m.pdc), num(m.libre), num(m.nulo), num(m.blanco)];
+    PIE_MUN.data.datasets[0].data = vals;
+    PIE_MUN.update();
+    kpi.textContent = num(m.total).toLocaleString();
+    renderStats(vals);
+  }
+
+  function cargarMunicipiosVotos(){
+    fetch('/votol/api/votos/por-municipio', { cache:'no-store' })
+      .then(r => {
+        if (!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      })
+      .then(list => {
+        MUN_VOTOS = list.map(x => ({
+          id: Number(x.idmunicipio ?? x.idMunicipio ?? x.id),
+          text: String(x.municipio ?? x.nombre ?? '').trim(),
+          pdc:  num(x.pdc), libre:num(x.libre), nulo:num(x.nulo), blanco:num(x.blanco),
+          total:num(x.total)
+        })).sort((a,b)=>a.text.localeCompare(b.text,'es'));
+
+        // llena datalist
+        dl.innerHTML = '';
+        for (const m of MUN_VOTOS) {
+          const opt = document.createElement('option');
+          opt.value = m.text;
+          opt.label = `${m.text} — ${m.total} votos`;
+          dl.appendChild(opt);
+        }
+
+        // pinta el primero con datos > 0 o el primero
+        const first = MUN_VOTOS.find(m => m.total>0) || MUN_VOTOS[0];
+        if (first){
+          inp.value = first.text;
+          pintarMunicipio(first);
+        }
+      })
+      .catch(err=>{
+        console.error('[mun-votos] Error:', err);
+        kpi.textContent = '—';
+      });
+  }
+
+  function onInput(){
+    const q = norm(inp.value);
+    if (!q){ kpi.textContent = '—'; if (PIE_MUN){ PIE_MUN.data.datasets[0].data=[0,0,0,0]; PIE_MUN.update(); } ul.innerHTML=''; return; }
+    let found = MUN_VOTOS.find(m => norm(m.text) === q);
+    if (!found) found = MUN_VOTOS.find(m => norm(m.text).startsWith(q));
+    if (!found) found = MUN_VOTOS.find(m => norm(m.text).includes(q));
+    if (found) pintarMunicipio(found);
+  }
+
+  inp.addEventListener('change', onInput);
+  inp.addEventListener('input',  onInput);
+
+  cargarMunicipiosVotos();
+})();
+
+
 
 
 

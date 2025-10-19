@@ -121,4 +121,45 @@ List<RecintoAgg> findRecintoAgg();
       """, nativeQuery = true)
   Map<String, Object> actasPorMunicipio(@Param("idMunicipio") Long idMunicipio);
 
+
+  /** Distribución de votos por municipio (todos) */
+  @Query(value = """
+      SELECT 
+          m.id_municipio AS idMunicipio,
+          m.nombre       AS municipio,
+          COALESCE(SUM(CASE WHEN vg.voto = 'PDC'    THEN dv.cantidad ELSE 0 END), 0) AS pdc,
+          COALESCE(SUM(CASE WHEN vg.voto = 'LIBRE'  THEN dv.cantidad ELSE 0 END), 0) AS libre,
+          COALESCE(SUM(CASE WHEN vg.voto = 'NULO'   THEN dv.cantidad ELSE 0 END), 0) AS nulo,
+          COALESCE(SUM(CASE WHEN vg.voto = 'BLANCO' THEN dv.cantidad ELSE 0 END), 0) AS blanco,
+          COALESCE(SUM(dv.cantidad), 0) AS total
+      FROM municipio m
+      JOIN recinto r        ON r.id_municipio = m.id_municipio
+      JOIN mesa_general mg  ON mg.id_recinto  = r.id_recinto
+      LEFT JOIN detalle_voto dv  ON dv.id_mesa_general = mg.id_mesa_general
+      LEFT JOIN voto_general vg  ON vg.id_voto_general = dv.id_voto_general
+      GROUP BY m.id_municipio, m.nombre
+      ORDER BY m.nombre
+      """, nativeQuery = true)
+  List<Map<String, Object>> votosPorMunicipio();
+
+  /** Distribución de votos de un municipio por id */
+  @Query(value = """
+      SELECT 
+          m.id_municipio AS idMunicipio,
+          m.nombre       AS municipio,
+          COALESCE(SUM(CASE WHEN vg.voto = 'PDC'    THEN dv.cantidad ELSE 0 END), 0) AS pdc,
+          COALESCE(SUM(CASE WHEN vg.voto = 'LIBRE'  THEN dv.cantidad ELSE 0 END), 0) AS libre,
+          COALESCE(SUM(CASE WHEN vg.voto = 'NULO'   THEN dv.cantidad ELSE 0 END), 0) AS nulo,
+          COALESCE(SUM(CASE WHEN vg.voto = 'BLANCO' THEN dv.cantidad ELSE 0 END), 0) AS blanco,
+          COALESCE(SUM(dv.cantidad), 0) AS total
+      FROM municipio m
+      JOIN recinto r        ON r.id_municipio = m.id_municipio
+      JOIN mesa_general mg  ON mg.id_recinto  = r.id_recinto
+      LEFT JOIN detalle_voto dv  ON dv.id_mesa_general = mg.id_mesa_general
+      LEFT JOIN voto_general vg  ON vg.id_voto_general = dv.id_voto_general
+      WHERE m.id_municipio = :idMunicipio
+      GROUP BY m.id_municipio, m.nombre
+      """, nativeQuery = true)
+  Map<String, Object> votosPorMunicipio(@Param("idMunicipio") Long idMunicipio);
+
 }
