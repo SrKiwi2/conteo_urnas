@@ -21,6 +21,9 @@
 
 ## 📸 Capturas del Sistema
 
+![Descripción de la imagen](screenshots/imagen1.png)
+![Descripción de la imagen](screenshots/imagen2.png)
+![Descripción de la imagen](screenshots/imagen3.png)
 > 🖼️ *Screenshots próximamente...*
 
 ---
